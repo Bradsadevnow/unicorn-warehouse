@@ -1,0 +1,713 @@
+.root {
+  position: relative;
+  --accent: var(--ice);
+}
+
+/* The stage floats over the page, with key copy in the foreground. */
+.canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.root section {
+  position: relative;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  height: 100svh;
+  min-height: 620px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding-top: 96px;
+  padding-bottom: 30px;
+}
+
+.heroLabel,
+.heroTitle,
+.heroFoot,
+.manifestoLines,
+.manifestoBody {
+  position: relative;
+  z-index: 3;
+}
+
+.heroTitle,
+.heroFoot,
+.manifestoLines,
+.manifestoBody {
+  text-shadow: 0 1px 3px #fff8fd, 0 2px 12px #fff8fd, 0 0 24px #fff8fd;
+}
+.heroLabel {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+.heroTitle {
+  align-self: center;
+  display: grid;
+  gap: 0.02em;
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(58px, 13.6vw, 248px);
+  line-height: 0.86;
+  letter-spacing: -0.035em;
+}
+.heroLine {
+  display: block;
+}
+.heroLineB {
+  text-align: right;
+  font-style: italic;
+  color: #8b3887;
+}
+.heroFoot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+}
+.heroLede {
+  max-width: 34ch;
+  font-size: 15px;
+  color: var(--dim);
+}
+.heroScroll {
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+  text-align: right;
+}
+.scrollCue {
+  position: relative;
+  padding-bottom: 34px;
+  color: var(--bone);
+}
+.scrollCue::after {
+  content: "";
+  position: absolute;
+  right: 50%;
+  bottom: 0;
+  width: 1px;
+  height: 26px;
+  background: var(--bone);
+  transform-origin: top;
+  animation: cue 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes cue {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+@media (max-width: 860px) {
+  .heroTitle {
+    font-size: clamp(54px, 17vw, 140px);
+  }
+  .heroLede {
+    max-width: 22ch;
+    font-size: 13px;
+  }
+}
+
+/* ---------- Manifesto ---------- */
+.manifesto {
+  min-height: 100svh;
+  padding-top: 18vh;
+  padding-bottom: 18vh;
+  display: grid;
+  align-content: center;
+  gap: 44px;
+}
+.manifestoLines {
+  max-width: min(54%, 880px);
+  display: grid;
+  gap: 0.5em;
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(34px, 4.6vw, 78px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+.accent {
+  font-style: italic;
+  color: var(--accent);
+}
+.manifestoBody {
+  max-width: 44ch;
+  color: var(--dim);
+  font-size: 17px;
+}
+@media (max-width: 860px) {
+  .manifestoLines {
+    max-width: 74%;
+  }
+  .manifestoBody {
+    max-width: 24ch;
+    font-size: 15px;
+  }
+}
+
+/* ---------- The object ---------- */
+.object {
+  height: 360svh;
+  padding: 0 !important;
+}
+.objectSticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  z-index: 3;
+}
+.objectHead {
+  position: absolute;
+  top: 96px;
+  left: var(--gutter);
+  right: var(--gutter);
+  display: flex;
+  justify-content: space-between;
+}
+.callout {
+  position: absolute;
+  top: 50%;
+  width: min(26vw, 380px);
+  margin-top: -90px;
+  visibility: hidden;
+  background: rgba(255, 248, 253, 0.96);
+  box-shadow: 0 0 24px 12px rgba(255, 248, 253, 0.78);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root .object {
+    height: auto;
+    padding: 0 var(--gutter) !important;
+  }
+
+  .objectSticky {
+    position: static;
+    height: auto;
+    display: grid;
+    gap: 32px;
+    overflow: visible;
+  }
+
+  .objectHead,
+  .objectSticky .callout {
+    position: static;
+    visibility: visible;
+    width: auto;
+    margin: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .progress,
+  .scrollCue::after {
+    display: none;
+  }
+}
+.calloutLeft {
+  left: var(--gutter);
+}
+.calloutRight {
+  right: var(--gutter);
+}
+.callout h3 {
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(30px, 3.3vw, 54px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 14px 0 16px;
+}
+.callout p {
+  color: var(--dim);
+  font-size: 15px;
+  max-width: 32ch;
+}
+.calloutN {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.calloutN::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.progress {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 30px;
+  height: 1px;
+  background: var(--line);
+}
+.progress i {
+  display: block;
+  height: 100%;
+  background: var(--bone);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+@media (max-width: 860px) {
+  .callout {
+    top: auto;
+    bottom: 64px;
+    left: var(--gutter);
+    right: var(--gutter);
+    width: auto;
+    margin-top: 0;
+  }
+  .callout h3 {
+    font-size: 32px;
+    margin: 10px 0 10px;
+  }
+  .callout p {
+    max-width: none;
+    font-size: 14px;
+  }
+}
+
+/* ---------- Campaign still ---------- */
+.still {
+  z-index: 3;
+  padding: 0 !important;
+  background: var(--black);
+}
+.stillFrame {
+  position: relative;
+  height: 135vh;
+  overflow: hidden;
+  will-change: clip-path;
+}
+.stillImg {
+  position: absolute;
+  inset: -6% 0;
+}
+.stillImg img {
+  object-fit: cover;
+}
+.stillCopy {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: clamp(28px, 6vh, 72px);
+  display: grid;
+  gap: 18px;
+}
+.stillFrame::after {
+  content: "";
+  position: absolute;
+  inset: 45% 0 0 0;
+  background: linear-gradient(to bottom, transparent, rgba(255, 248, 253, 0.97));
+  pointer-events: none;
+}
+.stillCopy {
+  z-index: 1;
+}
+.stillLine {
+  max-width: 16ch;
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(36px, 5.6vw, 96px);
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+}
+
+/* Everything after the still sits above the canvas on solid ground. */
+.figures,
+.caps,
+.sovereign,
+.plans,
+.notices,
+.close {
+  z-index: 3;
+  background: var(--black);
+}
+
+/* ---------- Figures ---------- */
+.figures {
+  padding-top: clamp(90px, 14vw, 200px);
+  padding-bottom: clamp(70px, 10vw, 150px);
+}
+.figureGrid {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--line);
+}
+.figureGrid li {
+  padding: 28px 24px 8px 0;
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+.figureGrid li + li {
+  padding-left: 24px;
+  border-left: 1px solid var(--line);
+}
+.figureN {
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(64px, 9vw, 164px);
+  line-height: 0.82;
+  letter-spacing: -0.04em;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.figureN small {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-left: 8px;
+  vertical-align: top;
+  position: relative;
+  top: 0.9em;
+}
+.figureT {
+  color: var(--dim);
+  font-size: 15px;
+  max-width: 24ch;
+}
+@media (max-width: 860px) {
+  .figureGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .figureGrid li {
+    padding-bottom: 28px;
+  }
+  .figureGrid li:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .figureGrid li:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+}
+
+/* ---------- Capabilities ---------- */
+.caps {
+  padding-top: clamp(60px, 9vw, 130px);
+  padding-bottom: clamp(70px, 10vw, 150px);
+}
+.capsHead {
+  display: grid;
+  gap: 22px;
+  margin-bottom: clamp(40px, 6vw, 84px);
+}
+.capsHead h2,
+.sovereign h2,
+.close h2 {
+  font-family: var(--display);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+}
+.capsHead h2 {
+  font-size: clamp(44px, 8vw, 140px);
+  max-width: 12ch;
+}
+.cap {
+  position: relative;
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 24px;
+  align-items: baseline;
+  padding: 30px 0 32px;
+  transition: padding 0.6s var(--ease);
+}
+.cap:hover {
+  padding-left: 18px;
+}
+.cap:hover h3 {
+  color: var(--accent);
+  font-style: italic;
+}
+.rule {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: var(--line);
+  transform-origin: left;
+}
+.capN {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--faint);
+}
+.cap h3 {
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(28px, 3.4vw, 56px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  transition: color 0.4s;
+}
+.cap p {
+  color: var(--dim);
+  font-size: 15px;
+  max-width: 44ch;
+}
+@media (max-width: 860px) {
+  .cap {
+    grid-template-columns: 40px 1fr;
+    gap: 10px 14px;
+  }
+  .cap p {
+    grid-column: 2;
+  }
+}
+
+/* ---------- Sovereign ---------- */
+.sovereign {
+  min-height: 135vh;
+  padding-top: 96px;
+  padding-bottom: clamp(28px, 5vh, 64px);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+  isolation: isolate;
+}
+.sovImg {
+  position: absolute;
+  inset: -8% 0;
+  z-index: -2;
+}
+.sovImg img {
+  object-fit: cover;
+}
+/* A house without a location photograph gets its colour instead. */
+.sovPlain {
+  min-height: 110vh;
+  background:
+    radial-gradient(58% 46% at 50% 52%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 72%),
+    var(--black) !important;
+}
+.sovPlain .sovTop {
+  color: var(--dim);
+}
+.sovPlain .sovFoot > div > p {
+  color: var(--dim);
+}
+.sovShade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(to bottom, var(--black) 0%, rgba(255, 248, 253, 0.45) 22%, rgba(255, 248, 253, 0.25) 50%, rgba(255, 248, 253, 0.85) 82%, var(--black) 100%);
+}
+.sovTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--bone);
+}
+.sovereign h2 {
+  align-self: center;
+  justify-self: center;
+  text-align: center;
+  font-size: clamp(54px, 11.5vw, 210px);
+  font-style: italic;
+  text-shadow: 0 2px 60px rgba(0, 0, 0, 0.55);
+}
+.sovFoot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 40px;
+  align-items: end;
+}
+.sovFoot > div > p {
+  max-width: 46ch;
+  font-size: 17px;
+  color: var(--bone);
+}
+.sovFacts {
+  display: flex;
+  gap: clamp(24px, 4vw, 64px);
+  margin: 0;
+}
+.sovFacts div {
+  display: grid;
+  gap: 8px;
+}
+.sovFacts dd {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(22px, 2.2vw, 34px);
+  line-height: 1;
+}
+@media (max-width: 860px) {
+  .sovereign {
+    min-height: 120vh;
+  }
+  .sovFoot {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .sovFoot > div > p {
+    font-size: 15px;
+  }
+}
+
+/* ---------- Plans ---------- */
+.plans {
+  padding-top: clamp(40px, 6vw, 90px);
+  padding-bottom: clamp(80px, 11vw, 170px);
+}
+.planGrid {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.plan {
+  background: var(--black);
+  padding: clamp(24px, 3vw, 44px);
+  min-height: clamp(300px, 34vw, 460px);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 20px;
+  transition: background 0.6s var(--ease);
+}
+.plan:hover {
+  background: var(--coal);
+}
+.plan h3 {
+  align-self: end;
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(38px, 4.6vw, 76px);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+}
+.plan:last-child h3 {
+  font-style: italic;
+  color: var(--accent);
+}
+.plan p {
+  color: var(--dim);
+  font-size: 15px;
+  max-width: 34ch;
+}
+@media (max-width: 860px) {
+  .planGrid {
+    grid-template-columns: 1fr;
+  }
+  .plan {
+    min-height: 240px;
+  }
+}
+
+/* ---------- Notices ---------- */
+.notices {
+  padding-top: clamp(40px, 6vw, 90px);
+  padding-bottom: clamp(80px, 12vw, 180px);
+}
+.notices ul {
+  margin-top: 36px;
+  display: grid;
+  gap: clamp(44px, 6vw, 90px);
+}
+.notices li {
+  display: grid;
+  gap: 18px;
+}
+.notices li:nth-child(2) {
+  justify-items: end;
+  text-align: right;
+}
+.notice {
+  font-family: var(--display);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(36px, 6.4vw, 112px);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  max-width: 15ch;
+}
+
+/* ---------- Close ---------- */
+.close {
+  min-height: 100svh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 48px;
+  text-align: center;
+  background:
+    radial-gradient(50% 40% at 50% 100%, rgba(201, 119, 61, 0.16), transparent 70%),
+    var(--black);
+}
+.close h2 {
+  font-size: clamp(64px, 15vw, 280px);
+}
+.cta {
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  padding: 18px 34px;
+  border: 1px solid var(--bone);
+  border-radius: 999px;
+  transition: background 0.5s var(--ease), color 0.5s var(--ease), border-color 0.5s var(--ease);
+}
+.cta:hover {
+  background: var(--bone);
+  color: var(--black);
+}
+.ctaDone,
+.ctaDone:hover {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+  cursor: default;
+}
+
+.featureLink {
+  display: inline-block;
+  margin-top: 18px;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.hero {
+  background: radial-gradient(ellipse at 58% 55%, color-mix(in srgb, var(--accent) 39%, white), transparent 72%),
+    linear-gradient(145deg, #f2e6ff, #fff3fa 52%, #e8fbf5);
+}
+.heroTitle { font-size: clamp(45px, 9.4vw, 174px); font-weight: 900; line-height: 0.94; }
+.heroLineB { font-style: normal; }
+.accent, .calloutN, .figureN small, .cap:hover h3, .plan:last-child h3, .ctaDone, .ctaDone:hover, .featureLink {
+  color: color-mix(in srgb, var(--accent) 24%, #512362);
+}
+.callout { border-radius: 20px; padding: 12px; }
+.callout h3 { font-weight: 800; }
+.stillCopy { text-shadow: 0 1px 10px #fff8fd; }
+.stillFrame { height: clamp(420px, 76svh, 980px); }
+.sovereign h2, .close h2, .capsHead h2 { font-weight: 900; }
+.sovereign h2 { text-shadow: 0 1px 16px #fff8fd; }
+.close { background: radial-gradient(ellipse at center, #f6ddff, #fff8fd 68%); }
+.cta { background: #e9d5ff; color: #452158; font-weight: 700; }
+
+.stillFrame { background: color-mix(in srgb, var(--accent) 34%, #fff4fa); }
+.stillImg img { object-fit: contain; object-position: center !important; }
+.stillCopy {
+  width: fit-content;
+  max-width: calc(100% - 2 * var(--gutter));
+  padding: clamp(16px, 3vw, 36px);
+  border-radius: 24px;
+  background: #fff8fdf0;
+}

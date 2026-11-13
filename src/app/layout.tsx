@@ -1,0 +1,50 @@
+import type { Metadata } from "next";
+import { Fredoka, Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import SmoothScroll from "@/components/SmoothScroll";
+import Nav from "@/components/Nav";
+import Veil from "@/components/Veil";
+import Footer from "@/components/Footer";
+
+const display = Fredoka({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: "variable",
+});
+
+const sans = Geist({
+  variable: "--font-sans",
+  subsets: ["latin"],
+});
+
+const mono = Geist_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: {
+    default: "Unicorn Warehouse",
+    template: "%s · Unicorn Warehouse",
+  },
+  description:
+    "Seven subscription companies across breath, sleep, labor, attention, comfort, demand and mortality.",
+};
+
+export default function RootLayout({ children }: LayoutProps<"/">) {
+  return (
+    <html
+      lang="en"
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+    >
+      <body>
+        <SmoothScroll />
+        <div className="grain" aria-hidden />
+        <Veil />
+        <Nav />
+        {children}
+        <Footer />
+      </body>
+    </html>
+  );
+}

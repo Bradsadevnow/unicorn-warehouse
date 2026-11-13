@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Unicorn Warehouse
 
-## Getting Started
+A little more comfort, a little more rest. Explore memberships for the things that make your day.
 
-First, run the development server:
+Unicorn Warehouse is a fictional membership company and a work of satire. Its catalog includes bottled mountain air, a full night of sleep, and simulated shifts you can work to afford either. You can earn Tokens at one company, save them, and spend them at another. Nothing is for sale.
 
-```bash
+![The pastel Everair Alpine Lodge above the clouds](src/assets/everair-alpine-hq.webp)
+
+- **Everair Lodge Collection** · Four seasonal air blends and Summit Reserve, the lodge's signature unscented oxygen.
+- **Token Economy** · Pick up a shift at Goodshift or watch a sponsored message on Brightside. Tokens carry over and never expire.
+- **Token Redemption** · Spend 5 Tokens to skip an ad, 60 for a premium Lodge Collection canister, or 500 for one whole night at Dreamwell.
+
+## Run locally
+
+Use Node.js 22 or newer and npm.
+
+```sh
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [the homepage](http://localhost:3000), [the Lodge Collection](http://localhost:3000/aerovitalux/lodge-collection), or [Token Redemption](http://localhost:3000/redemption).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Run `npm run lint` to check the source. To preview a production build, run `npm run build` followed by `npm start`. Next.js downloads the site's fonts from Google Fonts during compilation.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project layout
 
-## Learn More
+- `src/app` contains the site routes, including Token Economy and Token Redemption.
+- `src/content` contains the product catalog and page copy.
+- `src/assets` and `public` contain the illustrations and other site artwork.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The site uses Next.js and TypeScript, with GSAP for motion and React Three Fiber for the product scenes.

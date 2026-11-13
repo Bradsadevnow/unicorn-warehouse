@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { TransitionLink } from "@/components/Veil";
 import aero from "@/assets/aero-chibi.webp";
+import lodge from "@/assets/everair-alpine-hq.webp";
 import sleep from "@/assets/somnara-chibi.webp";
 import terminal from "@/assets/termiflux-chibi.webp";
 import implant from "@/assets/undieflow-chibi.webp";
@@ -32,6 +33,18 @@ const rewards = [
     image: aero,
     alt: "A miniature pink air canister with a mint valve",
     description: "A sealed allocation of alpine air, presented in brushed titanium.",
+  },
+  {
+    name: "Lodge Collection Premium Blend",
+    company: "Everair",
+    slug: "aerovitalux",
+    tokens: 60,
+    image: lodge,
+    alt: "The pastel Everair Alpine Lodge in the snowy mountains",
+    description: "One premium canister from the Everair Alpine Lodge. Pick a seasonal blend or try the lodge’s signature oxygen.",
+    href: "/aerovitalux/lodge-collection",
+    id: "lodge-collection-premium-blend",
+    linkLabel: "Explore the Lodge Collection",
   },
   {
     name: "A Real Lunch Break",
@@ -96,7 +109,7 @@ export default function RedemptionPage() {
 
       <section id="rewards" className={styles.catalog} aria-label="Rewards catalog">
         {rewards.map((reward) => (
-          <article className={styles.reward} key={reward.name}>
+          <article className={styles.reward} key={reward.name} id={reward.id}>
             <div className={styles.art}>
               <Image src={reward.image} alt={reward.alt} fill sizes="(max-width: 700px) 24vw, 160px" placeholder="blur" />
             </div>
@@ -105,7 +118,9 @@ export default function RedemptionPage() {
               <p className={styles.price}>{reward.tokens} Tokens</p>
               <h2>{reward.name}</h2>
               <p className={styles.description}>{reward.description}</p>
-              <TransitionLink href={`/${reward.slug}`} className={styles.link}>Visit {reward.company} →</TransitionLink>
+              <TransitionLink href={reward.href ?? `/${reward.slug}`} className={styles.link}>
+                {reward.linkLabel ?? `Visit ${reward.company}`} →
+              </TransitionLink>
             </div>
           </article>
         ))}

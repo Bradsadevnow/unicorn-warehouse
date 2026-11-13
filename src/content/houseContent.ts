@@ -104,41 +104,41 @@ const aerovitalux: HouseContent = {
     callouts: [
       {
         title: "A perfect fit",
-        body: "The valve is designed for your Everair mask. Your mask accepts Everair canisters exclusively.",
+        body: "The canister clicks into your Everair mask with a gentle twist.",
       },
       {
         title: "Ready for the next delivery",
-        body: "Each canister deactivates when empty. Your next one arrives on your usual delivery day.",
+        body: "Pick a delivery day that fits your routine and we’ll bring the next canister to your door.",
       },
       {
-        title: "Adaptive Purity Protocol",
-        body: "Purity is quietly reduced once you acclimatise, then restored. Your appreciation resets every fourteen days.",
+        title: "Fresh from the lodge",
+        body: "We seal each canister at the Alpine Lodge to keep that crisp first breath fresh until you open it.",
       },
       {
-        title: "The Isotopic Elite Blend",
-        body: "A core formulated beyond the limits of human saturation. Standard atmosphere will feel different afterwards.",
+        title: "Find your favorite",
+        body: "Choose Focus, Creativity, or Zen, or try a seasonal blend from the Lodge Collection.",
       },
     ],
   },
   still: {
     image: aeroStill,
     alt: "A miniature pink air canister with a mint valve.",
-    line: "Serialised. Metered. Yours, for as long as you remain current.",
-    meta: "Sourced above 6,000 metres · Brushed titanium · Single use",
+    line: "A little mountain morning, whenever you need one.",
+    meta: "Bottled at the Everair Alpine Lodge",
     position: "50% 42%",
   },
   figures: [
-    { value: 45, unit: "%", text: "oxygen concentration, held safe by nano-oxygen chaperones" },
-    { value: 72, unit: "hrs", text: "of continuous focus in trials, without a single seizure" },
-    { value: 14, unit: "days", text: "between purity resets, for as long as you subscribe" },
-    { value: 10, unit: "%", text: "of everything you invent while breathing our air, retained" },
+    { value: 6240, unit: "m", text: "above sea level, where the Alpine Lodge bottles your air" },
+    { value: 3, unit: "scents", text: "to suit your day: Focus, Creativity, and Zen" },
+    { value: 4, unit: "blends", text: "from the Lodge Collection, one for each season" },
+    { value: 60, unit: "Tokens", text: "for a premium Lodge Collection canister at Token Redemption" },
   ],
   capabilities: {
     title: "A little more with your membership.",
     items: [
       ["Everair Sync", "An optional implant helps you settle into Everair. Once you're acclimated, ordinary air may feel a little less satisfying."],
       ["Pay as you breathe", "Your meter tracks each breath. A small share of your future earnings covers the air you use today."],
-      ["A share in good ideas", "Have a bright idea while using Everair? We'll keep a 10% share of what it earns. You can put Tokens toward your next canister."],
+      ["Put your Tokens to use", "Save your Tokens for a seasonal blend from the Lodge Collection or put them toward a fresh canister."],
       ["A scent for your day", "Choose Focus, Creativity, or Zen. A little flutter when you switch scents is part of the experience."],
       ["A little backup", "If a payment doesn't go through, we'll send one backup air orb by drone while you update your details."],
       ["Your canister history", "See every canister you've used in one place. Your history stays on file after your membership ends."],
@@ -148,6 +148,7 @@ const aerovitalux: HouseContent = {
     label: "The Everair Alpine Lodge",
     aside: "6,240 metres above sea level",
     title: "A little closer to the clouds.",
+    link: { href: "/aerovitalux/lodge-collection", label: "Explore the Lodge Collection" },
     body: "Every Everair canister starts high in the mountains. We bottle that crisp, clear alpine air at our lodge and deliver it to your door. Open one whenever you could use a little mountain morning.",
     facts: [
       ["Source", "High alpine air"],

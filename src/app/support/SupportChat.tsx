@@ -7,18 +7,21 @@ import styles from "./support.module.css";
 type Exchange = {
   question: string;
   answer: string;
-  sources: { label: string; href: string; kind: "account" | "policy"; excerpt?: string }[];
+  sources: { label: string; href: string; kind: "account" | "posting" | "policy"; excerpt?: string }[];
   mode: string;
 };
 
 const evidenceGroups = [
   { kind: "account", title: "Account evidence", description: "What your records show happened or is pending." },
+  { kind: "posting", title: "Posting evidence", description: "What the listing offers and requires." },
   { kind: "policy", title: "Policy evidence", description: "What the company is permitted or required to do." },
 ] as const;
 
-export default function SupportChat({ sessionId, transaction, suggestions }: {
+export default function SupportChat({ sessionId, transaction, posting, role, suggestions }: {
   sessionId: string;
   transaction?: { id: string; label: string };
+  posting?: { id: string; label: string };
+  role?: { id: string; label: string };
   suggestions: { id: string; question: string }[];
 }) {
   const [draft, setDraft] = useState("");
@@ -45,7 +48,7 @@ export default function SupportChat({ sessionId, transaction, suggestions }: {
       const response = await fetch("/api/support", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, transaction: transaction?.id, messages: [
+        body: JSON.stringify({ sessionId, transaction: transaction?.id, posting: posting?.id, role: role?.id, messages: [
           ...exchanges.flatMap(({ question, answer }) => [
             ...(question ? [{ role: "user", content: question }] : []),
             { role: "assistant", content: answer },
@@ -77,6 +80,8 @@ export default function SupportChat({ sessionId, transaction, suggestions }: {
   if (!started) {
     return <section className={styles.chat} aria-label="Support chat">
       {transaction && <p>Chatting about {transaction.label}</p>}
+      {posting && <p>Chatting about {posting.label}</p>}
+      {role && <p>Chatting about {role.label}</p>}
       <button className={styles.start} type="button" onClick={() => { setStarted(true); ask(""); }}>✨ Start chat ✨</button>
     </section>;
   }
@@ -111,7 +116,7 @@ export default function SupportChat({ sessionId, transaction, suggestions }: {
     </section>
     <aside id="support-trace" className={styles.trace} hidden={!showTrace} aria-label="Answer trace">
       <h2>Answer trace</h2>
-      <p>The account records and policy clauses cited in this chat.</p>
+      <p>The account records, postings, and policy clauses cited in this chat.</p>
       {exchanges.map(({ question, sources, mode }, index) => (
         <details key={index} open={index === exchanges.length - 1}>
           <summary>{question || "Opening message"}</summary>

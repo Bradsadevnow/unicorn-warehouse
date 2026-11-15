@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
+import { getPosting, postingPath } from "@/content/goodshiftPostings";
 import { getTokenBalances } from "@/content/memberAccount";
 import { getMemberReportStatus } from "@/server/companyWorkflows";
 import { getMemberSession } from "@/server/memberSession";
@@ -151,13 +152,15 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
       {tab === "work" && <section className={styles.panel} id="work">
         <h2>💼 Assignment history</h2>
         <ul className={styles.cards}>
-          {[...account.assignments].reverse().map(({ id, ledgerEntryId, status }) => {
+          {[...account.assignments].reverse().map(({ id, ledgerEntryId, status, postingId }) => {
             const entry = account.ledger.find((item) => item.id === ledgerEntryId);
             if (!entry) return null;
+            const posting = postingId ? getPosting(postingId) : undefined;
             return <li key={id} id={id}>
               <strong>{entry.label}</strong>
               <span>{id} · {dateFormat.format(Date.parse(entry.date))} · {status}</span>
               <Link href={`/account?tab=wallet&transaction=${encodeURIComponent(entry.id)}#transaction`}>{entry.amount} Tokens · {entry.status} →</Link>
+              {posting && <Link href={postingPath(posting)}>View posting {posting.id} →</Link>}
             </li>;
           })}
         </ul>

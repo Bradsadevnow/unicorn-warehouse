@@ -24,6 +24,7 @@ export default function Footer() {
           <li><TransitionLink href="/product-details">Product Details</TransitionLink></li>
           <li><TransitionLink href="/product-details#harmony">Portfolio Harmony™</TransitionLink></li>
           <li><TransitionLink href="/governance">Corporate Governance</TransitionLink></li>
+          <li><TransitionLink href="/careers">Careers</TransitionLink></li>
         </ul>
       </div>
       <div className={styles.footBase}>

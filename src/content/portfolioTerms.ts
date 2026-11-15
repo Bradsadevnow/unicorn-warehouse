@@ -100,6 +100,19 @@ export const terms = [
     "paragraphs": [
       "If any provision of these Terms is determined to be unenforceable, the remaining provisions shall continue in effect. The unenforceability of a provision does not establish that the member misunderstood it. Members acknowledge that an inability to understand these Terms does not, by itself, constitute a defect in their presentation."
     ]
+  },
+  {
+    "id": "careers",
+    "title": "Careers · The herd",
+    "paragraphs": [
+      "Horn. A horn is issued upon successful completion of probation. The horn remains the property of Unicorn Warehouse at all times, including while worn. A unicorn who leaves the herd returns the horn at separation.",
+      "Probation. Probation lasts 90 days. Probation restarts when a unicorn changes supervisor, team, or shift pattern. Time spent on probation counts toward tenure once probation is complete.",
+      "Eligibility. Applications for Unicorn Trainee require 40 accepted assignments at Goodshift or HelpingHand. Only assignments from postings designated herd-eligible are counted. Assignments awaiting client acceptance are not counted. Opportunity Hours are not counted. A posting’s designation may change while an assignment is awaiting acceptance.",
+      "Magic. Sparkle, glitter, rainbows, and other magic generated during working hours are the intellectual property of Unicorn Warehouse. Magic generated outside working hours that resembles magic generated during working hours is presumed to have been generated during working hours.",
+      "Shine. Shine availability is subject to departmental approval. Approved shine is scheduled by the department.",
+      "Family. Unicorn Warehouse describes its workforce as a family. Family membership confers no inheritance rights, no right to remain, and no right to be informed of changes to the family.",
+      "Employee Happiness. Standard happiness is included during working hours. Premium Employee Happiness is available through payroll deduction. Deductions continue through the end of the plan year, including after separation."
+    ]
   }
 ];
 
@@ -111,7 +124,7 @@ export const productDetails = [
       "First Breath covers one inhalation at a participating sample station. A second inhalation is metered. Sharing a mask does not divide a breath between accounts. The inhalation belongs to the account to which the canister was paired at the time of use.",
       "Everair Sync. While Sync is active, ambient air is unavailable as a substitute for an Everair allocation, including when the mask is removed or AirLink is disconnected. A verified subscription cancellation does not release Sync. If a payment fails, one reserve orb may be dispatched to the delivery address on file. Delivery marks the reserve benefit as used. An unopened orb may not be carried forward as an account credit.",
       "Pay as You Breathe settles against future earnings. Separately, Everair retains a 10% interest in inventions developed while using metered air. A recording made after removing the mask does not establish when the idea was formed. The canister ledger determines the relevant breathing interval.",
-      "An account holder may redeem A Thought of Your Own to release Everair’s interest in one identified idea. Revisions share the original release only if the reviewer determines they contain no new idea.",
+      "An account holder may redeem A Thought of Your Own to release Everair’s interest in one identified idea. Revisions share the original release only if the reviewer determines they contain no new idea. If a released idea is later tied to a future idea deemed company property, the release is revoked and the account holder’s right to full ownership of the released idea ends. The redemption is not refunded.",
       "Air Quality Assurance. Everair guarantees that every metered breath meets Portfolio standards at the point of dispensing. For Sync members, eligibility to resume unmetered breathing is determined separately under Sync Continuity.",
       "Complimentary Exhalation. Exhalation is currently included at no additional charge. This benefit is promotional and may be modified with 30 days' notice.",
       "Family Breathing Plan. Household members may pool their inhalation allowances. In the event of a shortage, breaths are allocated according to each member's projected economic contribution.",

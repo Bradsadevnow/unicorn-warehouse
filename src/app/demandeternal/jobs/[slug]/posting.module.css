@@ -1,0 +1,33 @@
+.detail { padding: clamp(14px, 2vw, 22px); border: 1px solid var(--line); border-radius: 20px; background: #fffaff; }
+.header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; padding: clamp(16px, 2.4vw, 26px); background: #f2e9ff; border-radius: 16px; }
+.eyebrow { font: 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+.header h2 { margin-top: 8px; font: 800 clamp(30px, 4vw, 50px)/1.04 var(--display); }
+.client { margin-top: 8px; color: var(--dim); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.chips li { padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fffaff; font-size: 13px; font-weight: 700; }
+.chips li[data-status] { background: #e0f5ea; }
+.chips li[data-status="Filling fast"] { background: #fff1c9; }
+.chips li[data-status="Reposted"] { background: #fce4f1; }
+.apply { display: grid; gap: 8px; justify-items: start; max-width: 260px; }
+.apply button { padding: 13px 28px; border-radius: 999px; background: var(--ice); color: #fff; font-weight: 800; }
+.apply button:disabled { background: #e0f5ea; color: var(--bone); cursor: default; }
+.apply p { font-size: 13px; color: var(--dim); }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(230px, 290px); gap: clamp(18px, 3vw, 36px); align-items: start; margin-top: 24px; padding-inline: clamp(2px, 1vw, 10px); }
+.body { display: grid; gap: 26px; }
+.body h3 { font: 800 clamp(20px, 2.4vw, 26px)/1.1 var(--display); margin-bottom: 10px; }
+.body ul { display: grid; gap: 8px; padding-left: 20px; list-style: disc; }
+.body li::marker { color: var(--ice); }
+.body section { scroll-margin-top: 90px; }
+.fine { margin-top: 12px; font-size: 13px; color: var(--dim); }
+.fine a { text-decoration: underline; text-underline-offset: 3px; }
+.side { display: grid; gap: 12px; }
+.card { padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+.card h3 { font: 800 17px/1.2 var(--display); margin-bottom: 10px; }
+.card dl { display: grid; gap: 8px; margin: 0; }
+.card dl div { display: flex; justify-content: space-between; gap: 14px; font-size: 14px; }
+.card dt { color: var(--dim); white-space: nowrap; }
+.card dd { margin: 0; font-weight: 700; text-align: right; }
+.support { color: var(--ice); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 1120px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+}

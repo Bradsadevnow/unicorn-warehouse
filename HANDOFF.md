@@ -13,6 +13,24 @@ The user approved the Token Economy redesign and its original art. No next featu
 
 The production build passed after the art was added. The preview was restarted and all three image URLs returned HTTP 200. The signed-in wallet rendered in a smoke test before the art change. Browser layout review and publishing are unverified.
 
+## Goodshift postings (in progress)
+
+Goodshift is becoming a real job board. Each posting is one record in `src/content/goodshiftPostings.ts` (16 so far, seeded from the old catalog), with its own page at `/demandeternal/jobs/[slug]`. The jobs routes share a two-pane layout: a persistent listings panel on the left and the selected posting on the right. The board and the employer marketplace derive their listings from those records.
+
+- Member assignments link to a posting through `postingId` in `src/content/memberAccount.ts`. Poppy's two weekly reports point at `GS-P-2001`.
+- The support unicorn receives postings as `[J:<posting id>]` references: the posting the chat was opened from (`/support?posting=<slug>`) plus any posting tied to the member's assignments. The answer trace shows them as Posting evidence.
+- Checked in the dev preview signed in as Poppy with Gemma. The production build has not been run with these changes, and they are uncommitted.
+
+## Careers (in progress)
+
+`/careers` is the "Become a Unicorn" recruitment page for employment at Unicorn Warehouse itself. Role records live in `src/content/careers.ts` (five rungs from Unicorn Trainee to Executive Unicorn, plus the poster lines and executive welcome messages), and each role has a page at `/careers/[slug]`.
+
+- Applying for Unicorn Trainee requires 40 accepted Goodshift or HelpingHand assignments. The careers page reads the signed-in member's assignments and shows their progress. Pending assignments are not counted.
+- Horn, probation, eligibility, magic, family, and Employee Happiness rules are in a new `careers` section at the end of the Terms. Keep new Terms sections at the end, because support cites clauses by position.
+- The support unicorn receives a role as a `[C:<role id>]` reference when the chat opens from `/support?role=<slug>`.
+- The posters are type on pastel cards and the hero reuses the mascot. Original art for the hero and posters is still to come.
+- Checked in the dev preview as Poppy. Support replies took 90 to 115 seconds with Gemma once the Careers terms and role were added to the prompt.
+
 ## Project decisions to carry forward
 
 - **Voice and art.** Unicorn Warehouse sells everything with adorable unicorns, cheerful copy, and a straight face. Let the nastiest jokes surface in the Terms, Product Details, employer and buyer experiences, and support answers grounded in policy. Ordinary purchases, refunds, and payouts should behave like real account history.

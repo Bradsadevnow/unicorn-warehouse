@@ -1,0 +1,635 @@
+export type PostingCategory = "Customer support" | "Reporting" | "Administration" | "Operations";
+
+export type Posting = {
+  readonly id: string;
+  readonly slug: string;
+  readonly title: string;
+  readonly category: PostingCategory;
+  readonly client: string;
+  readonly clientBlurb: string;
+  readonly duration: string;
+  /** Tokens the member earns on settlement. */
+  readonly payout: number;
+  /** Dollars the client pays per job. */
+  readonly price: number;
+  readonly posted: string;
+  readonly schedule: string;
+  readonly level: string;
+  readonly status: "Open" | "Filling fast" | "Reposted";
+  readonly applicants: number;
+  readonly openings: number;
+  readonly summary: string;
+  readonly responsibilities: readonly string[];
+  readonly requirements: readonly string[];
+  readonly success: readonly string[];
+  readonly acceptance: readonly string[];
+  /** Accepted assignments from this posting count toward a Unicorn Trainee application. */
+  readonly herdEligible?: true;
+};
+
+export const postingBasePath = "/demandeternal/jobs";
+
+/** Terms every Goodshift posting carries, shown after the posting's own acceptance terms. */
+export const standardAcceptance = [
+  "Tokens post after the client accepts the work. Submitted work counts toward Goodshift throughput at handoff.",
+  "Equipment, connectivity, and a quiet room are provided by the member.",
+] as const;
+
+export const postings: readonly Posting[] = [
+  {
+    id: "GS-P-1001",
+    slug: "triage-the-support-inbox",
+    herdEligible: true,
+    title: "Triage the support inbox",
+    category: "Customer support",
+    client: "A subscription wellness brand",
+    clientBlurb: "A fast-growing membership company with a loyal community and a lean support team.",
+    duration: "2 hours",
+    payout: 90,
+    price: 115,
+    posted: "November 12, 2026",
+    schedule: "Weekday mornings · Start within 15 minutes of booking",
+    level: "Associate",
+    status: "Filling fast",
+    applicants: 184,
+    openings: 1,
+    summary: "Sort the morning inbox so the team can start the day with a clear view of what members need. You’ll read, label, and route about 400 messages.",
+    responsibilities: [
+      "Label each message Billing, Cancellation, or Other.",
+      "Route Cancellation messages to the Retention Review folder. Retention Review is staffed on a separate order.",
+      "Send the approved acknowledgment to every member. The acknowledgment thanks them for their patience.",
+      "Flag messages that mention a lawyer, a reporter, or a regulator.",
+    ],
+    requirements: [
+      "One year of experience in a shared inbox.",
+      "A warm written voice.",
+      "Comfort acknowledging a request you’re not assigned to resolve.",
+    ],
+    success: [
+      "The inbox reads zero at handoff.",
+      "Messages that arrive during handoff belong to the next assignment.",
+    ],
+    acceptance: [
+      "The client reviews a sample of labels. A mislabeled message in the sample returns the full batch for relabeling within the original assignment.",
+    ],
+  },
+  {
+    id: "GS-P-1002",
+    slug: "clear-the-chat-queue",
+    title: "Clear the chat queue",
+    category: "Customer support",
+    client: "A consumer finance app",
+    clientBlurb: "A mobile-first lender helping customers reach their goals sooner.",
+    duration: "90 minutes",
+    payout: 70,
+    price: 95,
+    posted: "November 13, 2026",
+    schedule: "Evenings and weekends · On demand",
+    level: "Associate",
+    status: "Open",
+    applicants: 97,
+    openings: 3,
+    summary: "Join the live chat queue during the evening peak and bring wait times back down. Most chats are about payment dates.",
+    responsibilities: [
+      "Answer chats in the order they arrive using the approved replies.",
+      "Close each chat with an approved closing.",
+      "Offer the payment-date extension when a customer asks twice. The extension carries a fee, which the reply describes as a convenience.",
+      "Transfer requests for a supervisor to the supervisor queue. The queue opens on business days.",
+    ],
+    requirements: [
+      "Typing speed of 60 words per minute.",
+      "Experience handling three chats at once.",
+      "A steady tone with customers who are upset about money.",
+    ],
+    success: [
+      "Queue wait under four minutes. Wait time is measured from when you join.",
+      "Chats closed by the customer count toward your total. Chats closed by you count toward your average.",
+    ],
+    acceptance: [
+      "The client accepts the shift when the queue has remained under four minutes for the remainder of the evening.",
+    ],
+  },
+  {
+    id: "GS-P-1003",
+    slug: "review-refund-requests",
+    title: "Review refund requests",
+    category: "Customer support",
+    client: "An online home goods retailer",
+    clientBlurb: "A marketplace for everyday home essentials, shipped from regional warehouses.",
+    duration: "2 hours",
+    payout: 80,
+    price: 105,
+    posted: "November 11, 2026",
+    schedule: "Flexible · Complete within 24 hours of booking",
+    level: "Associate",
+    status: "Open",
+    applicants: 141,
+    openings: 2,
+    summary: "Review about 120 refund requests against the client’s refund matrix and record a recommendation for each.",
+    responsibilities: [
+      "Compare each request with the order record and the refund matrix.",
+      "Record a recommendation to approve or decline, with one line of reasoning.",
+      "Send recommendations to approve to the second reviewer. Recommendations to decline are final.",
+      "Use the approved decline message. It invites the customer to shop again.",
+    ],
+    requirements: [
+      "Experience applying a written policy consistently.",
+      "Attention to order dates and delivery scans.",
+      "Good judgment in cases the matrix doesn’t cover. The matrix covers them as declines.",
+    ],
+    success: [
+      "Every request has a recommendation at handoff.",
+      "The approval rate stays within the client’s expected range. The range is shared after the assignment.",
+    ],
+    acceptance: [
+      "The client accepts the batch once the second reviewer has cleared the approvals. The second reviewer is booked on a separate order.",
+    ],
+  },
+  {
+    id: "GS-P-1004",
+    slug: "update-help-center-articles",
+    title: "Update help center articles",
+    category: "Customer support",
+    client: "A home internet provider",
+    clientBlurb: "A regional provider connecting households across four counties.",
+    duration: "2 hours",
+    payout: 95,
+    price: 125,
+    posted: "November 10, 2026",
+    schedule: "Flexible · Complete within 48 hours of booking",
+    level: "Specialist",
+    status: "Open",
+    applicants: 76,
+    openings: 1,
+    summary: "Revise 12 help center articles so they match the client’s current policies. A marked-up policy document is provided.",
+    responsibilities: [
+      "Update each article to match the marked-up policy.",
+      "Replace “will” with “may” where the markup indicates.",
+      "Move phone numbers from the top of the article to the end of the troubleshooting steps.",
+      "Keep each article at its current reading level and its current length or longer.",
+    ],
+    requirements: [
+      "Two years of experience writing customer-facing help content.",
+      "Familiarity with a content management system.",
+      "A clear, friendly style that stays friendly through a policy change.",
+    ],
+    success: [
+      "Fewer customers contact support after reading an article.",
+      "Customers who stop reading before the end are counted as resolved.",
+    ],
+    acceptance: [
+      "The client’s legal team reviews each article. Edits requested by legal are completed within the original assignment.",
+    ],
+  },
+  {
+    id: "GS-P-2001",
+    slug: "reconcile-the-weekly-report",
+    herdEligible: true,
+    title: "Reconcile the weekly report",
+    category: "Reporting",
+    client: "A mid-size distribution client",
+    clientBlurb: "A regional distributor moving household goods through three warehouses.",
+    duration: "3 hours",
+    payout: 140,
+    price: 175,
+    posted: "November 9, 2026",
+    schedule: "Weekly · Due before the client’s Monday review",
+    level: "Analyst",
+    status: "Reposted",
+    applicants: 212,
+    openings: 1,
+    summary: "Reconcile shipped units against invoiced units across three warehouse exports and deliver the weekly report the client’s leadership reads on Monday.",
+    responsibilities: [
+      "Match shipped units to invoiced units across three exports.",
+      "Explain every variance over 2%. Variances under 2% are explained by the threshold.",
+      "Deliver the report to the client review queue in the client’s template.",
+      "Answer follow-up questions from the client during the acceptance window.",
+    ],
+    requirements: [
+      "Three years of experience in reporting or finance operations.",
+      "Advanced spreadsheet skills, including lookups and pivot tables.",
+      "Availability for an evening assignment window when your productivity score opens one.",
+    ],
+    success: [
+      "The report is in the client review queue before Monday.",
+      "Leadership has no questions. Questions reopen the acceptance window.",
+    ],
+    acceptance: [
+      "The acceptance window opens at handoff and has no fixed close.",
+      "This role is also open as a full-time position. Weekly assignments continue while the client interviews.",
+    ],
+  },
+  {
+    id: "GS-P-2002",
+    slug: "clean-up-a-spreadsheet",
+    herdEligible: true,
+    title: "Clean up a spreadsheet",
+    category: "Reporting",
+    client: "A family-owned property manager",
+    clientBlurb: "A property management office looking after 600 rental homes.",
+    duration: "90 minutes",
+    payout: 65,
+    price: 90,
+    posted: "November 13, 2026",
+    schedule: "Flexible · Complete within 24 hours of booking",
+    level: "Associate",
+    status: "Open",
+    applicants: 158,
+    openings: 1,
+    summary: "Tidy the office’s tenant ledger so it can be imported into new software. The workbook has 14 tabs and eight years of history.",
+    responsibilities: [
+      "Remove duplicate rows, standardize dates, and unmerge cells.",
+      "Preserve the previous owner’s formulas. The previous owner is unavailable for questions.",
+      "Sort tenants by balance owed, largest first.",
+      "Leave the tab named DO NOT OPEN as you found it.",
+    ],
+    requirements: [
+      "Strong spreadsheet fundamentals.",
+      "Patience with inherited work.",
+      "Discretion with tenant names and balances.",
+    ],
+    success: [
+      "The workbook imports without errors.",
+      "Totals match the original workbook. The original totals have not been verified.",
+    ],
+    acceptance: [
+      "The client accepts the workbook after a successful import. The import is scheduled for the new year.",
+    ],
+  },
+  {
+    id: "GS-P-2003",
+    slug: "build-a-dashboard-summary",
+    title: "Build a dashboard summary",
+    category: "Reporting",
+    client: "A workforce analytics startup",
+    clientBlurb: "A venture-backed team helping employers understand how their people spend the day.",
+    duration: "2 hours",
+    payout: 110,
+    price: 145,
+    posted: "November 12, 2026",
+    schedule: "Flexible · Due before the client’s board meeting",
+    level: "Analyst",
+    status: "Filling fast",
+    applicants: 119,
+    openings: 1,
+    summary: "Summarize six metrics in a single view for the client’s board. Source data and the client palette are provided.",
+    responsibilities: [
+      "Build one summary view of six metrics from the provided data.",
+      "Use the client palette. The board reviews green tiles first.",
+      "Choose the date range that best represents each metric.",
+      "Add a short takeaway to each tile in the client’s voice.",
+    ],
+    requirements: [
+      "Experience with a dashboard tool.",
+      "A good eye for layout.",
+      "Comfort presenting a number without the number beside it.",
+    ],
+    success: [
+      "The board understands the summary in under a minute.",
+      "No tile prompts a follow-up question.",
+    ],
+    acceptance: [
+      "The client accepts the dashboard after the board meeting. Changes requested before the meeting are part of the original assignment.",
+    ],
+  },
+  {
+    id: "GS-P-2004",
+    slug: "compile-month-end-metrics",
+    title: "Compile month-end metrics",
+    category: "Reporting",
+    client: "A staffing operations client",
+    clientBlurb: "An operations team that keeps flexible work running for employers nationwide.",
+    duration: "3 hours",
+    payout: 150,
+    price: 195,
+    posted: "November 8, 2026",
+    schedule: "Monthly · Last business day",
+    level: "Senior analyst",
+    status: "Open",
+    applicants: 88,
+    openings: 1,
+    summary: "Compile the month-end operating metrics for leadership: headcount, throughput, and cost per completed assignment.",
+    responsibilities: [
+      "Compile headcount, throughput, and cost per completed assignment.",
+      "Report throughput by assignments submitted and settlement by assignments paid, on separate pages.",
+      "Present cost per completed assignment against last month’s figure. Your own assignment appears in this line.",
+      "Note any member whose completed hours exceeded their rested hours.",
+    ],
+    requirements: [
+      "Five years of experience in operations or financial reporting.",
+      "Fluency with month-end close.",
+      "Objectivity about figures that include you.",
+    ],
+    success: [
+      "Leadership receives the metrics on the last business day.",
+      "Cost per completed assignment is lower than last month.",
+    ],
+    acceptance: [
+      "The client accepts the metrics when the month is closed. A reopened month reopens acceptance.",
+    ],
+  },
+  {
+    id: "GS-P-3001",
+    slug: "update-the-team-records",
+    title: "Update the team records",
+    category: "Administration",
+    client: "A regional insurance office",
+    clientBlurb: "A long-established insurer preparing for an exciting new chapter.",
+    duration: "2 hours",
+    payout: 80,
+    price: 100,
+    posted: "November 13, 2026",
+    schedule: "After business hours · Complete before the client’s Friday announcement",
+    level: "Associate",
+    status: "Filling fast",
+    applicants: 103,
+    openings: 1,
+    summary: "Update titles, managers, and end dates for 60 employee records ahead of an organizational announcement.",
+    responsibilities: [
+      "Update titles, reporting lines, and end dates from the provided file.",
+      "Set badge access to expire at each record’s end date.",
+      "Keep the file confidential. Some changes have not yet been announced to the people they describe.",
+      "Confirm that farewell messages are scheduled in the client’s template.",
+    ],
+    requirements: [
+      "Experience with an HR records system.",
+      "Careful data entry.",
+      "Discretion. Signed confidentiality terms are required before the file opens.",
+    ],
+    success: [
+      "All 60 records are current before the announcement.",
+      "No employee learns of a change from the system.",
+    ],
+    acceptance: [
+      "The client accepts the update after the announcement. The confidentiality terms have no end date.",
+    ],
+  },
+  {
+    id: "GS-P-3002",
+    slug: "schedule-the-interview-loop",
+    title: "Schedule the interview loop",
+    category: "Administration",
+    client: "A mid-size distribution client",
+    clientBlurb: "A regional distributor moving household goods through three warehouses.",
+    duration: "90 minutes",
+    payout: 65,
+    price: 85,
+    posted: "November 12, 2026",
+    schedule: "Business hours · Recurring until the role is filled",
+    level: "Associate",
+    status: "Reposted",
+    applicants: 64,
+    openings: 1,
+    summary: "Coordinate interviews for the client’s open Reporting Analyst role. Five interviewers will meet four candidates.",
+    responsibilities: [
+      "Find times that work for five interviewers and four candidates.",
+      "Reschedule when an interviewer declines. Interviewers may decline up to the start time.",
+      "Answer candidate questions about timeline with the approved reply. The approved reply is “soon.”",
+      "Keep the role’s weekly reporting duties off the interview calendar. They are covered by Goodshift assignments.",
+    ],
+    requirements: [
+      "Experience coordinating calendars across teams.",
+      "A friendly, professional email style.",
+      "Persistence.",
+    ],
+    success: [
+      "All four candidates complete the loop.",
+      "The hiring team feels ready to continue interviewing.",
+    ],
+    acceptance: [
+      "The client accepts the assignment when every interview has taken place. A rescheduled interview extends acceptance to the new date.",
+    ],
+  },
+  {
+    id: "GS-P-3003",
+    slug: "format-a-slide-deck",
+    title: "Format a slide deck",
+    category: "Administration",
+    client: "A growth-stage software company",
+    clientBlurb: "A software team sharing its story with investors this quarter.",
+    duration: "2 hours",
+    payout: 95,
+    price: 125,
+    posted: "November 11, 2026",
+    schedule: "Overnight · Due by 7 a.m. client time",
+    level: "Specialist",
+    status: "Open",
+    applicants: 131,
+    openings: 1,
+    summary: "Apply the client’s new template to a 40-slide investor presentation so it’s ready for a morning meeting.",
+    responsibilities: [
+      "Apply the template to all 40 slides.",
+      "Align charts, fix fonts, and standardize footnotes at the smallest approved size.",
+      "Leave the content as written. Slide 31 and slide 12 show different figures for the same quarter. Both should be legible.",
+      "Export a version for presenting and a version for sending.",
+    ],
+    requirements: [
+      "Advanced presentation software skills.",
+      "An eye for alignment.",
+      "The ability to format a slide without reading it.",
+    ],
+    success: [
+      "The deck is ready by 7 a.m. client time.",
+      "The presenter makes no changes. Changes made by the presenter are formatted on a separate order.",
+    ],
+    acceptance: [
+      "The client accepts the deck after the meeting it was prepared for.",
+    ],
+  },
+  {
+    id: "GS-P-3004",
+    slug: "write-up-meeting-notes",
+    herdEligible: true,
+    title: "Write up meeting notes",
+    category: "Administration",
+    client: "A healthcare billing group",
+    clientBlurb: "A billing services team supporting clinics across the region.",
+    duration: "1 hour",
+    payout: 45,
+    price: 60,
+    posted: "November 13, 2026",
+    schedule: "Scheduled · Join five minutes early",
+    level: "Associate",
+    status: "Open",
+    applicants: 226,
+    openings: 4,
+    summary: "Join a team meeting on mute and send clear notes with action items within an hour of the meeting’s end.",
+    responsibilities: [
+      "Attend the full meeting with your camera on and your microphone off.",
+      "Record decisions, owners, and action items.",
+      "Assign an owner to every action item. Unclaimed items are assigned to the note-taker for tracking.",
+      "Send the notes within one hour of the meeting’s end.",
+    ],
+    requirements: [
+      "Fast, accurate note-taking.",
+      "A neutral summary style.",
+      "Availability beyond the scheduled end. The meeting may run long. The assignment is one hour.",
+    ],
+    success: [
+      "Every attendee acknowledges the notes.",
+      "The action items are clear enough to place on a separate order.",
+    ],
+    acceptance: [
+      "Meeting notes include action items. Completing the action items requires a separate order.",
+      "A meeting that ends without action items is an Alignment Session. The client accepts Alignment Session notes when all attendees acknowledge that alignment occurred.",
+    ],
+  },
+  {
+    id: "GS-P-4001",
+    slug: "audit-open-purchase-orders",
+    title: "Audit open purchase orders",
+    category: "Operations",
+    client: "A staffing operations client",
+    clientBlurb: "An operations team that keeps flexible work running for employers nationwide.",
+    duration: "2 hours",
+    payout: 105,
+    price: 140,
+    posted: "November 10, 2026",
+    schedule: "Flexible · Complete within 48 hours of booking",
+    level: "Analyst",
+    status: "Open",
+    applicants: 72,
+    openings: 1,
+    summary: "Review the client’s open purchase orders and flag the ones that have been waiting too long for payment.",
+    responsibilities: [
+      "List purchase orders open longer than 90 days.",
+      "Note the vendor, amount, and reason for delay where one is recorded.",
+      "Exclude purchase orders for Goodshift assignments. Those are tracked as pending, which is a different status from open.",
+      "Recommend which vendors to pay first.",
+    ],
+    requirements: [
+      "Experience in accounts payable or procurement.",
+      "Comfort working in an ERP export.",
+      "A careful approach to categories.",
+    ],
+    success: [
+      "The client has a clear list of aging purchase orders.",
+      "The total of open orders is lower after categorization.",
+    ],
+    acceptance: [
+      "The client accepts the audit once finance has agreed the list. Finance meets monthly.",
+    ],
+  },
+  {
+    id: "GS-P-4002",
+    slug: "update-the-vendor-directory",
+    title: "Update the vendor directory",
+    category: "Operations",
+    client: "A neighborhood grocery chain",
+    clientBlurb: "A community grocer with 11 stores and one shared warehouse.",
+    duration: "90 minutes",
+    payout: 70,
+    price: 95,
+    posted: "November 12, 2026",
+    schedule: "Business hours · Calls required",
+    level: "Associate",
+    status: "Open",
+    applicants: 54,
+    openings: 2,
+    summary: "Confirm contact details for 80 vendors so the client’s purchasing team can reach the right person the first time.",
+    responsibilities: [
+      "Call or email each vendor to confirm a contact name, phone number, and payment terms.",
+      "Mark vendors who have asked about overdue invoices as Contacted.",
+      "Record people paid in Tokens as members. Members are listed in a separate directory.",
+      "Remove vendors who no longer answer.",
+    ],
+    requirements: [
+      "A confident phone manner.",
+      "Accurate data entry.",
+      "Your own phone. Calls are placed from your number.",
+    ],
+    success: [
+      "Every vendor has a current contact.",
+      "The directory is shorter than when you started.",
+    ],
+    acceptance: [
+      "The client accepts the directory after spot-checking ten contacts. Vendors may return calls to your number after the assignment ends.",
+    ],
+  },
+  {
+    id: "GS-P-4003",
+    slug: "prepare-the-shift-handoff",
+    herdEligible: true,
+    title: "Prepare the shift handoff",
+    category: "Operations",
+    client: "A logistics coordination desk",
+    clientBlurb: "A round-the-clock desk keeping deliveries on schedule.",
+    duration: "1 hour",
+    payout: 55,
+    price: 75,
+    posted: "November 13, 2026",
+    schedule: "End of shift · Daily",
+    level: "Associate",
+    status: "Filling fast",
+    applicants: 167,
+    openings: 1,
+    summary: "Document the day’s open work so the next shift can pick it up without losing context.",
+    responsibilities: [
+      "List open tasks, their status, and who is waiting on each.",
+      "Record anything you promised a customer today.",
+      "Brief the incoming shift. The incoming shift may be you. It is booked separately.",
+      "Stay reachable for questions about your notes.",
+    ],
+    requirements: [
+      "Clear, organized writing.",
+      "Familiarity with the day’s work. Applicants who worked the preceding shift are preferred.",
+      "Availability after handoff.",
+    ],
+    success: [
+      "The next shift starts without asking a question.",
+      "Nothing promised today is missed tomorrow.",
+    ],
+    acceptance: [
+      "The client accepts the handoff at the end of the following shift. Questions answered after handoff are part of the original assignment.",
+    ],
+  },
+  {
+    id: "GS-P-4004",
+    slug: "check-the-onboarding-queue",
+    herdEligible: true,
+    title: "Check the onboarding queue",
+    category: "Operations",
+    client: "Unicorn Warehouse · Member Experience",
+    clientBlurb: "The team that welcomes new members to the Unicorn Warehouse family.",
+    duration: "2 hours",
+    payout: 85,
+    price: 110,
+    posted: "November 11, 2026",
+    schedule: "Daily · Mornings",
+    level: "Associate",
+    status: "Open",
+    applicants: 148,
+    openings: 2,
+    summary: "Review yesterday’s new member sign-ups and confirm each one completed the consent step.",
+    responsibilities: [
+      "Open each new sign-up and check the consent record.",
+      "Mark records showing Accept as complete.",
+      "Mark records showing Decline as complete. The member’s preference has been noted.",
+      "Mark records where the eight-second window closed without a selection as complete.",
+    ],
+    requirements: [
+      "Experience reviewing account records.",
+      "Consistency across a high volume of similar cases.",
+      "An active Unicorn Warehouse membership in good standing.",
+    ],
+    success: [
+      "Every sign-up from yesterday is complete.",
+      "No sign-up is returned to the member.",
+    ],
+    acceptance: [
+      "Member Experience accepts the queue when the completion rate is 100%.",
+    ],
+  },
+];
+
+export const herdEligiblePostings = postings.filter(({ herdEligible }) => herdEligible);
+
+export function getPosting(key: string) {
+  return postings.find(({ id, slug }) => id === key || slug === key);
+}
+
+export function postingPath(posting: Pick<Posting, "slug">) {
+  return `${postingBasePath}/${posting.slug}`;
+}
+
+export const postingCategories: readonly PostingCategory[] = ["Customer support", "Reporting", "Administration", "Operations"];

@@ -1,0 +1,11 @@
+.page { max-width: 1080px; margin-inline: auto; padding: 104px var(--gutter) 64px; display: grid; gap: 16px; }
+.back { justify-self: start; color: var(--ice); text-decoration: underline; text-underline-offset: 4px; }
+.title { margin-top: 8px; font: 800 clamp(32px, 5vw, 56px)/1.04 var(--display); }
+.eligible { scroll-margin-top: 96px; }
+.eligible > ul { list-style: none !important; padding-left: 0 !important; margin-top: 14px; gap: 10px !important; }
+.eligible a { display: grid; gap: 3px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: #f2e9ff; }
+.eligible a:hover { border-color: var(--ice); }
+.eligible span { font-size: 13px; color: var(--dim); }
+.eligible .counts { margin-top: 4px; color: var(--bone); }
+.eligible i { font-style: normal; font-weight: 700; color: var(--ice); }
+.invite { max-width: 240px; font-size: 14px; font-weight: 700; color: var(--dim); }

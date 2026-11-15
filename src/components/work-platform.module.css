@@ -19,6 +19,8 @@
 .preview li div { display: grid; }
 .preview li span { font-size: 13px; }
 .preview li small { color: var(--ice); font-weight: 700; }
+.posting { text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; }
+.posting:hover { color: var(--ice); text-decoration-color: currentColor; }
 .jobCatalog { margin-top: 32px; }
 .jobCategories { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 24px; }
 .jobCategories li { flex-wrap: nowrap; align-items: baseline; }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { postingCategories, postingPath, postings } from "@/content/goodshiftPostings";
 import Marketplace from "./Marketplace";
 import s from "./work-platform.module.css";
 
@@ -74,44 +75,13 @@ const brightsideCatalog = [
   },
 ] as const;
 
-const goodshiftCatalog = [
-  {
-    category: "Customer support",
-    jobs: [
-      ["Triage the support inbox",115,"2 hours",90],
-      ["Clear the chat queue",95,"90 minutes",70],
-      ["Review refund requests",105,"2 hours",80],
-      ["Update help center articles",125,"2 hours",95],
-    ],
-  },
-  {
-    category: "Reporting",
-    jobs: [
-      ["Reconcile the weekly report",175,"3 hours",140],
-      ["Clean up a spreadsheet",90,"90 minutes",65],
-      ["Build a dashboard summary",145,"2 hours",110],
-      ["Compile month-end metrics",195,"3 hours",150],
-    ],
-  },
-  {
-    category: "Administration",
-    jobs: [
-      ["Update the team records",100,"2 hours",80],
-      ["Schedule the interview loop",85,"90 minutes",65],
-      ["Format a slide deck",125,"2 hours",95],
-      ["Write up meeting notes",60,"1 hour",45],
-    ],
-  },
-  {
-    category: "Operations",
-    jobs: [
-      ["Audit open purchase orders",140,"2 hours",105],
-      ["Update the vendor directory",95,"90 minutes",70],
-      ["Prepare the shift handoff",75,"1 hour",55],
-      ["Check the onboarding queue",110,"2 hours",85],
-    ],
-  },
-] as const;
+const goodshiftCatalog = postingCategories.map((category) => ({
+  category,
+  jobs: postings
+    .filter((posting) => posting.category === category)
+    .map(({ title, price, duration, payout }) => [title, price, duration, payout] as const),
+}));
+const postingPaths = new Map(postings.map((posting) => [posting.title, postingPath(posting)]));
 
 export default function WorkPlatform({
   brand,
@@ -167,14 +137,14 @@ export default function WorkPlatform({
       </div>
       <section className={`${s.preview} ${s.jobCatalog}`} id="platform-preview" aria-labelledby="job-catalog-heading">
         <h2 id="job-catalog-heading">{content.board}</h2>
-        <p>{isBrightside ? "Sample briefs. Payouts in Tokens per approved package." : "Sample postings. Payouts in Tokens per job."}</p>
+        <p>{isBrightside ? "Sample briefs. Payouts in Tokens per approved package." : brand === "goodshift" ? "Open a posting for the full assignment. Payouts in Tokens per job." : "Sample postings. Payouts in Tokens per job."}</p>
         <div className={s.jobCategories}>
           {listings.map(({ category, jobs }) => (
             <div key={category}>
               <h3>{category}</h3>
               <ul>{jobs.map(({ task, payout, detail }) => (
                 <li key={task}>
-                  {detail ? <div><b>{task}</b><span>{detail}</span></div> : <span>{task}</span>}
+                  {detail ? <div><b>{brand === "goodshift" && postingPaths.has(task) ? <Link className={s.posting} href={postingPaths.get(task)!}>{task}</Link> : task}</b><span>{detail}</span></div> : <span>{task}</span>}
                   {isHelpingHand ? <strong>{payout} Tokens</strong> : <small>{payout} Tokens</small>}
                 </li>
               ))}</ul>

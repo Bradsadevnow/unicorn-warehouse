@@ -18,7 +18,7 @@ export type MemberAccount = {
     readonly eventId?: string;
   }[];
   readonly subscriptions: readonly { id: string; name: string; renewal: string; status: string; note: string }[];
-  readonly assignments: readonly { id: string; ledgerEntryId: string; status: string }[];
+  readonly assignments: readonly { id: string; ledgerEntryId: string; status: string; postingId?: string }[];
   readonly requests: readonly { id: string; title: string; status: string; date: string; ledgerEntryId?: string }[];
   readonly notices: readonly string[];
 };
@@ -55,9 +55,9 @@ const poppyAccount = {
   assignments: [
     { id: "GS-0823-01", ledgerEntryId: "aug-report", status: "Client accepted" },
     { id: "GS-0910-01", ledgerEntryId: "sep-report", status: "Client accepted" },
-    { id: "GS-1110-01", ledgerEntryId: "overtime", status: "Client accepted" },
+    { id: "GS-1110-01", ledgerEntryId: "overtime", status: "Client accepted", postingId: "GS-P-2001" },
     { id: "HH-1111-01", ledgerEntryId: "delivery", status: "Completed" },
-    { id: "GS-1113-02", ledgerEntryId: "report", status: "Awaiting client acceptance" },
+    { id: "GS-1113-02", ledgerEntryId: "report", status: "Awaiting client acceptance", postingId: "GS-P-2001" },
   ],
   requests: [
     { id: "appeal", title: "Goodshift · Unpaid report appeal", status: "Awaiting provider response", date: "November 13, 2026", ledgerEntryId: "report" },

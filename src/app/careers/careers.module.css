@@ -1,0 +1,50 @@
+.page { max-width: 1160px; margin-inline: auto; padding: 112px var(--gutter) 72px; display: grid; gap: 40px; }
+.page a:not(.primary) { text-decoration: underline; text-underline-offset: 3px; }
+.eyebrow { font: 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+.fine { font-size: 13px; color: var(--dim); }
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: clamp(16px, 4vw, 48px); padding: clamp(24px, 5vw, 56px); border: 1px solid var(--line); border-radius: 28px; background: linear-gradient(120deg, #ffe2f3, #fff6cd 55%, #e9ddff); }
+.hero > div { display: grid; gap: 14px; justify-items: start; }
+.hero h1 { font: 800 clamp(38px, 6.4vw, 78px)/1 var(--display); }
+.hero img { width: clamp(160px, 26vw, 340px); height: auto; }
+.lede { font: 800 clamp(20px, 2.6vw, 28px)/1.2 var(--display); color: var(--ice); }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 4px; }
+.primary { display: inline-block; padding: 13px 26px; border-radius: 999px; background: var(--ice); color: #fff; font-weight: 800; }
+.posters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.posters figure { display: grid; align-content: space-between; gap: 28px; min-height: 250px; margin: 0; padding: 26px; border: 1px solid var(--line); border-radius: 24px; background: #ffe2f3; }
+.posters figure[data-tone="mint"] { background: #dcf5e7; }
+.posters figure[data-tone="lilac"] { background: #e9ddff; }
+.posters p { font: 800 clamp(26px, 3.2vw, 40px)/1.05 var(--display); }
+.posters figcaption { font-size: 12px; color: var(--dim); }
+.section { display: grid; gap: 14px; scroll-margin-top: 96px; }
+.section h2 { font: 800 clamp(28px, 4vw, 44px)/1.1 var(--display); }
+.ladder { display: grid; gap: 10px; }
+.ladder a { display: grid; grid-template-columns: auto minmax(0, 1.3fr) minmax(0, 1fr) auto; align-items: center; gap: 12px 22px; padding: 18px 22px; border: 1px solid var(--line); border-radius: 20px; background: #fffaff; text-decoration: none !important; }
+.ladder a:hover { background: #f4e6fa; }
+.ladder li:last-child a { background: linear-gradient(110deg, #fff6cd, #ffe9b0); }
+.rung { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #f2e9ff; font: 800 20px var(--display); color: var(--ice); }
+.ladder h3 { font: 800 clamp(20px, 2.4vw, 26px)/1.1 var(--display); }
+.ladder p { color: var(--dim); font-size: 14px; }
+.ladder dl { display: grid; gap: 4px; margin: 0; font-size: 14px; }
+.ladder dl div { display: flex; gap: 10px; }
+.ladder dt { width: 40px; color: var(--dim); }
+.ladder dd { margin: 0; font-weight: 700; }
+.view { color: var(--ice); font-weight: 700; white-space: nowrap; }
+.eligibility { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 400px); gap: clamp(18px, 4vw, 44px); align-items: start; }
+.eligibility > div:first-child { display: grid; gap: 12px; }
+.progress { display: grid; gap: 10px; padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: #e9f8ef; }
+.progress h3 { font: 800 20px/1.2 var(--display); }
+.progress progress { width: 100%; height: 14px; accent-color: var(--ice); }
+.count b { font: 800 34px/1 var(--display); color: var(--ice); }
+.welcomes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.welcomes li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: #fffaff; }
+.welcomes img { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 1px solid var(--line); }
+.welcomes div { display: grid; gap: 10px; align-content: start; }
+.welcomes blockquote { font-size: 17px; line-height: 1.45; }
+.closing { display: grid; gap: 12px; justify-items: center; text-align: center; padding: clamp(28px, 5vw, 56px); border-radius: 28px; background: linear-gradient(120deg, #e9ddff, #ffe2f3); }
+.closing p:first-child { font: 800 clamp(30px, 5vw, 54px)/1 var(--display); }
+@media (max-width: 860px) {
+  .hero, .posters, .eligibility, .welcomes { grid-template-columns: minmax(0, 1fr); }
+  .hero img { grid-row: 1; }
+  .ladder a { grid-template-columns: auto minmax(0, 1fr); }
+  .ladder dl, .view { grid-column: 2; }
+}

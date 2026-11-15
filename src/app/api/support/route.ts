@@ -4,6 +4,7 @@ import { type MemberAccount, getTokenBalances } from "@/content/memberAccount";
 import { terms, productDetails } from "@/content/portfolioTerms";
 import { getMemberReportStatus } from "@/server/companyWorkflows";
 import { complete } from "@/server/model";
+import { getHerdEligibility } from "@/server/herdEligibility";
 import { getMemberSession } from "@/server/memberSession";
 import { getServiceHistory, serviceNames } from "@/server/serviceHistory";
 import { supportPrompt } from "../../support/supportPrompt";
@@ -23,7 +24,7 @@ function getAccountReferences(memberAccount: MemberAccount, transaction?: Member
     { id: "A:memberships", label: "Memberships", href: "/account?tab=memberships#memberships", text: JSON.stringify(memberAccount.subscriptions) },
     { id: "A:requests", label: "Support requests", href: "/account?tab=activity#requests", text: JSON.stringify(memberAccount.requests) },
     { id: "A:activity", label: "Member notices", href: "/account?tab=activity#notices", text: JSON.stringify(memberAccount.notices) },
-    { id: "A:work", label: "Assignment history", href: "/account?tab=work#work", text: JSON.stringify(memberAccount.assignments) },
+    { id: "A:work", label: "Assignment history", href: "/account?tab=work#work", text: JSON.stringify({ assignments: memberAccount.assignments, unicornTraineeProgress: getHerdEligibility(memberAccount) }) },
     ...serviceRefs,
     ...(report ? [{ id: "A:report", label: "Goodshift report status", href: "/account?tab=wallet&transaction=report#transaction", text: JSON.stringify(report) }] : []),
     ...(transaction ? [{

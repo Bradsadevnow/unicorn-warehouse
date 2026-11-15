@@ -31,6 +31,16 @@ Goodshift is becoming a real job board. Each posting is one record in `src/conte
 - The posters are type on pastel cards and the hero reuses the mascot. Original art for the hero and posters is still to come.
 - Checked in the dev preview as Poppy. Support replies took 90 to 115 seconds with Gemma once the Careers terms and role were added to the prompt.
 
+## Businesses (outlines)
+
+`src/content/businesses.ts` is the registry of Unicorn Warehouse businesses. Each record carries its industry, tagline, the shifts members can pick up there, one corporate role mapped to a rung of the careers ladder, one policy, and its connections to the rest of the Portfolio. `/businesses` is the directory and `/businesses/[slug]` is each outline page.
+
+- Open businesses (Market, Everair, Dreamwell, Brightside) link to their existing pages. The rest are outlines marked "Opening soon": Quickserve, Fulfillment, Dispatch, Gatherings, Living, Homes, Bank, Motorworks, Wellness.
+- The plan is to build the outlines out one at a time. Each parodies an industry, never a named company.
+- Shifts on a business page are titles and Token amounts only. Most are not posting records yet. HelpingHand still has no posting records, so no HelpingHand shift counts toward the Trainee quota.
+- Trainee progress counts only accepted assignments from herd-eligible postings (`src/server/herdEligibility.ts`). Poppy is at 1 of 40.
+- Business policies live in the registry and are not in the Terms yet, so the support unicorn cannot cite them.
+
 ## Project decisions to carry forward
 
 - **Voice and art.** Unicorn Warehouse sells everything with adorable unicorns, cheerful copy, and a straight face. Let the nastiest jokes surface in the Terms, Product Details, employer and buyer experiences, and support answers grounded in policy. Ordinary purchases, refunds, and payouts should behave like real account history.

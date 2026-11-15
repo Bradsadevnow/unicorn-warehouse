@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { posters, rolePath, roles, traineeEligibility, welcomes } from "@/content/careers";
+import { getHerdEligibility } from "@/server/herdEligibility";
 import { getMemberSession } from "@/server/memberSession";
 import s from "./careers.module.css";
 
@@ -45,7 +46,10 @@ export default function CareersPage() {
 
       <section className={s.section} id="path" aria-labelledby="path-heading">
         <h2 id="path-heading">Your path through the herd</h2>
-        <p>Every unicorn begins as a trainee. Where you go from there is up to your team lead.</p>
+        <p>
+          Every unicorn begins as a trainee. Where you go from there is up to your team lead.
+          Roles are open across <Link href="/businesses">our family of businesses</Link>.
+        </p>
         <ol className={s.ladder}>
           {roles.map((role) => (
             <li key={role.id}>
@@ -122,23 +126,26 @@ async function Eligibility() {
       </div>
     );
   }
-  const { name, assignments } = session.account;
-  const accepted = assignments.filter(({ status }) => status === "Client accepted" || status === "Completed").length;
-  const waiting = assignments.length - accepted;
-  const remaining = Math.max(0, traineeEligibility - accepted);
+  const { counted, awaitingAcceptance, notEligible, remaining } = getHerdEligibility(session.account);
+  const plural = (count: number) => (count === 1 ? "assignment" : "assignments");
   return (
     <div className={s.progress}>
-      <h3>{name}’s progress</h3>
-      <p className={s.count}><b>{accepted}</b> of {traineeEligibility} accepted assignments</p>
-      <progress value={accepted} max={traineeEligibility} aria-label="Accepted assignments" />
+      <h3>{session.account.name}’s progress</h3>
+      <p className={s.count}><b>{counted.length}</b> of {traineeEligibility} accepted assignments</p>
+      <progress value={counted.length} max={traineeEligibility} aria-label="Accepted assignments" />
       <p>
         {remaining > 0
-          ? `You’re ${remaining} accepted ${remaining === 1 ? "assignment" : "assignments"} away from applying. Keep going! 🦄`
+          ? `You’re ${remaining} accepted ${plural(remaining)} away from applying. Keep going! 🦄`
           : "You’re eligible to apply for Unicorn Trainee. 🦄"}
       </p>
-      {waiting > 0 && (
+      {awaitingAcceptance.length > 0 && (
         <p className={s.fine}>
-          {waiting} {waiting === 1 ? "assignment is" : "assignments are"} awaiting client acceptance and not counted.
+          {awaitingAcceptance.length} {plural(awaitingAcceptance.length)} awaiting client acceptance, not counted.
+        </p>
+      )}
+      {notEligible.length > 0 && (
+        <p className={s.fine}>
+          {notEligible.length} completed {plural(notEligible.length)} from postings that are not herd-eligible, not counted.
         </p>
       )}
       <Link href="/account?tab=work#work">View your assignment history →</Link>

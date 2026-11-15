@@ -20,22 +20,24 @@ export default function WalletChart({ account, days }: { account: MemberAccount;
     if (entry.status === "posted") bucket.credits += entry.amount;
     if (entry.status === "spent") bucket.spent += entry.amount;
   }
-  const max = Math.max(1, ...buckets.flatMap(({ credits, spent }) => [credits, spent]));
+  const activeBuckets = buckets.filter(({ credits, spent }) => credits || spent);
+  const max = Math.max(1, ...activeBuckets.flatMap(({ credits, spent }) => [credits, spent]));
 
   return (
     <section className={styles.panel} aria-labelledby="token-activity">
       <h2 id="token-activity">📊 Token activity</h2>
       <nav className={styles.shortcuts} aria-label="Chart range">
-        {[30, 90].map((range) => <a key={range} href={`/account?days=${range}`} aria-current={range === days ? "page" : undefined}>{range} days</a>)}
+        {[30, 90].map((range) => <a key={range} href={`/account?tab=wallet&days=${range}#token-activity`} aria-current={range === days ? "page" : undefined}>{range} days</a>)}
       </nav>
       <p className={styles.muted}>Posted credits and settled spending · Tokens</p>
+      {activeBuckets.length === 0 && <p>No settled Token activity in this period.</p>}
       <ul className={styles.chart}>
-        {buckets.map(({ date, credits, spent }) => (
+        {activeBuckets.map(({ date, credits, spent }) => (
           <li key={date}>
             <strong>{date}</strong>
-            <span className={styles.chartValues}><span>+{credits} credited</span><span>{spent} spent</span></span>
-            <div className={styles.chartTrack} aria-hidden="true"><div data-series="credit" style={{ width: `${100 * credits / max}%` }} /></div>
-            <div className={styles.chartTrack} aria-hidden="true"><div data-series="spent" style={{ width: `${100 * spent / max}%` }} /></div>
+            <span className={styles.chartValues}>{credits > 0 && <span>+{credits} credited</span>}{spent > 0 && <span>{spent} spent</span>}</span>
+            {credits > 0 && <div className={styles.chartTrack} aria-hidden="true"><div data-series="credit" style={{ width: `${100 * credits / max}%` }} /></div>}
+            {spent > 0 && <div className={styles.chartTrack} aria-hidden="true"><div data-series="spent" style={{ width: `${100 * spent / max}%` }} /></div>}
           </li>
         ))}
       </ul>

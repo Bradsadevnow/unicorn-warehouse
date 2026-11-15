@@ -31,6 +31,7 @@
 .hero a, .panel a { color: var(--ice); text-decoration: underline; text-underline-offset: 3px; }
 .shortcuts a[aria-current] { background: #642f85; color: white; }
 .entryLabel { display: block; }
+.wallet + .panel, .panel + .panel[id="statement"] { margin-top: 16px; }
 .chart { display: grid; gap: 13px; margin-top: 14px; }
 .chart li { display: grid; gap: 4px; }
 .chartValues { display: flex; gap: 12px; font-size: .85rem; }

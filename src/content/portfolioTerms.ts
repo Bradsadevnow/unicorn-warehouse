@@ -134,7 +134,8 @@ export const productDetails = [
       "Rest Efficiency. Dreamwell measures sleep efficiency as the percentage of booked time spent unconscious. Members who remain awake during their session are encouraged to purchase additional time.",
       "Dream Advertising Preferences. Members may select up to three preferred advertising categories for dream insertion. Opting out of a category may increase the frequency of advertisements from the remaining categories.",
       "Nightmare Resolution. A nightmare is considered resolved when the member no longer reports it. Members who stop using Dreamwell are excluded from unresolved nightmare statistics.",
-      "Sleep Debt Transfer. Unused sleep credits may be transferred to an eligible Household member. Transferring credits does not transfer the fatigue associated with the original missed rest."
+      "Sleep Debt Transfer. Unused sleep credits may be transferred to an eligible Household member. Transferring credits does not transfer the fatigue associated with the original missed rest.",
+      "Bundled Household Rest. A registered Household beneficiary may use the minutes on their active Dreamwell household grant while the sponsoring membership is in good standing. A covered session consumes the grant’s remaining minutes and does not create a separate Token charge."
     ]
   },
   {

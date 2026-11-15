@@ -15,6 +15,7 @@ export type MemberAccount = {
     readonly label: string;
     readonly amount: number;
     readonly status: LedgerStatus;
+    readonly eventId?: string;
   }[];
   readonly subscriptions: readonly { id: string; name: string; renewal: string; status: string; note: string }[];
   readonly assignments: readonly { id: string; ledgerEntryId: string; status: string }[];
@@ -30,18 +31,19 @@ const poppyAccount = {
   household: "Poppy and her sister Clover",
   employer: "Goodshift · Reporting",
   ledger: [
-    { id: "opening", date: "2026-08-17", label: "Opening balance", amount: 480, status: "posted" },
+    { id: "opening", date: "2026-08-17", label: "Opening balance", amount: 504, status: "posted" },
     { id: "aug-report", date: "2026-08-23", label: "Goodshift · August inventory report", amount: 160, status: "posted" },
     { id: "aug-market", date: "2026-08-28", label: "Market · Groceries", amount: 34, status: "spent" },
     { id: "sep-report", date: "2026-09-10", label: "Goodshift · Reconcile supplier invoices", amount: 120, status: "posted" },
     { id: "sep-lodge", date: "2026-09-22", label: "Everair · Lodge Collection blend", amount: 64, status: "spent" },
-    { id: "market-refund", date: "2026-10-03", label: "Market · Missing order refund", amount: 24, status: "posted" },
+    { id: "market-original", date: "2026-10-01", label: "Market · Pantry order", amount: 24, status: "spent", eventId: "UW-0482-MKT-1001" },
+    { id: "market-refund", date: "2026-10-03", label: "Market · Missing order refund", amount: 24, status: "posted", eventId: "UW-0482-MKT-1001" },
     { id: "oct-market", date: "2026-10-21", label: "Market · Pantry restock", amount: 34, status: "spent" },
     { id: "overtime", date: "2026-11-10", label: "Goodshift · Reconcile the weekly report, overtime assignment", amount: 140, status: "posted" },
     { id: "delivery", date: "2026-11-11", label: "HelpingHand · Unload a delivery at Market", amount: 12, status: "posted" },
     { id: "groceries", date: "2026-11-11", label: "Market · Six rolls of toilet paper from the same warehouse", amount: 12, status: "spent" },
-    { id: "rest", date: "2026-11-12", label: "Dreamwell Plus · Four-hour session", amount: 250, status: "spent" },
-    { id: "report", date: "2026-11-13", label: "Goodshift · Second weekly report, awaiting client acceptance", amount: 140, status: "pending" },
+    { id: "rest", date: "2026-11-12", label: "Dreamwell Plus · Four-hour session", amount: 250, status: "spent", eventId: "UW-0482-DW-1112" },
+    { id: "report", date: "2026-11-13", label: "Goodshift · Second weekly report, awaiting client acceptance", amount: 140, status: "pending", eventId: "UW-0482-GS-1113" },
     { id: "lodge", date: "2026-11-13", label: "Everair · Lodge Collection order, awaiting fulfillment", amount: 60, status: "held" },
   ],
   subscriptions: [

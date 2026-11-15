@@ -3,17 +3,26 @@ import { terms, productDetails } from "@/content/portfolioTerms";
 import { getMemberReportStatus } from "@/server/companyWorkflows";
 import { complete } from "@/server/model";
 import { getMemberSession } from "@/server/memberSession";
+import { getServiceHistory, serviceNames } from "@/server/serviceHistory";
 import { supportPrompt } from "../../support/supportPrompt";
 
 function getAccountReferences(memberAccount: MemberAccount, transaction?: MemberAccount["ledger"][number]) {
   const balances = getTokenBalances(memberAccount);
   const report = getMemberReportStatus(memberAccount.id, "report");
+  const history = getServiceHistory(memberAccount);
+  const serviceRefs = [...new Set(history.map(({ service }) => service))].map((service) => ({
+    id: `A:${service}`,
+    label: `${serviceNames[service]} history`,
+    href: `/account?tab=activity&service=${service}#activity`,
+    text: JSON.stringify(history.filter((event) => event.service === service)),
+  }));
   return [
     { id: "A:statement", label: "Token statement", href: "/account?tab=wallet#statement", text: JSON.stringify({ balances, ledger: memberAccount.ledger }) },
     { id: "A:memberships", label: "Memberships", href: "/account?tab=memberships#memberships", text: JSON.stringify(memberAccount.subscriptions) },
     { id: "A:requests", label: "Support requests", href: "/account?tab=activity#requests", text: JSON.stringify(memberAccount.requests) },
-    { id: "A:activity", label: "Member notices", href: "/account?tab=activity#activity", text: JSON.stringify(memberAccount.notices) },
+    { id: "A:activity", label: "Member notices", href: "/account?tab=activity#notices", text: JSON.stringify(memberAccount.notices) },
     { id: "A:work", label: "Assignment history", href: "/account?tab=work#work", text: JSON.stringify(memberAccount.assignments) },
+    ...serviceRefs,
     ...(report ? [{ id: "A:report", label: "Goodshift report status", href: "/account?tab=wallet&transaction=report#transaction", text: JSON.stringify(report) }] : []),
     ...(transaction ? [{
       id: "A:transaction", label: "Selected transaction",

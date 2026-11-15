@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { getTokenBalances } from "@/content/memberAccount";
 import { getMemberReportStatus } from "@/server/companyWorkflows";
 import { getMemberSession } from "@/server/memberSession";
+import { getServiceHistory, serviceNames } from "@/server/serviceHistory";
 import WalletChart from "./WalletChart";
 import styles from "./account.module.css";
 
@@ -32,6 +33,9 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
   const query = await searchParams;
   const tab = tabs.find(([id]) => id === query.tab)?.[0] ?? "overview";
   const balances = getTokenBalances(account);
+  const history = getServiceHistory(account);
+  const services = [...new Set(history.map(({ service }) => service))].sort();
+  const selectedService = services.find((service) => service === query.service);
   const filter = ["posted", "spent", "pending", "held"].find((status) => status === query.status);
   const ledger = [...account.ledger].sort((a, b) => b.date.localeCompare(a.date));
   const selected = typeof query.transaction === "string"
@@ -39,6 +43,7 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
     : undefined;
   if (query.transaction !== undefined && !selected) notFound();
   const report = selected && getMemberReportStatus(account.id, selected.id);
+  const relatedEvents = selected ? history.filter(({ ledgerEntryIds }) => ledgerEntryIds?.includes(selected.id)) : [];
 
   return (
     <main className={styles.page}>
@@ -56,7 +61,7 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
           aria-current={tab === id ? "page" : undefined}>{label}</Link>)}
       </nav>
 
-      {(tab === "overview" || tab === "wallet") && (
+      {tab === "wallet" && (
         <section className={styles.wallet} aria-labelledby="wallet-heading">
           <h2 id="wallet-heading">Token wallet</h2>
           <p className={styles.amount}><strong>{balances.available}</strong> Tokens available</p>
@@ -65,28 +70,39 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
             <div><dt>Held</dt><dd>{balances.held} Tokens</dd></div>
             <div><dt>Spent</dt><dd>{balances.spent} Tokens</dd></div>
           </dl>
-          {tab === "overview" && <Link href="/account?tab=wallet">Open Wallet →</Link>}
           {ledger.some(({ status }) => status === "pending") && <p><Link href="/account?tab=wallet&status=pending">See pending payouts →</Link></p>}
         </section>
       )}
 
       {tab === "overview" && <div className={styles.columns}>
-        <WalletChart account={account} days={query.days === "30" ? 30 : 90} />
+        <section className={styles.panel}>
+          <h2>📬 Recent service activity</h2>
+          <ol className={styles.timeline}>
+            {history.slice(0, 5).map(({ eventId, service, date, title }) => (
+              <li key={eventId}>
+                <p>{serviceNames[service]} · {dateFormat.format(Date.parse(date))}</p>
+                <Link href={`/account?tab=activity&service=${service}#${eventId}`}>{title} →</Link>
+              </li>
+            ))}
+          </ol>
+          <Link href="/account?tab=activity">See all service activity →</Link>
+        </section>
         <div className={styles.stack}>
           <section className={styles.attention}>
             <h2>💖 Memberships</h2>
             {account.subscriptions.filter(({ renewal }) => renewal !== "Paused").slice().sort((a, b) => Date.parse(a.renewal) - Date.parse(b.renewal)).slice(0, 2)
-              .map(({ id, name, renewal, status }) => <p key={id}><strong>{name}</strong><br />{renewal} · {status}</p>)}
+                  .map(({ id, name, renewal, status }) => <p key={id}><strong>{name}</strong><br />{renewal} · {status}</p>)}
             <Link href="/account?tab=memberships">View memberships →</Link>
           </section>
           <section className={styles.panel}>
-            <h2>📬 Latest activity</h2>
+            <h2>💌 Latest notice</h2>
             <p>{account.notices.at(-1)}</p>
             <Link href="/account?tab=activity">View activity and requests →</Link>
           </section>
         </div>
       </div>}
 
+      {tab === "wallet" && <WalletChart account={account} days={query.days === "30" ? 30 : 90} />}
       {tab === "wallet" && <section id="statement" className={styles.panel}>
         <h2>🧾 Token statement</h2>
         <nav className={styles.shortcuts} aria-label="Statement filter">
@@ -100,6 +116,9 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
           <h3 id="transaction-heading">{selected.label}</h3>
           <p>{selected.amount} Tokens · {selected.status} · {dateFormat.format(Date.parse(selected.date))}</p>
           {report && <p>{report.status} <Link href={`/software/${report.id}`}>View assignment {report.id} →</Link></p>}
+          {relatedEvents.map(({ eventId, service, title }) => (
+            <Link key={eventId} href={`/account?tab=activity&service=${service}#${eventId}`}>{title} · {eventId} →</Link>
+          ))}
           <Link href={"/support?transaction=" + encodeURIComponent(selected.id)}>Ask Support about this transaction →</Link>
         </section>}
         <ul className={styles.ledger}>
@@ -146,8 +165,26 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
 
       {tab === "activity" && <div className={styles.columns}>
         <section className={styles.panel} id="activity">
-          <h2>📬 Member notices</h2>
-          <ol className={styles.timeline}>{[...account.notices].reverse().map((notice) => <li key={notice}>{notice}</li>)}</ol>
+          <h2>📬 Service history</h2>
+          <nav className={styles.shortcuts} aria-label="Filter service history">
+            <Link href="/account?tab=activity" aria-current={!selectedService ? "page" : undefined}>All services</Link>
+            {services.map((service) => <Link key={service} href={`/account?tab=activity&service=${service}`}
+              aria-current={selectedService === service ? "page" : undefined}>{serviceNames[service]}</Link>)}
+          </nav>
+          <ol className={styles.timeline}>
+            {history.filter(({ service }) => !selectedService || service === selectedService)
+              .map(({ eventId, service, date, title, detail, ledgerEntryIds }) => (
+                <li id={eventId} key={eventId}>
+                  <p>{serviceNames[service]} · {dateFormat.format(Date.parse(date))}</p>
+                  <strong>{title}</strong><p>{detail}</p>
+                  <p className={styles.muted}>Event {eventId}</p>
+                  {ledgerEntryIds?.map((id) => {
+                    const entry = account.ledger.find((item) => item.id === id);
+                    return <p key={id}><Link href={`/account?tab=wallet&transaction=${encodeURIComponent(id)}#transaction`}>{entry?.label} →</Link></p>;
+                  })}
+                </li>
+              ))}
+          </ol>
         </section>
         <section className={styles.panel} id="requests">
           <h2>💌 Support requests</h2>
@@ -155,6 +192,8 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
             <strong>{title}</strong><span>{date} · {status}</span>
             {ledgerEntryId && <Link href={`/account?tab=wallet&transaction=${encodeURIComponent(ledgerEntryId)}#transaction`}>View related transaction →</Link>}
           </li>)}</ul>
+          <h2 id="notices">Member notices</h2>
+          <ol className={styles.timeline}>{[...account.notices].reverse().map((notice) => <li key={notice}>{notice}</li>)}</ol>
         </section>
       </div>}
     </main>

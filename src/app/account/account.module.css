@@ -28,6 +28,15 @@
 .balances dt { font-size: .8rem; color: var(--dim); }
 .balances dd { font-weight: 800; }
 .wallet a, .attention a, .ledger a, .support { color: var(--ice); text-decoration: underline; text-underline-offset: 3px; }
+.hero a, .panel a { color: var(--ice); text-decoration: underline; text-underline-offset: 3px; }
+.shortcuts a[aria-current] { background: #642f85; color: white; }
+.entryLabel { display: block; }
+.chart { display: grid; gap: 13px; margin-top: 14px; }
+.chart li { display: grid; gap: 4px; }
+.chartValues { display: flex; gap: 12px; font-size: .85rem; }
+.chartTrack { height: 8px; border-radius: 999px; background: #f4eaf9; overflow: hidden; }
+.chartTrack div { height: 100%; background: #713a9e; }
+.chartTrack div[data-series="spent"] { background: #a3406f; }
 .panel { background: #fffaff; }
 .panel h2 { margin-bottom: 14px; }
 .page :is(section, li)[id] { scroll-margin-top: 100px; }

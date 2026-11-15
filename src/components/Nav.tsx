@@ -16,7 +16,7 @@ export default function Nav() {
         <TransitionLink href="/tokens">Token economy</TransitionLink>
         <TransitionLink href="/market">Market</TransitionLink>
         <TransitionLink href="/support">Support</TransitionLink>
-        <TransitionLink href="/account">Poppy’s account</TransitionLink>
+        <TransitionLink href="/account">My account</TransitionLink>
         <TransitionLink href="/redemption" className={styles.pill}>Redemption</TransitionLink>
       </nav>
     </header>

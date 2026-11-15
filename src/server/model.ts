@@ -12,7 +12,7 @@ export async function complete(messages: ModelMessage[], temperature: number) {
       "Content-Type": "application/json",
       ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
     },
-    signal: AbortSignal.timeout(90_000),
+    signal: AbortSignal.timeout(apiKey ? 90_000 : 180_000),
     body: JSON.stringify({
       model: apiKey ? process.env.OPENAI_MODEL ?? "gpt-4.1-mini" : process.env.LM_STUDIO_MODEL ?? "google/gemma-4-12b",
       messages,

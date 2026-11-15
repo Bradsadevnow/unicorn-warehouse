@@ -14,7 +14,8 @@ export const terms = [
     "paragraphs": [
       "Portfolio Tokens carry over and never expire. Redemption requires an eligible Account and an available benefit. An Account under review may retain its entire Token balance while redemption is paused. During that period, your statement will show the balance you would otherwise be able to use.",
       "Buyer payments in dollars settle separately from worker and creator payouts in Tokens. The dollar price of an assignment establishes the buyer’s obligation. It establishes no exchange rate, redemption value, or minimum payout.",
-      "A reserved reward places a hold on the quoted amount. If a reservation is released, the held Tokens return to the balance after reconciliation. If the reward has been discontinued, the return of Tokens completes our obligation even where no substitute exists."
+      "A reserved reward places a hold on the quoted amount. If a reservation is released, the held Tokens return to the balance after reconciliation. If the reward has been discontinued, the return of Tokens completes our obligation even where no substitute exists.",
+      "Assignment payout. A submitted assignment may appear as a pending payout before client acceptance. An internal quality review does not constitute client acceptance. Pending Tokens become spendable only after the payout posts to the Token statement, and may not be applied to a renewal before posting."
     ]
   },
   {

@@ -64,6 +64,15 @@
 }
 
 .signIn label { font-weight: 650; }
+.signIn select {
+  margin-left: 10px;
+  padding: 6px 9px;
+  border: 1px solid #dfc8e8;
+  border-radius: 9px;
+  background: #fff9fe;
+  color: inherit;
+  font: inherit;
+}
 .signIn input {
   width: 100%;
   min-height: 44px;

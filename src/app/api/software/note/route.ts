@@ -1,5 +1,5 @@
-import { getMemberAccount } from "@/content/memberAccount";
 import { getCompanyWorkflow } from "@/server/companyWorkflows";
+import { getMemberSession } from "@/server/memberSession";
 import { complete } from "@/server/model";
 
 const departmentPrompts = {
@@ -9,6 +9,8 @@ const departmentPrompts = {
 } as const;
 
 export async function POST(request: Request) {
+  const session = await getMemberSession();
+  if (!session) return Response.json({ error: "Sign in first." }, { status: 401 });
   const body = await request.json().catch(() => null);
   const department = body?.department;
   if (typeof body?.id !== "string" || typeof department !== "string" ||
@@ -17,10 +19,10 @@ export async function POST(request: Request) {
   }
 
   const workflow = getCompanyWorkflow(body.id);
-  if (!workflow) return Response.json({ error: "Assignment not found." }, { status: 404 });
-  const account = getMemberAccount(workflow.memberId);
-  const entry = account?.ledger.find(({ id }) => id === workflow.ledgerEntryId);
-  if (!account || !entry) return Response.json({ error: "Assignment record unavailable." }, { status: 503 });
+  if (!workflow || workflow.memberId !== session.account.id) return Response.json({ error: "Assignment not found." }, { status: 404 });
+  const { account } = session;
+  const entry = account.ledger.find(({ id }) => id === workflow.ledgerEntryId);
+  if (!entry) return Response.json({ error: "Assignment record unavailable." }, { status: 503 });
 
   const facts = {
     assignment: workflow.assignment,

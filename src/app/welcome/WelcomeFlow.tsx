@@ -6,7 +6,11 @@ import styles from "./welcome.module.css";
 
 type Stage = "welcome" | "consent" | "handoff";
 
-export default function WelcomeFlow() {
+type SignInProfile = { id: string; name: string; maskedNumber: string };
+
+export default function WelcomeFlow({ profiles }: { profiles: readonly SignInProfile[] }) {
+  const [profileIndex, setProfileIndex] = useState(0);
+  const profile = profiles[profileIndex];
   const [stage, setStage] = useState<Stage>("welcome");
   const [seconds, setSeconds] = useState(8);
   const [declined, setDeclined] = useState(false);
@@ -38,20 +42,26 @@ export default function WelcomeFlow() {
         <p className={styles.brand}>✦ Unicorn Warehouse</p>
         {stage === "welcome" && <>
           <Image className={styles.mascot} src="/sign-in-unicorn.png" alt="" width={240} height={240} priority />
-          <h1>Welcome back, Poppy!</h1>
+          <h1>Welcome back, {profile.name}!</h1>
           <p>Your memberships are right where you left them. So is your identity. ✨</p>
           <form className={styles.signIn} onSubmit={(event) => {
             event.preventDefault();
             setStage("consent");
           }}>
             <label htmlFor="member-ssn">Social Security number</label>
-            <input id="member-ssn" type="text" value="•••-••-0140" readOnly aria-describedby="member-ssn-note" />
+            <input id="member-ssn" type="text" value={profile.maskedNumber} readOnly aria-describedby="member-ssn-note" />
             <small id="member-ssn-note">We remembered it for you. One less thing to forget! 💖</small>
-            <button className={styles.primary} type="submit">Sign in as Poppy ✨</button>
+            <button className={styles.primary} type="submit">Sign in as {profile.name} ✨</button>
+            {profiles.length > 1 && <label>
+              Switch member
+              <select value={profileIndex} onChange={(event) => setProfileIndex(Number(event.target.value))}>
+                {profiles.map(({ id, name }, index) => <option key={id} value={index}>{name}</option>)}
+              </select>
+            </label>}
           </form>
         </>}
         {stage === "consent" && <>
-          <h1 ref={heading} tabIndex={-1}>Unicorn Warehouse wants access to Poppy’s account</h1>
+          <h1 ref={heading} tabIndex={-1}>Unicorn Warehouse wants access to {profile.name}’s account</h1>
           <p>Let’s get all your preferences in one place, including the ones you haven’t formed yet. 💖</p>
           <ul className={styles.scopes}>
             <li>See purchases you almost made and what might change your mind.</li>
@@ -74,9 +84,10 @@ export default function WelcomeFlow() {
         </>}
         {stage === "handoff" && <>
           <Image className={styles.mascot} src="/unicorn-mascot.webp" alt="" width={240} height={240} />
-          <h1 ref={heading} tabIndex={-1}>You’re in, Poppy! ✨</h1>
+          <h1 ref={heading} tabIndex={-1}>You’re in, {profile.name}! ✨</h1>
           <p role="status">Getting your Unicorn Warehouse ready…</p>
-          <form ref={form} action="/home">
+          <form ref={form} method="post" action="/welcome/continue">
+            <input type="hidden" name="profile" value={profile.id} />
             <button className={styles.secondary} type="submit">Continue to homepage</button>
           </form>
         </>}

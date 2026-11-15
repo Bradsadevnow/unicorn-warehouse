@@ -12,11 +12,15 @@ type Exchange = {
 };
 
 const evidenceGroups = [
-  { kind: "account", title: "Account evidence", description: "What Poppy’s records show happened or is pending." },
+  { kind: "account", title: "Account evidence", description: "What your records show happened or is pending." },
   { kind: "policy", title: "Policy evidence", description: "What the company is permitted or required to do." },
 ] as const;
 
-export default function SupportChat({ suggestions }: { suggestions: { id: string; question: string }[] }) {
+export default function SupportChat({ sessionId, transaction, suggestions }: {
+  sessionId: string;
+  transaction?: { id: string; label: string };
+  suggestions: { id: string; question: string }[];
+}) {
   const [draft, setDraft] = useState("");
   const [started, setStarted] = useState(false);
   const [showTrace, setShowTrace] = useState(false);
@@ -41,7 +45,7 @@ export default function SupportChat({ suggestions }: { suggestions: { id: string
       const response = await fetch("/api/support", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [
+        body: JSON.stringify({ sessionId, transaction: transaction?.id, messages: [
           ...exchanges.flatMap(({ question, answer }) => [
             ...(question ? [{ role: "user", content: question }] : []),
             { role: "assistant", content: answer },
@@ -49,6 +53,10 @@ export default function SupportChat({ suggestions }: { suggestions: { id: string
           ...(clean ? [{ role: "user", content: clean }] : []),
         ] }),
       });
+      if (response.status === 401 || response.status === 409) {
+        window.location.reload();
+        return;
+      }
       if (!response.ok) throw new Error("Support request failed");
       const reply: Omit<Exchange, "question"> = await response.json();
       setExchanges((current) => [...current, { question: clean, ...reply }]);
@@ -68,6 +76,7 @@ export default function SupportChat({ suggestions }: { suggestions: { id: string
 
   if (!started) {
     return <section className={styles.chat} aria-label="Support chat">
+      {transaction && <p>Chatting about {transaction.label}</p>}
       <button className={styles.start} type="button" onClick={() => { setStarted(true); ask(""); }}>✨ Start chat ✨</button>
     </section>;
   }

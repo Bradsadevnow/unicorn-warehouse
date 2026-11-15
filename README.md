@@ -19,7 +19,9 @@ npm ci
 npm run dev
 ```
 
-Open [the homepage](http://localhost:3000), [the Lodge Collection](http://localhost:3000/aerovitalux/lodge-collection), or [Token Redemption](http://localhost:3000/redemption).
+Open [member sign-in](http://localhost:3000) and choose Poppy or Juniper. The sign-in leads to the homepage, where **My account** opens the portal. You can also visit [the Lodge Collection](http://localhost:3000/aerovitalux/lodge-collection) or [Token Redemption](http://localhost:3000/redemption).
+
+Set a shared, random `UW_SESSION_SECRET` in the server environment for deployments with multiple workers or instances. Local previews can use an ephemeral signing secret, which resets existing sessions when the server restarts. Both fictional profiles are available from the sign-in screen.
 
 Run `npm run lint` to check the source. To preview a production build, run `npm run build` followed by `npm start`. Next.js downloads the site's fonts from Google Fonts during compilation.
 

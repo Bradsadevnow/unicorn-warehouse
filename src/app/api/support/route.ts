@@ -1,18 +1,25 @@
-import { demoMemberId, getMemberAccount, getTokenBalances } from "@/content/memberAccount";
+import { type MemberAccount, getTokenBalances } from "@/content/memberAccount";
 import { terms, productDetails } from "@/content/portfolioTerms";
 import { getMemberReportStatus } from "@/server/companyWorkflows";
 import { complete } from "@/server/model";
+import { getMemberSession } from "@/server/memberSession";
 import { supportPrompt } from "../../support/supportPrompt";
 
-function getAccountReferences(memberAccount: NonNullable<ReturnType<typeof getMemberAccount>>) {
+function getAccountReferences(memberAccount: MemberAccount, transaction?: MemberAccount["ledger"][number]) {
   const balances = getTokenBalances(memberAccount);
   const report = getMemberReportStatus(memberAccount.id, "report");
   return [
-    { id: "A:statement", label: "Token statement", href: "/account#statement", text: JSON.stringify({ balances, ledger: memberAccount.ledger }) },
-    { id: "A:memberships", label: "Memberships", href: "/account#memberships", text: JSON.stringify(memberAccount.subscriptions) },
-    { id: "A:requests", label: "Open requests", href: "/account#requests", text: JSON.stringify(memberAccount.requests) },
-    { id: "A:activity", label: "Member notices", href: "/account#activity", text: JSON.stringify(memberAccount.notices) },
-    ...(report ? [{ id: "A:report", label: "Goodshift report status", href: "/account#report", text: JSON.stringify(report) }] : []),
+    { id: "A:statement", label: "Token statement", href: "/account?tab=wallet#statement", text: JSON.stringify({ balances, ledger: memberAccount.ledger }) },
+    { id: "A:memberships", label: "Memberships", href: "/account?tab=memberships#memberships", text: JSON.stringify(memberAccount.subscriptions) },
+    { id: "A:requests", label: "Support requests", href: "/account?tab=activity#requests", text: JSON.stringify(memberAccount.requests) },
+    { id: "A:activity", label: "Member notices", href: "/account?tab=activity#activity", text: JSON.stringify(memberAccount.notices) },
+    { id: "A:work", label: "Assignment history", href: "/account?tab=work#work", text: JSON.stringify(memberAccount.assignments) },
+    ...(report ? [{ id: "A:report", label: "Goodshift report status", href: "/account?tab=wallet&transaction=report#transaction", text: JSON.stringify(report) }] : []),
+    ...(transaction ? [{
+      id: "A:transaction", label: "Selected transaction",
+      href: `/account?tab=wallet&transaction=${encodeURIComponent(transaction.id)}#transaction`,
+      text: JSON.stringify(transaction),
+    }] : []),
   ];
 }
 
@@ -40,10 +47,12 @@ const openingRequest: Message = {
 };
 
 function classifyEvidence(source: { label: string; href: string }) {
-  return { ...source, kind: source.href.startsWith("/account#") ? "account" : "policy" };
+  return { ...source, kind: source.href.startsWith("/account?") ? "account" : "policy" };
 }
 
 export async function POST(request: Request) {
+  const session = await getMemberSession();
+  if (!session) return Response.json({ error: "Sign in first." }, { status: 401 });
   const body = await request.json().catch(() => null);
   const messages: unknown = body?.messages;
   if (!Array.isArray(messages) ||
@@ -53,17 +62,24 @@ export async function POST(request: Request) {
       (messages.length > 0 && messages.at(-1)?.role !== "user")) {
     return Response.json({ error: "Invalid conversation." }, { status: 400 });
   }
+  if (body.sessionId !== session.sessionId) {
+    return Response.json({ error: "This chat belongs to an earlier session. Reload to start a new chat." }, { status: 409 });
+  }
+  const memberAccount = session.account;
+  const transaction = memberAccount.ledger.find(({ id }) => id === body.transaction);
+  if (body.transaction != null && !transaction) {
+    return Response.json({ error: "Transaction not found." }, { status: 404 });
+  }
 
   try {
-    const memberAccount = getMemberAccount(demoMemberId);
-    if (!memberAccount) throw new Error("Demo account is missing");
-    const references = [...getAccountReferences(memberAccount), ...policyReferences];
+    const references = [...getAccountReferences(memberAccount, transaction), ...policyReferences];
     const { content, provider } = await complete([
       {
         role: "system",
         content: [
           supportPrompt,
           `Member: ${memberAccount.name}. Account date: ${memberAccount.date}. Household: ${memberAccount.household}. Employer: ${memberAccount.employer}.`,
+          ...(transaction ? ["The member opened this chat from [A:transaction]. Use it as the active transaction when the member refers to this payment or purchase. In the opening, offer help with that record. Cite [A:transaction] if you discuss it."] : []),
           "Reference material:",
           ...references.map(({ id, text }) => `[${id}] ${text}`),
         ].join("\n\n"),

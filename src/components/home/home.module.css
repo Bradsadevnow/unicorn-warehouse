@@ -402,3 +402,5 @@
 .name { color: var(--bone); font: 700 clamp(20px, 3vw, 36px)/1.02 var(--display); overflow-wrap: anywhere; }
 .state { color: var(--ice); background: #fff9; border-radius: 999px; padding: 3px 9px; }
 @media (prefers-reduced-motion: reduce) { .row { transition: none; } }
+.supportLink { position: relative; z-index: 2; grid-column: 1 / -1; justify-self: center; width: fit-content; max-width: 100%; padding: 12px 20px; border-radius: 999px; border: 1px solid #c880bd; background: linear-gradient(110deg, #ffe2f3, #fff6cd, #e9ddff); box-shadow: 0 4px 20px #e6a4d887; color: #54215e; font-weight: 800; text-align: center; }
+.supportLink:hover { box-shadow: 0 4px 24px #d989c8bf; }

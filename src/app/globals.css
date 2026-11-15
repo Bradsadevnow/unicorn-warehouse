@@ -192,3 +192,6 @@ img {
   .curtain { display: none; }
   .rv-w > span { transform: none; transition: none; }
 }
+:where(body:has([data-uw-welcome])) > :is(header, footer) {
+  display: none;
+}

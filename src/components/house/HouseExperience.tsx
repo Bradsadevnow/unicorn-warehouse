@@ -10,6 +10,7 @@ import Counter from "@/components/Counter";
 import Curtain from "@/components/Curtain";
 import { TransitionLink } from "@/components/Veil";
 import { houseContent } from "@/content/houseContent";
+import { dreamwellBenefitNote } from "@/content/dreamwellBenefits";
 import { stage } from "./stage";
 import s from "./house.module.css";
 
@@ -351,14 +352,21 @@ export default function HouseExperience({ slug }: { slug: string }) {
 
       {/* ---------- Plans ---------- */}
       {c.plans.length > 0 && (
-        <section className={s.plans}>
-          <p className="label">Membership</p>
+        <section className={s.plans} id="memberships">
+          <p className="label">{slug === "comfortflow" ? "Subscriptions" : "Membership"}</p>
+          {slug === "somnara" && <p className={s.planBenefitNote}>{dreamwellBenefitNote}</p>}
           <ul className={s.planGrid}>
             {c.plans.map((p) => (
               <li key={p.name} className={s.plan} data-rise>
+                {p.image && <Image className={s.planArt} src={p.image} alt="" sizes="(max-width: 860px) 90vw, 33vw" />}
                 <span className="label">{p.price}</span>
                 <h3>{p.name}</h3>
                 <p>{p.body}</p>
+                {p.benefits && (
+                  <ul className={s.planBenefits}>
+                    {p.benefits.map((benefit) => <li key={benefit}>{benefit}</li>)}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
@@ -381,14 +389,16 @@ export default function HouseExperience({ slug }: { slug: string }) {
       {/* ---------- Close ---------- */}
       <section className={s.close}>
         <Reveal as="h2" text={c.close.title} stagger={0.14} />
-        <button
+        {"href" in c.close ? (
+          <TransitionLink href={c.close.href} className={s.cta}>{c.close.cta} →</TransitionLink>
+        ) : <button
           type="button"
           className={`${s.cta} ${done ? s.ctaDone : ""}`}
           onClick={() => setDone(true)}
           aria-live="polite"
         >
           {done ? c.close.done : c.close.cta}
-        </button>
+        </button>}
       </section>
     </div>
   );

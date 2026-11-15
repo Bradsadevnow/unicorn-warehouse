@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import HouseExperience from "@/components/house/HouseExperience";
+import CancellationDetails from "@/components/CancellationDetails";
+import WorkPlatform from "@/components/WorkPlatform";
 
 export const metadata: Metadata = {
   title: "Goodshift · A little more shift in your day",
-  description: "Clock in to simulated work. Earn Tokens. Keep humanity buying, forever.",
+  description: "Find office shifts in administration, reporting, and customer support.",
 };
 
 export default function Page() {
-  return (
-    <main>
-      <HouseExperience slug="demandeternal" />
-    </main>
-  );
+  return <><WorkPlatform brand="goodshift" /><CancellationDetails section="goodshift">You can stop taking new assignments after your current handoff. Follow-up meetings remain separate orders.</CancellationDetails></>;
 }

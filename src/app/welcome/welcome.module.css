@@ -1,0 +1,124 @@
+.splash {
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at 16% 12%, #ffd7ef, transparent 55%),
+    radial-gradient(ellipse at 85% 85%, #d8f6ed, transparent 52%),
+    #f0e5ff;
+  color: #321c48;
+}
+
+.card {
+  width: min(100%, 550px);
+  padding: clamp(22px, 5vw, 44px);
+  border: 1px solid #dfc8e8;
+  border-radius: 30px;
+  background: #fff9fe;
+  box-shadow: 0 22px 65px #71388a21;
+  text-align: center;
+}
+
+.splash[data-stage="consent"] {
+  background: linear-gradient(135deg, #351049a6, #120a2966), #201336 url("/consent-network.png") center / cover no-repeat;
+}
+
+.splash[data-stage="consent"] .card {
+  box-shadow: 0 0 55px #e493ff55, 0 22px 65px #09051d99;
+}
+
+.brand {
+  margin: 0 0 18px;
+  color: #74369a;
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.25rem;
+  font-weight: 650;
+}
+
+.mascot {
+  display: block;
+  width: min(64%, 220px);
+  height: auto;
+  margin: 0 auto 16px;
+}
+
+.card h1 {
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.card p:not(.brand) { margin: 16px auto; }
+.card .note { color: #654c79; font-size: .8rem; }
+.card .note:last-child { margin-bottom: 0; }
+
+.signIn {
+  display: grid;
+  gap: 8px;
+  max-width: 360px;
+  margin: 22px auto 0;
+  text-align: left;
+}
+
+.signIn label { font-weight: 650; }
+.signIn input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #dfc8e8;
+  border-radius: 12px;
+  background: #f3e8fb;
+  color: inherit;
+  font: inherit;
+  letter-spacing: .12em;
+}
+.signIn small { color: #654c79; }
+.signIn button { margin-top: 10px; }
+
+.scopes, .more {
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #f3e8fb;
+  text-align: left;
+}
+
+.scopes {
+  display: grid;
+  gap: 8px;
+  padding-left: 36px;
+  margin: 22px 0 8px;
+  list-style: disc;
+}
+
+.more summary { cursor: pointer; }
+.more ul {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding-left: 20px;
+  list-style: disc;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.primary, .secondary {
+  min-height: 44px;
+  padding: 9px 18px;
+  border: 1px solid #74369a;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.primary { color: white; background: #74369a; }
+.secondary { color: #582477; background: #fff9fe; }
+.secondary:disabled { opacity: .7; cursor: default; }

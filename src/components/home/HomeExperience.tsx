@@ -7,10 +7,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Reveal from "@/components/Reveal";
 import GlitterLogo from "./GlitterLogo";
 import { TransitionLink } from "@/components/Veil";
-import { houses, productGroups } from "@/content/houses";
+import { houses, market, productGroups } from "@/content/houses";
 import s from "./home.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const products = [...houses, market];
 
 export default function HomeExperience() {
   const root = useRef<HTMLDivElement>(null);
@@ -46,6 +48,9 @@ export default function HomeExperience() {
       <section className={s.hero}>
         <div className={s.aurora} aria-hidden />
         <GlitterLogo />
+        <TransitionLink href="/support" className={s.supportLink}>
+          <span aria-hidden="true">✦</span> Got questions? Chat with a support unicorn! <span aria-hidden="true">✦</span>
+        </TransitionLink>
         <div className={s.heroFoot}>
           <p className={s.now} aria-live="off">
             <span className="label">Now subscribing</span>
@@ -82,8 +87,8 @@ export default function HomeExperience() {
             <h3>{group.name}</h3>
             <ul className={s.list}>
             {group.products.map((slug) => {
-              const i = houses.findIndex((house) => house.slug === slug);
-              const h = houses[i];
+              const i = products.findIndex((product) => product.slug === slug);
+              const h = products[i];
               const inner = (
                 <>
                   <Image className={s.thumbnail} src={h.still} alt="" width={72} height={72} />
@@ -114,7 +119,7 @@ export default function HomeExperience() {
 
           <aside className={s.preview} aria-hidden>
             <div className={s.frame}>
-              {houses.map((h, i) => (
+              {products.map((h, i) => (
                 <div key={h.slug} className={`${s.plate} ${i === active ? s.plateOn : ""}`}>
                   <Image src={h.still} alt="" fill sizes="(max-width: 900px) 0px, 34vw" placeholder="blur" />
                 </div>
@@ -122,10 +127,10 @@ export default function HomeExperience() {
             </div>
             <div className={s.caption}>
               <span className="label">
-                  {houses[active].domain}
+                  {products[active].domain}
               </span>
               <p key={active} className={s.captionLine}>
-                {houses[active].category}
+                {products[active].category}
               </p>
             </div>
           </aside>

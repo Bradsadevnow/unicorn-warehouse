@@ -1,0 +1,39 @@
+.page { max-width: 1320px; margin: auto; padding: 112px var(--gutter) 72px; --panel: #f2e9ff; }
+.page[data-brand="helpinghand"] { --panel: #e9f8ef; }
+.page[data-brand="helpinghand"][data-audience="hiring"] { --panel: #e8e5ec; }
+.employerLink { margin-top: 36px; font-size: 13px; color: var(--dim); }
+.employerLink a { text-decoration: underline; text-underline-offset: 3px; }
+.page[data-brand="brightside"] { --panel: #ffedf6; }
+.audiences { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.audiences a { padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; }
+.audiences a[aria-current="page"] { background: var(--panel); font-weight: 700; }
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: clamp(20px, 5vw, 64px); }
+.intro { display: grid; justify-items: start; gap: 14px; }
+.intro h1 { font: 800 clamp(40px, 6vw, 82px)/1 var(--display); }
+.intro p, .preview span { color: var(--dim); }
+.intro a { color: var(--ice); text-decoration: underline; text-underline-offset: 4px; }
+.preview { padding: clamp(16px, 3vw, 32px); background: var(--panel); border: 1px solid var(--line); border-radius: 24px; scroll-margin-top: 90px; }
+.preview h2, .benefits h2 { font: 800 clamp(26px, 4vw, 42px)/1.1 var(--display); }
+.preview ul { display: grid; gap: 8px; margin-top: 16px; }
+.preview li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; padding: 12px; border-radius: 12px; background: #fffaff; }
+.preview li div { display: grid; }
+.preview li span { font-size: 13px; }
+.preview li small { color: var(--ice); font-weight: 700; }
+.jobCatalog { margin-top: 32px; }
+.jobCategories { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 24px; }
+.jobCategories li { flex-wrap: nowrap; align-items: baseline; }
+.jobCategories li strong { white-space: nowrap; }
+@media (max-width: 980px) {
+  .jobCategories { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .jobCategories { grid-template-columns: minmax(0, 1fr); }
+}
+.benefits { margin-top: 40px; }
+.benefits ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+.benefits li { padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); font-weight: 700; }
+.credential { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; margin-top: 36px; }
+.credential img { max-width: 100%; height: auto; border-radius: 16px; }
+@media (max-width: 760px) {
+  .hero, .benefits ul { grid-template-columns: minmax(0, 1fr); }
+}

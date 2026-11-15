@@ -2,15 +2,14 @@ import type { StaticImageData } from "next/image";
 import aeroStill from "@/assets/everair-unicorn.webp";
 import somnaraStill from "@/assets/dreamwell-unicorn.webp";
 import sublaborixStill from "@/assets/helpinghand-unicorn.webp";
-import termifluxStill from "@/assets/brightside-unicorn.webp";
+import brightsideStill from "@/assets/brightside-creator.webp";
 import undieflowStill from "@/assets/softspace-unicorn.webp";
 import demandeternalStill from "@/assets/goodshift-unicorn.webp";
-import eternuityStill from "@/assets/tomorrowly-unicorn.webp";
+import marketStill from "@/assets/market-unicorn.webp";
 
 export const productGroups = [
-  { id: "personal-essentials", name: "Personal essentials", products: ["aerovitalux", "somnara", "comfortflow"] },
+  { id: "personal-essentials", name: "Personal essentials", products: ["aerovitalux", "somnara", "comfortflow", "market"] },
   { id: "work-and-attention", name: "Work and attention", products: ["sublaborix", "termiflux", "demandeternal"] },
-  { id: "longevity-and-estates", name: "Longevity and estates", products: ["eternuity"] },
 ];
 
 export type House = {
@@ -24,6 +23,16 @@ export type House = {
   still: StaticImageData;
   /** True once the house has its own page. */
   open: boolean;
+};
+
+export const market = {
+  slug: "market",
+  name: "Unicorn Warehouse Market",
+  category: "Groceries and household essentials",
+  domain: "Market",
+  line: "Everyday essentials, all payable in Tokens.",
+  still: marketStill,
+  open: true,
 };
 
 export const houses: House[] = [
@@ -61,10 +70,10 @@ export const houses: House[] = [
     slug: "termiflux",
     no: "04",
     name: "Brightside",
-    category: "Make your waiting count",
+    category: "The first three seconds count",
     domain: "Attention",
     line: "Make every moment count.",
-    still: termifluxStill,
+    still: brightsideStill,
     open: true,
   },
   {
@@ -85,16 +94,6 @@ export const houses: House[] = [
     domain: "Demand",
     line: "Work that works for you.",
     still: demandeternalStill,
-    open: true,
-  },
-  {
-    slug: "eternuity",
-    no: "07",
-    name: "Tomorrowly",
-    category: "More time, renewed quarterly",
-    domain: "Mortality",
-    line: "A brighter future starts today.",
-    still: eternuityStill,
     open: true,
   },
 ];

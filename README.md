@@ -2,13 +2,13 @@
 
 A little more comfort, a little more rest. Explore memberships for the things that make your day.
 
-Unicorn Warehouse is a fictional membership company and a work of satire. Its catalog includes bottled mountain air, a full night of sleep, and simulated shifts you can work to afford either. You can earn Tokens at one company, save them, and spend them at another. Nothing is for sale.
+Unicorn Warehouse is a fictional membership company and a work of satire. Its catalog includes bottled mountain air, a full night of sleep, and warehouse shifts you can work to afford either. You can earn Tokens at one company, save them, and spend them at another. Nothing is for sale.
 
 ![The pastel Everair Alpine Lodge above the clouds](src/assets/everair-alpine-hq.webp)
 
 - **Everair Lodge Collection** · Four seasonal air blends and Summit Reserve, the lodge's signature unscented oxygen.
-- **Token Economy** · Pick up a shift at Goodshift or watch a sponsored message on Brightside. Tokens carry over and never expire.
-- **Token Redemption** · Spend 5 Tokens to skip an ad, 60 for a premium Lodge Collection canister, or 500 for one whole night at Dreamwell.
+- **Token Economy** · Pick up a shift at Goodshift or make a sponsored clip with Brightside. Tokens carry over and never expire.
+- **Token Redemption** · Spend 5 Tokens to boost a clip, 60 for a premium Lodge Collection canister, or 500 a day for a full night with Dreamwell Complete.
 
 ## Run locally
 

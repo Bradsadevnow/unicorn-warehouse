@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CancellationDetails from "@/components/CancellationDetails";
 import HouseExperience from "@/components/house/HouseExperience";
 
 export const metadata: Metadata = {
@@ -11,6 +12,7 @@ export default function Page() {
   return (
     <main>
       <HouseExperience slug="somnara" />
+      <CancellationDetails section="dreamwell">You can use booked sessions through the end of your billing period. Dream Retention access ends with your membership. Your final productivity briefing stays in your account.</CancellationDetails>
     </main>
   );
 }

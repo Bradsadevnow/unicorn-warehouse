@@ -1,9 +1,5 @@
-import HomeExperience from "@/components/home/HomeExperience";
+import WelcomeFlow from "./welcome/WelcomeFlow";
 
-export default function Home() {
-  return (
-    <main>
-      <HomeExperience />
-    </main>
-  );
+export default function LandingPage() {
+  return <WelcomeFlow />;
 }

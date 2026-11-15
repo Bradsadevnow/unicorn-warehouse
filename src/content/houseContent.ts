@@ -1,12 +1,14 @@
 import type { StaticImageData } from "next/image";
+import { dreamwellBenefits } from "./dreamwellBenefits";
+import { softspaceRewards, softspaceSubscriptions } from "./softspaceRewards";
 import aeroStill from "@/assets/aero-chibi.webp";
 import everairAlpineHq from "@/assets/everair-alpine-hq.webp";
 import somnaraStill from "@/assets/somnara-chibi.webp";
+import dreamwellRetreat from "@/assets/dreamwell-retreat.webp";
 import sublaborixStill from "@/assets/sublaborix-chibi.webp";
 import termifluxStill from "@/assets/termiflux-chibi.webp";
 import undieflowStill from "@/assets/undieflow-chibi.webp";
 import demandeternalStill from "@/assets/demandeternal-chibi.webp";
-import eternuityStill from "@/assets/eternuity-chibi.webp";
 
 export type ObjectKind = "canister" | "pod" | "badge" | "terminal" | "implant" | "chain" | "hourglass";
 
@@ -60,9 +62,9 @@ export type HouseContent = {
     position?: string;
     link?: { href: string; label: string };
   };
-  plans: { name: string; price: string; body: string }[];
+  plans: { name: string; price: string; body: string; benefits?: string[]; image?: StaticImageData }[];
   notices: string[];
-  close: { title: string; cta: string; done: string };
+  close: { title: string; cta: string } & ({ href: string } | { done: string });
 };
 
 const aerovitalux: HouseContent = {
@@ -136,12 +138,9 @@ const aerovitalux: HouseContent = {
   capabilities: {
     title: "A little more with your membership.",
     items: [
-      ["Everair Sync", "An optional implant helps you settle into Everair. Once you're acclimated, ordinary air may feel a little less satisfying."],
-      ["Pay as you breathe", "Your meter tracks each breath. A small share of your future earnings covers the air you use today."],
+      ["First Breath", "Your first breath is complimentary. Try it at an Everair sampling station."],
       ["Put your Tokens to use", "Save your Tokens for a seasonal blend from the Lodge Collection or put them toward a fresh canister."],
-      ["A scent for your day", "Choose Focus, Creativity, or Zen. A little flutter when you switch scents is part of the experience."],
-      ["A little backup", "If a payment doesn't go through, we'll send one backup air orb by drone while you update your details."],
-      ["Your canister history", "See every canister you've used in one place. Your history stays on file after your membership ends."],
+      ["A scent for your day", "Choose Focus, Creativity, or Zen."],
     ],
   },
   feature: {
@@ -221,91 +220,115 @@ const somnara: HouseContent = {
       "Settle in and leave the details to us.",
       "There's a lot a little rest can do.",
     ],
-    body: "Your pod sets aside time for rest and records your dreams. Anything you make while dreaming is credited to the account that booked the pod.",
+    body: "Dim the lights and settle into a private pod. Pick a membership with the hours and comforts you’d like.",
   },
   dissection: {
     title: "The Pod",
     callouts: [
       {
-        title: "Micro-REM Sharding",
-        body: "Sleep is divided into countless brief shards, taken throughout the day. You will be visiting the pod often.",
+        title: "A softer light",
+        body: "Ease into bedtime with warm lighting that fades at your pace.",
       },
       {
-        title: "The Neural Covenant",
-        body: "Ideas you make while dreaming are credited to the company that pays for your pod.",
+        title: "Just the right temperature",
+        body: "Dreamwell Plus and above can request a cooler or warmer pod before tucking in.",
       },
       {
-        title: "Wake-Interrupt Protocol",
-        body: "Consent is confirmed by subconscious ping, in real time, even in the deepest delta sleep.",
+        title: "A quieter room",
+        body: "Close the canopy to soften the sounds outside. Choose gentle rain or settle into the quiet.",
       },
       {
-        title: "Eternal Vigilance Mode",
-        body: "Optimised members ascend to a perpetual half-sleep. To date, nobody has fully graduated.",
+        title: "An easier wake-up",
+        body: "Pick your wake time and let the lights brighten slowly, like a little sunrise.",
       },
     ],
   },
   still: {
     image: somnaraStill,
     alt: "A tiny lavender sleep pod with a blue glass canopy.",
-    line: "Rest is the new compute layer.",
-    meta: "Bone ceramic · Smoked glass · Occupancy: one",
+    line: "A quiet little room, all to yourself.",
+    meta: "Private sleep pod · Adjustable light and temperature",
     position: "50% 62%",
   },
   figures: [
-    { value: 300, unit: "%", text: "return in a Fortune 100 pilot, without a whisper of liability" },
-    { value: 100, unit: "%", text: "of dream-forged intellectual property, assigned on waking" },
-    { value: 5, unit: "$bn", text: "projected valuation by the third quarter" },
-    { value: 0, unit: "hrs", text: "of unmonitored sleep per member, per night" },
+    { value: 8, unit: "hrs", text: "set aside for a full night of rest" },
+    { value: 1, unit: "guest", text: "per private sleep pod" },
+    { value: 2, unit: "settings", text: "for sound: gentle rain or quiet" },
+    { value: 500, unit: "Tokens/day", text: "for Dreamwell Complete at Token Redemption" },
   ],
   capabilities: {
-    title: "Nothing is lost overnight.",
+    title: "Make yourself at home.",
     items: [
-      ["Burnout Bonuses", "Spend Tokens earned at HelpingHand or Goodshift on a session. Neglecting sleep unlocks higher tiers. Deprivation is the high score."],
-      ["Dream Syndication", "Employers pool their people's dreams into collective skill hives that compute through the night."],
-      ["Panopticon Dream Vault", "Leaks are auctioned in advance as competitive intelligence. Betrayal, monetised."],
-      ["Somno-Sabotage Accord", "Colleagues who disturb one another's rest are rewarded in Tokens."],
-      ["Dream Debt", "Each optimisation creates a deficit, repayable only in deeper sleep. Tradable on SomniDEX."],
-      ["Neural Annexation", "Should a member default, their consciousness is diplomatically integrated into the Collective."],
+      ["A fresh quilt", "Find a fresh quilt waiting in your pod. Pillow Privileges start with Dreamwell Essential."],
+      ["Room for your things", "Keep your shoes, bag, and phone tucked away beside you."],
+      ["Your usual settings", "Save your preferred lighting and any temperature preference your tier includes."],
+      ["A place to wind down", "Come a little early and settle in with a cup of tea in the lounge."],
+      ["Book for someone", "Send a booking to someone who could use a good night’s sleep."],
+      ["Put your Tokens toward a stay", "Use Tokens you’ve saved from Goodshift or HelpingHand toward a full night."],
     ],
   },
   feature: {
-    label: "Sovereign Neural Nations",
-    aside: "Recognised under the 2035 Accord",
-    title: "Your pod is a country.",
-    body: "Each pod is reclassified as a sovereign neural nation. Members sleep beyond the reach of labour law, of audit, and of extradition. You are its only citizen and its principal export.",
-    link: { href: "/demandeternal", label: "A few Tokens short of a good night’s sleep? Pick up a shift" },
+    label: "The Dreamwell Retreat",
+    aside: "Evening check-in",
+    title: "Somewhere to call it a night.",
+    body: "Leave the day at the door. Have a cup of tea in the lounge, then settle into your own pod for eight quiet hours. In the morning, take your time getting back to the world.",
+    link: { href: "/redemption#sleep-subscriptions", label: "Compare Dreamwell subscriptions" },
+    image: dreamwellRetreat,
+    alt: "A softly lit Dreamwell retreat with sleepy unicorns and lavender sleep pods.",
+    position: "50% 50%",
     facts: [
-      ["Jurisdiction", "Its own"],
-      ["Full night", "500 Tokens"],
-      ["Labour law", "Not applicable"],
+      ["Pod", "Private"],
+      ["Full night", "500 Tokens / day"],
+      ["Wake-up", "Varies by membership"],
     ],
   },
   plans: [
     {
-      name: "REM Royalty",
-      price: "By streak",
-      body: "A badge tier for individuals. Wear your sleep debt as standing among your peers.",
+      name: "Dreamwell Hello",
+      benefits: dreamwellBenefits.hello,
+      price: "20-minute nap",
+      body: "A little moment, just for you.",
     },
     {
-      name: "Dreamwell Sovereign",
-      price: "By accord",
-      body: "Your own pod, your own flag, and a seat at the table of nations that are also beds.",
+      name: "Dreamwell Essential",
+      benefits: dreamwellBenefits.essential,
+      price: "2 hours",
+      body: "Just enough to feel like yourself again.",
     },
     {
-      name: "Enterprise Hive",
-      price: "By fleet",
-      body: "Neural Colony Hives for organisations. Your people compute your intellectual property while they rest.",
+      name: "Dreamwell Plus",
+      benefits: dreamwellBenefits.plus,
+      price: "4 hours",
+      body: "Make more room for the moments that matter.",
+    },
+    {
+      name: "Dreamwell Premium",
+      benefits: dreamwellBenefits.premium,
+      price: "6 hours",
+      body: "Because you deserve a little extra.",
+    },
+    {
+      name: "Dreamwell Complete",
+      benefits: dreamwellBenefits.complete,
+      price: "8 hours",
+      body: "Your whole night, beautifully taken care of.",
+    },
+    {
+      name: "Dreamwell Unlimited",
+      benefits: dreamwellBenefits.unlimited,
+      price: "8 hours + flexible wake-up",
+      body: "Rest without watching the clock.",
     },
   ],
   notices: [
     "A quiet space to end the day.",
     "Your employer can take care of the booking.",
-    "Dream credits appear on the subscriber's statement.",
+    "You can save your favorite pod settings for your next visit.",
   ],
   close: {
     title: "Sleep on it.",
     cta: "Reserve a pod",
-    done: "Your pod is reserved. Your wake time is set by the account holder.",
+    done: "Your pod is reserved. We’ll have it ready when you arrive.",
   },
 };
 
@@ -520,74 +543,66 @@ const comfortflow: HouseContent = {
   hero: {
     lineA: "Find your kind",
     lineB: "of comfortable.",
-    lede: "A small implant that adjusts your comfort as your day changes.",
+    lede: "A little warmer. A little cooler. Fine-tune how your day feels with the Softspace implant.",
     tag: "Implant No. CFL-0005",
   },
   manifesto: {
     lines: [
-      "Busy days feel easier with the right support.",
-      "Softspace adjusts as your calendar fills up.",
-      "Your rate adjusts right along with it.",
+      "Some days call for a little warmth.",
+      "Some days you could use a cool minute.",
+      "Start with one degree.",
     ],
-    body: "A small implant makes comfort adjustments throughout your day. Each adjustment appears on your Token statement.",
+    body: "Use Tokens to move your personal temperature setting up or down. Buy one adjustment or keep a bundle ready for whatever the forecast brings.",
   },
   dissection: {
     title: "The Implant",
     callouts: [
-      { title: "Predictive relief", body: "FluxAlgo predicts when you'll need an adjustment with 94% accuracy. We've reserved the other 6% for urgency." },
-      { title: "Consent-Matrix chip", body: "Your consent preferences are stored locally. Access requires an appointment." },
-      { title: "Surge mode", body: "A calendar full of meetings tells us you're under pressure. Your comfort adjusts. So does your rate." },
-      { title: "Continuity mode", body: "If your payment fails, the implant stays in place. Relief resumes when your account does." },
+      { title: "A little warmer", body: softspaceRewards[0].description },
+      { title: "A little cooler", body: softspaceRewards[1].description },
+      { title: "Warmth in reserve", body: softspaceRewards[2].description },
+      { title: "Summer cooling", body: softspaceRewards[3].description },
     ],
   },
   still: {
     image: undieflowStill,
     alt: "A mint and pink implant with a heart indicator.",
     line: "Find your kind of comfortable.",
-    meta: "Brushed titanium · Mint status light · Subscription required",
+    meta: "Brushed titanium · Mint status light · Personal temperature control",
   },
   figures: [
-    { value: 150, unit: "$M", text: "valuation for the business of metering comfort" },
-    { value: 94, unit: "%", text: "adjustment prediction accuracy claimed by FluxAlgo" },
-    { value: 0, unit: "min", text: "of comfort available in arrears" },
-    { value: 270, unit: "sec", text: "of each break reclassified as available time" },
+    { value: 1, unit: "°", text: "per adjustment, warmer or cooler" },
+    { value: 1, unit: "Token", text: "for a single adjustment in either direction" },
+    { value: 10, unit: "", text: "adjustments per heating or cooling package" },
+    { value: 3, unit: "mo", text: "of peak-season cooling package rates" },
   ],
   capabilities: {
-    title: "Your day, under the skin.",
+    title: "Comfort on your schedule.",
     items: [
-      ["Flow-State Insurance", "When focus drops, the implant offers a brief burst of relief. The offer expires in four minutes."],
-      ["Automatic Renewal", "Renewal is automatic so there is never a gap between billing periods."],
-      ["Calendar Integration", "An all-hands can trigger a company-wide adjustment. The invitation includes the surcharge."],
-      ["Break Recovery", "HelpingHand can assign a micro-task during each adjustment. What used to be a break now clears an invoice."],
-      ["Consent-Matrix SDK", "Each opt-in is written to the implant ledger. A change of employer transfers the account."],
-      ["Removal Coverage", "Removal is covered on the Enterprise plan. Former employees can request a quote."],
+      ["Your comfort profile", "Save a favorite setting for the office, the commute, or a quiet evening in."],
+      ["Degrees in reserve", "Use bundle adjustments one at a time. A warm afternoon can wait until it happens."],
+      ["Seasonal rates", "Check the summer price before buying a Cooling Package. Single adjustments stay at 1 Token."],
     ],
   },
   feature: {
-    label: "Softspace Enterprise",
-    aside: "Employee wellness",
-    title: "Relief by the billable hour.",
-    body: "Connect comfort adjustments to billable time. Managers can review department-level relief alongside utilization, then export both metrics to the same spreadsheet.",
+    label: "Token Redemption",
+    aside: "Temperature rewards",
+    title: "A few degrees for later.",
+    body: "Redeem a single adjustment when you need it, or stock up before the season changes.",
+    link: { href: "/redemption#one-degree-warmer", label: "Browse Softspace rewards" },
     facts: [
-      ["Billing", "Per seat"],
-      ["Reporting", "Per adjustment"],
-      ["Delivery", "Subdermal"],
+      ["Single adjustments", "1 Token"],
+      ["Bundles", "10 adjustments"],
+      ["Summer rates", "June through August"],
     ],
   },
-  plans: [
-    { name: "Base", price: "$29 / month", body: "Scheduled relief during standard office hours." },
-    { name: "Surge", price: "Calendar rate", body: "Relief scales with meetings. A last-minute reschedule may trigger a second charge." },
-    { name: "Enterprise", price: "Per occupied seat", body: "A company-wide implant program with billable-hour reporting and a dedicated removal desk." },
-  ],
+  plans: softspaceSubscriptions,
   notices: [
-    "A little relief between meetings goes a long way.",
-    "Your comfort schedule moves with your calendar.",
-    "Our removal desk can help when your membership ends.",
+    "Summer is our busiest season for a reason.",
   ],
   close: {
     title: "Make yourself comfortable.",
-    cta: "Activate my implant",
-    done: "Softspace is ready. Your first adjustment is on your Token statement.",
+    cta: "Explore Softspace subscriptions",
+    href: "/redemption#softspace-subscriptions",
   },
 };
 
@@ -614,7 +629,7 @@ const demandeternal: HouseContent = {
   hero: {
     lineA: "Work that works",
     lineB: "for you.",
-    lede: "Pick up a simulated shift when it suits you. Save the Tokens or spend them across Unicorn Warehouse.",
+    lede: "Find hands-on shifts near you. Earn Tokens loading trucks, stocking shelves, or getting a space ready for the next crew.",
     tag: "Shift No. DE-0006",
   },
   manifesto: {
@@ -623,15 +638,15 @@ const demandeternal: HouseContent = {
       "Pick a shift that fits your day.",
       "Save for something you're looking forward to.",
     ],
-    body: "Choose a simulated shift and earn Tokens for completing it. Your payout is the same whether or not your work has a customer.",
+    body: "Browse open shifts at warehouses, shops, and venues. See the hours, duties, and Token payout before you pick one.",
   },
   dissection: {
     title: "The Golden Chain",
     callouts: [
       { title: "Matched to your skills", body: "We pick assignments that suit your skills and leave just enough room to improve." },
       { title: "Tokens", body: "Your Tokens roll over between shifts and never expire. A few shifts might buy an ad skip. Keep saving and you could take home a whole night of sleep." },
-      { title: "Automation oversight", body: "If an AI can do your fake job, we charge you to make it harder. You're welcome to expense the charge in Tokens." },
-      { title: "Backlash Bonds", body: "When you quit, a partner receives a payout. For reporting purposes, you have completed your final task." },
+      { title: "Know before you go", body: "Your shift listing tells you what to bring, where to check in, and who’s meeting you there." },
+      { title: "Find a regular shift", body: "Like working with a crew? Look for their next opening once you clock out." },
     ],
   },
   still: {
@@ -642,19 +657,17 @@ const demandeternal: HouseContent = {
   },
   figures: [
     { value: 0, unit: "days", text: "required between earning Tokens and redeeming them" },
-    { value: 0, unit: "units", text: "of output required to complete a shift" },
+    { value: 3, unit: "types", text: "of shifts to browse: loading, stocking, and setup" },
     { value: 100, unit: "%", text: "of unspent Tokens carried into your next shift" },
-    { value: 2500, unit: "$M", text: "pre-money valuation in every timeline" },
+    { value: 1, unit: "balance", text: "for Tokens from every shift you work" },
   ],
   capabilities: {
     title: "Room for advancement.",
     items: [
-      ["Drudgery Prestige", "Get promoted to Senior Associate. The work stays the same, but you now approve someone else's work before they approve yours."],
-      ["Malaise Mastery", "Receive a collectible that proves you were unhappy at work. Transfer of the collectible does not transfer the experience."],
-      ["Effort Mirage", "An extra progress bar helps make the wait feel like something you accomplished."],
-      ["Transparency Blackouts", "Your dashboard occasionally hides the purpose of your assignment. We count the time spent looking for it as professional development."],
-      ["Lifetime Futures", "Partners can trade contracts based on how long you are expected to keep clocking in."],
-      ["Infinite Task Fractalizer", "When the queue is empty, review how it became empty. Findings are assigned as subtasks."],
+      ["Loading and receiving", "Unload deliveries, sort boxes, and stage orders for pickup."],
+      ["Stocking and inventory", "Fill shelves, count stock, and get the shop ready to open."],
+      ["Setup and teardown", "Set out tables, arrange seating, and help clear the room after an event."],
+      ["Lead a crew", "Once you know the site, look for shifts helping new workers get oriented."],
     ],
   },
   feature: {
@@ -678,100 +691,10 @@ const demandeternal: HouseContent = {
   close: {
     title: "Clock in.",
     cta: "Start my shift",
-    done: "You're clocked in. Your first task is to confirm you've arrived.",
-  },
-};
-
-const eternuity: HouseContent = {
-  slug: "eternuity",
-  no: "07",
-  name: "Tomorrowly",
-  category: "More time, renewed quarterly",
-  accent: "#e9c88a",
-  object: "hourglass",
-  pose: {
-    fitWidth: 3.9,
-    tilt: 0.04,
-    roll: -0.17,
-    baseYaw: -0.2,
-    sway: true,
-    yaw: [0.7, -0.7, 0.9, 1.2],
-    heroScale: 1,
-    side: [0.53, 0.7],
-    sideScale: [0.78, 0.55],
-    objectScale: [0.84, 0.68],
-    apartScale: [0.67, 0.52],
-  },
-  hero: {
-    lineA: "A brighter future",
-    lineB: "starts today.",
-    lede: "Keep the age you are today and share a little of your Token yield with the people you love.",
-    tag: "Policy No. EN-0007",
-  },
-  manifesto: {
-    lines: [
-      "Good plans deserve a little more time.",
-      "Keep the age you feel at home in.",
-      "We'll check in with you every quarter.",
-    ],
-    body: "Tomorrowly keeps your biological age fixed at enrollment. We review your premium as your coverage continues, and you can share part of your Token yield with your heirs.",
-  },
-  dissection: {
-    title: "The Policy Clock",
-    callouts: [
-      { title: "Age lock", body: "We freeze your biological age at enrollment. Your payment schedule continues to mature." },
-      { title: "Quarterly sustainment", body: "Each tune-up renews your coverage for another quarter. A missed appointment returns you to the standard passage of time." },
-      { title: "Wealth recapture", body: "We convert assets above your policy threshold into Tomorrowly Equity Tokens. Keep the equity and send 2% of the yield to your heirs in spendable Portfolio Tokens." },
-      { title: "Heir participation", body: "Direct 2% of your Token yield to your heirs while you keep your Equity Tokens. They can finally profit from your continued presence at Thanksgiving." },
-    ],
-  },
-  still: {
-    image: eternuityStill,
-    alt: "A small pink and gold hourglass with lavender sand.",
-    line: "A brighter future starts today.",
-    meta: "Gold finish · Quarterly renewal · Variable premium",
-  },
-  figures: [
-    { value: 750, unit: "$M", text: "valuation before the first subscriber outlives the model" },
-    { value: 4, unit: "/ yr", text: "sustainment appointments per year, for as many years as necessary" },
-    { value: 2, unit: "%", text: "of your Token yield available to participating heirs" },
-    { value: 150, unit: "%", text: "retention, once we include your outstanding obligations" },
-  ],
-  capabilities: {
-    title: "Plan for a longer term.",
-    items: [
-      ["Eternal Youth Annuity", "Choose the age you'd like to keep. We'll decide what it costs to keep it next quarter."],
-      ["Subscriber Voting Cap", "Your assets can compound indefinitely. Your voting rights have a ceiling."],
-      ["Immortal Venture Fund", "We invest the equity we recapture from you. Management fees are calculated over your remaining lifetime."],
-      ["Pre-Probate Arbitration", "Settle the estate now, while everyone is still available to argue about it."],
-      ["Mortality Offset Dividends", "Qualifying years earn Tokens you can save or spend across the Portfolio. One day of air is a popular first redemption."],
-      ["Employer Longevity Benefit", "Your employer can sponsor your next quarter as part of the wellness program. Tenure is now measured in eras."],
-    ],
-  },
-  feature: {
-    label: "Estate services",
-    aside: "For you and your beneficiaries",
-    title: "Leave them something eventually.",
-    body: "Keep your Tomorrowly Equity Tokens and the head of the table. Your heirs receive a share of the Token yield they can save or spend across the Portfolio. Every year you defer the inheritance, we send them a statement.",
-    facts: [
-      ["Principal", "Equity Tokens"],
-      ["Heir yield", "Portfolio Tokens"],
-      ["Inheritance", "Pending"],
-    ],
-  },
-  plans: [],
-  notices: [
-    "Update your plans as the years go by.",
-    "Your heirs can enjoy a share of the yield along the way.",
-    "We review your premium every quarter.",
-  ],
-  close: {
-    title: "Renew your lifetime.",
-    cta: "Extend my policy",
-    done: "You're covered for another quarter. Your updated premium is ready to view.",
+    done: "You're clocked in. Check in with your crew lead when you arrive.",
   },
 };
 
 export const houseContent: Record<string, HouseContent> = {
-  aerovitalux, somnara, sublaborix, termiflux, comfortflow, demandeternal, eternuity,
+  aerovitalux, somnara, sublaborix, termiflux, comfortflow, demandeternal,
 };

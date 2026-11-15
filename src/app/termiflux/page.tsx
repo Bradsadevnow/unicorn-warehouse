@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import HouseExperience from "@/components/house/HouseExperience";
+import CancellationDetails from "@/components/CancellationDetails";
+import WorkPlatform from "@/components/WorkPlatform";
 
 export const metadata: Metadata = {
-  title: "Brightside · Make your waiting count",
-  description: "Ads in your terminal. Skip them with Tokens.",
+  title: "Brightside · Sell content",
+  description: "Make sponsored clips for brands and earn Tokens with Brightside.",
 };
 
 export default function Page() {
-  return (
-    <main>
-      <HouseExperience slug="termiflux" />
-    </main>
-  );
+  return <><WorkPlatform brand="brightside" /><CancellationDetails section="brightside">Accepted payouts stay in your Token balance. Submitted takes remain available for review and training under the applicable terms.</CancellationDetails></>;
 }

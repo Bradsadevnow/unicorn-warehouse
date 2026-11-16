@@ -6,7 +6,8 @@
 .page h2 { font: 850 clamp(2rem, 4.5vw, 3.65rem)/1 var(--display); }
 .page h3 { font: 850 clamp(1.4rem, 2.7vw, 2rem)/1.1 var(--display); }
 .section { display: grid; gap: .85rem; }
-.section, .plan { scroll-margin-top: 6rem; }
+.section, .plan, .serviceGrid article[id] { scroll-margin-top: 6rem; }
+.loop { display: flex; flex-wrap: wrap; gap: .45rem 1.25rem; padding-inline-start: 1.3rem; }
 .plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; }
 .plan { padding: clamp(1rem, 3vw, 1.55rem); border-radius: 1rem; border: 1px solid #d8c9df; display: grid; gap: .7rem; align-content: start; background: #ffe3ef; }
 .plan[data-tone="sky"] { background: #e6f0ff; }

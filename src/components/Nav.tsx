@@ -10,8 +10,7 @@ export default function Nav() {
       </TransitionLink>
       <nav className={styles.groupLinks} aria-label="Main navigation">
         <TransitionLink href="/careers" className={styles.careersLink}>Careers</TransitionLink>
-        <Link href="/home#businesses">Explore businesses</Link>
-        <TransitionLink href="/map">Town map</TransitionLink>
+        <Link href="/home#town">Explore the town</Link>
         <TransitionLink href="/tokens">Token economy</TransitionLink>
         <TransitionLink href="/market">Market</TransitionLink>
         <TransitionLink href="/funplex">Funplex</TransitionLink>

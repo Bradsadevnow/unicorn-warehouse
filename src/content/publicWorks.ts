@@ -7,9 +7,9 @@ export const publicWorksPlans = [
 ] as const;
 
 export const worksNotices = [
-  { name: "Lantern Street lane work", window: "Tuesday · 9 a.m.–noon", detail: "One lane at the Depot Avenue junction is closed for patching. The Clover Loop uses its usual stops.", href: "/map#clover-loop", link: "See the Clover Loop" },
-  { name: "Marina ramp washdown", window: "Saturday · 7–9 a.m.", detail: "The launch ramp opens after washdown. The shoreline path and picnic lawn stay open.", href: "/map?lot=marina", link: "Find the marina" },
-  { name: "Lost-property counter", window: "Weekdays · 10 a.m.–4 p.m.", detail: "Bring the tag number if you have it. Unclaimed umbrellas are sorted by color, then by how certain you are.", href: "/map?lot=police", link: "Find the counter" },
+  { name: "Lantern Street lane work", window: "Tuesday · 9 a.m.–noon", detail: "One lane at the Depot Avenue junction is closed for patching. The Clover Loop uses its usual stops.", href: "/public-works#clover-loop", link: "See the Clover Loop" },
+  { name: "Marina ramp washdown", window: "Saturday · 7–9 a.m.", detail: "The launch ramp opens after washdown. The shoreline path and picnic lawn stay open.", href: "/home?lot=marina#town", link: "Find the marina" },
+  { name: "Lost-property counter", window: "Weekdays · 10 a.m.–4 p.m.", detail: "Bring the tag number if you have it. Unclaimed umbrellas are sorted by color, then by how certain you are.", href: "/home?lot=police#town", link: "Find the counter" },
 ] as const;
 
 export const worksProjects = [

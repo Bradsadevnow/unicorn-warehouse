@@ -1,6 +1,6 @@
 # Unicorn Warehouse handoff
 
-The Next.js app lives in `web`. Unicorn Warehouse has grown from a membership company into a company town, Unicornopolis, where every business parodies an industry. As of commit `00afb76` every business in the registry has its own page, everything is pushed to `main`, and `npm run lint` and `tsc` pass with no warnings.
+The Next.js app lives in `web`. Unicorn Warehouse has grown from a membership company into a company town, Unicornopolis, where every business parodies an industry. Every business in the registry has its own page, the 3D town is the homepage navigation, and `npm run lint` and `tsc` pass with no warnings.
 
 Read these alongside this file:
 
@@ -20,9 +20,16 @@ Read these alongside this file:
 | Money | Token Economy `/tokens` with the Bank on the same page (`/bank` redirects there), Redemption `/redemption` |
 | Company | Governance `/governance`, Careers `/careers`, Terms `/terms`, Product Details `/product-details` |
 
-The homepage groups every business, and `/businesses` redirects there. Outline pages remain at `/businesses/[slug]`.
+Outline pages remain at `/businesses/[slug]`, and `/businesses` redirects to the homepage.
 
-**Unicornopolis.** `/map` is a 20 × 20 town grid with named streets, an address for every lot, Living rents on residential blocks, delivery routes, and the Clover Loop bus. Lot data is in `src/content/unicornopolis.ts`. A 3D view of the town exists in `src/app/map/TownScene.tsx`, using `public/unicornopolis/town.glb` with clickable regions from `src/content/unicornopolisScene.json`, but no page renders it yet, so `/map` shows only the 2D grid. The Blender source files and renders sit in the project root.
+**Unicornopolis is the site navigation.** The homepage's "The good stuff" section is a 3D model of the town (`#town`). Clicking a building opens a card with its art, address, description, a link to the business, and a careers link. A List toggle shows every address by neighborhood, with homes collapsed to one entry per plan. The list is also the fallback when WebGL is unavailable.
+
+- Components live in `src/components/town`: `TownNavigator.tsx` (section, cards, list, lazy loading) and `TownScene.tsx` (React Three Fiber scene). The model is `public/unicornopolis/town.glb`, and its clickable regions are in `src/content/unicornopolisScene.json`. The 3D scene loads only when the section nears the viewport, with `public/unicornopolis/town-preview.webp` as the poster.
+- Card data comes from `src/content/townPreviews.ts`, shaped for the page by `src/content/townDirectory.ts`. Lot positions, addresses, and districts are in `src/content/unicornopolis.ts`.
+- Link to a place with `townPath(id)`, which builds `/home?lot=<id>#town`. Selecting a place updates the URL so it can be shared.
+- Wheel zoom is off so the page scrolls over the map. The + and − buttons zoom.
+- `/map` redirects to `/home#town`. The Clover Loop bus and the civic places that lived on `/map` (Town Hall, Clover Commons, the marina) are now on Public Works.
+- The Blender source files and renders sit in the project root.
 
 **Work boards.** Goodshift (21 office postings, `src/content/goodshiftPostings.ts`) and HelpingHand (54 on-site postings, `src/content/helpingHandPostings.ts`) share the two-pane board layout at `/demandeternal/jobs` and `/sublaborix/jobs`. Business careers pages link each role to its listing.
 
@@ -39,7 +46,7 @@ The homepage groups every business, and `/businesses` redirects there. Outline p
 - **The next phase is records, not pages.** The roadmap's "After the pages" section covers it: give orders, leases, assignments, and service records IDs, link them to the ledger, show them in Account and Support, then seed histories with fees, renewals, refunds, and holds.
 - **Charges shown but not posted.** Bank fees are waived through December 31, 2026, and scheduled Fun Hours show as a future 60-Token charge. Neither is on the ledger. Posting them means adding ledger entries.
 - **Unchecked.** Support chats about the Bank, Fun Hours, and HelpingHand postings have not been run. Replies with Gemma have taken 90–115 seconds as the reference material has grown.
-- **3D town view.** `TownScene.tsx` is built but not mounted on `/map`. It has not been checked in a browser.
+- **Town map on phones.** The map works on a phone-sized screen but the town sits small in the frame, and dragging on the map rotates it rather than scrolling the page. Checked in an emulated phone viewport, not on a real device.
 - **Art.** The Careers hero and posters still use type and the mascot rather than original art.
 
 ## Project decisions to carry forward

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import art from "@/assets/public-works-hero.webp";
 import { publicWorksCycle, publicWorksPlans, worksNotices, worksProjects } from "@/content/publicWorks";
-import { townLots } from "@/content/unicornopolis";
+import { cloverLoopStops, townLots, townPath } from "@/content/unicornopolis";
 import WorksRequestPreview from "./WorksRequestPreview";
 import s from "./publicWorks.module.css";
 
@@ -15,13 +15,19 @@ export const metadata: Metadata = {
 const [fire, police, bundle] = publicWorksPlans;
 const bundleSavings = fire.price + police.price - bundle.price;
 const serviceDirectory = [
-  { icon: "🚧", title: "Roads & Transit", copy: "Potholes, street signs, lane closures, and Clover Loop shelters.", href: "/map#clover-loop", label: "Find a bus stop" },
-  { icon: "🌊", title: "Water & Shoreline", copy: "Water service on town land, the marina ramp, and the Clover Lake walking path.", href: "/map?lot=marina", label: "Find the marina" },
-  { icon: "🚒", title: "Fire & Rescue", copy: "Station visits, incident records, and household preparedness.", href: "/map?lot=fire-rescue", label: "Find the fire hall" },
-  { icon: "🌷", title: "Neighborhood Police", copy: "Lost property, case updates, and the neighborhood counter.", href: "/map?lot=police", label: "Find the police station" },
+  { icon: "🚧", title: "Roads & Transit", copy: "Potholes, street signs, lane closures, and Clover Loop shelters.", href: "#clover-loop", label: "Find a bus stop" },
+  { icon: "🌊", title: "Water & Shoreline", copy: "Water service on town land, the marina ramp, and the Clover Lake walking path.", href: townPath("marina"), label: "Find the marina" },
+  { icon: "🚒", title: "Fire & Rescue", copy: "Station visits, incident records, and household preparedness.", href: townPath("fire-rescue"), label: "Find the fire hall" },
+  { icon: "🌷", title: "Neighborhood Police", copy: "Lost property, case updates, and the neighborhood counter.", href: townPath("police"), label: "Find the police station" },
 ] as const;
 
 const campus = townLots.filter(({ id }) => ["public-works", "fire-rescue", "police"].includes(id));
+
+const aroundTown = [
+  { id: "town-hall", copy: "Stop by the bulletin board for street closures, school concerts, marina notices, and lost pets." },
+  { id: "clover-commons", copy: "A public lawn, shade trees, and a loop path on the walk from Market Square to Clover Lake." },
+  { id: "marina", copy: "A public waterfront path, a picnic lawn, and the launch ramp. The Clover Loop stops here on weekends." },
+].map(({ id, copy }) => ({ ...townLots.find((lot) => lot.id === id)!, copy }));
 
 export default function PublicWorksPage() {
   return (
@@ -67,6 +73,29 @@ export default function PublicWorksPage() {
         </div>
       </section>
 
+      <section id="clover-loop" className={s.section} aria-labelledby="bus-heading">
+        <h2 id="bus-heading">The Clover Loop</h2>
+        <p>One bus loop through town. The marina stop runs on weekends.</p>
+        <ol className={s.loop}>
+          {cloverLoopStops.map((stop) => <li key={stop.name}>{stop.name}{"weekendOnly" in stop && " · Weekends"}</li>)}
+        </ol>
+      </section>
+
+      <section id="around-town" className={s.section} aria-labelledby="around-heading">
+        <h2 id="around-heading">Around town</h2>
+        <div className={s.serviceGrid}>
+          {aroundTown.map(({ id, name, address, copy, icon }) => (
+            <article key={id} id={id}>
+              <span aria-hidden="true">{icon}</span>
+              <h3>{name}</h3>
+              <p>{address}</p>
+              <p>{copy}</p>
+              <Link href={townPath(id)}>See it on the town map →</Link>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <WorksRequestPreview />
 
       <section className={s.section} id="projects" aria-labelledby="projects-heading">
@@ -101,7 +130,7 @@ export default function PublicWorksPage() {
         <div><h2 id="yard-heading">A little yard with a lot to do.</h2><p>Road crews, Fire &amp; Rescue, and the blue-roofed police station all share the Depot District campus.</p></div>
         <ul className={s.campusAddresses}>
           {campus.map(({ id, name, address }) => (
-            <li key={id}><Link href={`/map?lot=${id}`}>{name} →</Link><span>{address}</span></li>
+            <li key={id}><Link href={townPath(id)}>{name} →</Link><span>{address}</span></li>
           ))}
         </ul>
       </section>

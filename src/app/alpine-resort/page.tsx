@@ -84,7 +84,7 @@ export default function AlpineResortPage() {
           <article><p className="label">■ Blue</p><h3>Pine Traverse</h3><p>A groomed ridge run that curves back toward the hotel overlook.</p></article>
           <article><p className="label">◆ Black</p><h3>Summit Drop</h3><p>A steep upper run from the summit chair to the lower junction.</p></article>
         </div>
-        <Link href="/map?lot=alpine-resort">Find the mountain road →</Link>
+        <Link href="/home?lot=alpine-resort#town">Find the mountain road →</Link>
       </section>
 
       <section id="casino" className={s.photoFeature} aria-labelledby="casino-heading">

@@ -28,7 +28,7 @@ export default function FlockPage() {
         <div>
           <h2 id="campus-heading">Clover Cloud Data Center</h2>
           <p>Flock has a home of its own in the Depot District, right by Fulfillment. Look for the teal roof and the little row of birdhouses.</p>
-          <Link href="/map?lot=clover-cloud">Find Clover Cloud on the town map →</Link>
+          <Link href="/home?lot=clover-cloud#town">Find Clover Cloud on the town map →</Link>
         </div>
         <div>
           <h3>Keep your flock together.</h3>

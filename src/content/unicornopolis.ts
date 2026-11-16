@@ -17,6 +17,9 @@ export const zoneNames: Record<Zone, string> = {
   civic: "Civic",
 };
 
+/** Homepage town map with one place selected. */
+export const townPath = (lotId: string) => `/home?lot=${lotId}#town`;
+
 export const cellKey = ({ x, y }: Point) => `${x},${y}`;
 export const isRoad = ({ x, y }: Point) => avenues.has(x) || streets.has(y);
 export const roadLabel = ({ x, y }: Point) => [streets.get(y), avenues.get(x)].filter(Boolean).join(" × ");
@@ -67,12 +70,12 @@ const storefronts: readonly LotSeed[] = [
   { id: "motorworks", x: 17, y: 10, name: "Motorworks Service", href: "/motorworks#service", zone: "industrial", icon: "🔧", district: "Depot District" },
   { id: "construction", x: 17, y: 11, name: "Construction Yard", href: "/construction", zone: "industrial", icon: "🏗️", district: "Depot District" },
   { id: "school", x: 4, y: 7, name: "Cloverfield School", href: "/school", zone: "civic", icon: "🌱" },
-  { id: "town-hall", x: 7, y: 10, name: "Unicornopolis Town Hall", href: "/map#town-hall", zone: "civic", icon: "🏛️", district: "Market Square" },
+  { id: "town-hall", x: 7, y: 10, name: "Unicornopolis Town Hall", href: "/public-works#town-hall", zone: "civic", icon: "🏛️", district: "Market Square" },
   { id: "public-works", x: 17, y: 13, name: "Public Works Yard", href: "/public-works", zone: "civic", icon: "🚧", district: "Depot District" },
   { id: "police", x: 17, y: 14, name: "Unicornopolis Police Station", href: "/public-works#police", zone: "civic", icon: "🚓", district: "Public Works Campus" },
   { id: "fire-rescue", x: 17, y: 15, name: "Fire & Rescue", href: "/public-works#fire", zone: "civic", icon: "🚒", district: "Public Works Campus" },
-  { id: "marina", x: 17, y: 19, name: "Clover Lake Marina", href: "/map#clover-loop", zone: "civic", icon: "⛵", district: "Clover Lake" },
-  { id: "clover-commons", x: 11, y: 15, name: "Clover Commons Park", href: "/map#clover-commons", zone: "civic", icon: "🌳", district: "Market Square" },
+  { id: "marina", x: 17, y: 19, name: "Clover Lake Marina", href: "/public-works#clover-loop", zone: "civic", icon: "⛵", district: "Clover Lake" },
+  { id: "clover-commons", x: 11, y: 15, name: "Clover Commons Park", href: "/public-works#clover-commons", zone: "civic", icon: "🌳", district: "Market Square" },
 ];
 
 const homeRows = [

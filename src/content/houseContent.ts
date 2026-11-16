@@ -1,5 +1,6 @@
 import type { StaticImageData } from "next/image";
 import { dreamwellBenefits } from "./dreamwellBenefits";
+import { dreamwellPricing } from "./dreamwellPricing";
 import { softspaceRewards, softspaceSubscriptions } from "./softspaceRewards";
 import aeroStill from "@/assets/aero-chibi.webp";
 import everairAlpineHq from "@/assets/everair-alpine-hq.webp";
@@ -254,7 +255,7 @@ const somnara: HouseContent = {
     { value: 8, unit: "hrs", text: "set aside for a full night of rest" },
     { value: 1, unit: "guest", text: "per private sleep pod" },
     { value: 2, unit: "settings", text: "for sound: gentle rain or quiet" },
-    { value: 500, unit: "Tokens/day", text: "for Dreamwell Complete at Token Redemption" },
+    { value: dreamwellPricing.subscriptions.complete.tokens, unit: `Tokens/${dreamwellPricing.subscriptionUnit}`, text: "for Dreamwell Complete at Token Redemption" },
   ],
   capabilities: {
     title: "Make yourself at home.",
@@ -278,7 +279,7 @@ const somnara: HouseContent = {
     position: "50% 50%",
     facts: [
       ["Pod", "Private"],
-      ["Full night", "500 Tokens / day"],
+      ["Full night", `${dreamwellPricing.subscriptions.complete.tokens} Tokens / ${dreamwellPricing.subscriptionUnit}`],
       ["Wake-up", "Varies by membership"],
     ],
   },

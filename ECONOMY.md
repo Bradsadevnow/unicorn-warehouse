@@ -1,0 +1,49 @@
+# Unicorn Warehouse Economic Standard v1.0
+
+Use 1 Token ≈ $1 as an internal purchasing-power benchmark. Cash redemption is $0. Career comparisons assume 40 hours per week, 52 weeks per year, and 12 months per year. They represent gross earnings at the reference hours. Gig payouts are per accepted assignment.
+
+## Affordability scenarios
+
+All figures are Tokens. The 3,500 scenario models one adult renting a room in shared housing. The 5,500 scenario models a larger household supported by one full-time income. These internal planning scenarios use reference budgets. Current rents live in the [Living catalog](src/content/living.ts).
+
+| Career level | Hourly | Monthly | After 3,500 | After 5,500 |
+| --- | ---: | ---: | ---: | ---: |
+| Unicorn Trainee | 12 | 2,080 | -1,420 | -3,420 |
+| Junior Unicorn Associate | 18 | 3,120 | -380 | -2,380 |
+| Unicorn Associate II (proposed) | 20 | 3,467 | -33 | -2,033 |
+| Senior Unicorn | 35 | 6,067 | +2,567 | +567 |
+| Unicorn Team Lead | 42 | 7,280 | +3,780 | +1,780 |
+| Executive Unicorn | Confidential | Confidential | — | — |
+
+| Monthly expense | Shared housing scenario | Household scenario |
+| --- | ---: | ---: |
+| Housing | 1,400 | 2,200 |
+| Food | 500 | 800 |
+| Everair | 350 | 500 |
+| Dreamwell | 600 | 600 |
+| Softspace | 180 | 400 |
+| Transportation | 240 | 500 |
+| Other essentials | 170 | 500 |
+| Mandatory Fun Hours | 60 | Budget separately |
+| **Total** | **3,500** | **5,500** |
+
+The household column preserves the original essentials subtotal. Adding 60 Tokens for one member's Fun Hours brings it to 5,560. Bank charges depend on account activity and are excluded from both scenarios. Everair remains a budget allowance pending a baseline allowance and renewal price. The Market example below uses current shelf prices. The Softspace household estimate is a usage budget. The shared scenario uses Seasonal Select.
+
+## Pricing and accounting
+
+Dreamwell is the first catalog update. Its current pricing lives in [dreamwellPricing.ts](src/content/dreamwellPricing.ts). The nap is 5 Tokens per session. The Essential, Plus, Premium, and Complete subscriptions are 8, 12, 16, and 20 Tokens per day for 2, 4, 6, and 8 hours respectively. Thirty days of Complete costs 600 Tokens. Existing ledger entries, including Poppy's 250-Token four-hour session, keep their recorded amounts.
+
+Give each priced offering a stable ID, a catalog version, an effective date, a billing unit, and an entitlement. Use the unit members actually buy, such as a meal, a delivery, a day of rest, a 30-day comfort cycle, or a monthly rental. Document scheduled exceptions such as seasonal cooling rates. Preserve the applicable price and version on an obligation when it is created. Refund against the original charge.
+
+Settle through the authoritative Token ledger. Keep pending payouts and holds distinct from settled transactions. Application code determines fees and payouts. Support explains recorded account activity and cites policy. As settlement features are added, verify that accepted shifts pay the posted amount, renewals use their applicable catalog version, and refunds reconcile to the original charge.
+
+Keep balances, obligations, and payments distinct. A quote creates no obligation. A signed lease or loan creates a dated obligation owned by the issuing business. A settled payment references that obligation. Departments can apply their own policy to account facts. For example, Living can consider pending wages when screening income, while the Bank can apply only available Everyday Tokens to rent.
+
+## Gig boards and Market
+
+- HelpingHand's 24 sample jobs show the duration and pay 12–20 Tokens per hour at the listed durations, including a rush premium for dinner pickup. A 15-minute unload pays 4 Tokens. Employers pay $14 for that job.
+- Goodshift's 16 postings use 18, 24, 28, and 35 Tokens per hour for Associate, Specialist, Analyst, and Senior analyst work, respectively. Buyers pay in dollars. Use accepted assignments for realized income. Poppy's existing weekly report entries are still 140 Tokens each, while the current three-hour posting pays 84.
+- Brightside's nine briefs pay 18–72 Tokens per approved package. Package prices account for creative work beyond the finished clip's runtime. Buyers pay dollars and the payout is in Tokens.
+- Market staples include 4-Token bread, 6-Token eggs, and 2-Token canned beans. Vegan & Organic keeps its premium slate, including the 18-Token banana.
+
+A four-shop month at 125 Tokens per shop fits the 500-Token shared-housing food allowance. An example shop buys 8 bananas, a dozen eggs, a bag of rice, a box of pasta, a can of soup, 3 frozen dinners, a box of oats, a loaf of bread, 3 cans of black beans, 2 half-gallons of milk, a bag of apples, 2 bags of carrots, 4 bags of frozen vegetables, 2 trays of chicken thighs, and a bottle of cooking oil. This is an example of catalog purchasing power.

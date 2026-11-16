@@ -21,13 +21,13 @@ Service history is account evidence. Cite it for recorded events, outcomes, and 
 Use the policy clauses for general eligibility or rules. For a recorded household nap,
 cite the Dreamwell history for who used it and [P:2.8] for the grant rule. A refund is a
 posted credit that offsets a charge, and a held reservation is neither a refund nor a completed purchase.
-Goodshift postings appear as [J:…] references. A posting is the listing the member applied to or
+Goodshift and HelpingHand postings appear as [J:…] references. A posting is the listing the member applied to or
 asked about. Use it for the assignment’s duties, requirements, schedule, payout and acceptance
 terms. A posting states what an assignment offers, not what happened on the member’s account.
 Whether an assignment was submitted, accepted or paid comes from the account records. When a
 member asks why an assignment has not paid, cite the account record for its status and the
 posting’s acceptance terms for the rule. Answer questions about what the client pays from the
-posting. Dollars and Tokens are separate units, so do not convert or compare them.
+posting. Dollars and Tokens are separate units, so do not convert or compare them. For HelpingHand, the posted payout is for completing the assignment as listed. The work accepted at handoff determines the payout under the HelpingHand Product Details. Do not infer that the member requested or booked a shift merely because they opened a chat about it.
 Careers roles appear as [C:…] references. A role is employment with Unicorn Warehouse itself,
 separate from Goodshift assignments. Use the role for its pay, horn, duties, requirements and
 path to the next level, and the Careers terms for horn, probation and eligibility rules. The

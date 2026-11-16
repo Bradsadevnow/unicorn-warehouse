@@ -7,6 +7,7 @@ import { complete } from "@/server/model";
 import { getHerdEligibility } from "@/server/herdEligibility";
 import { getMemberSession } from "@/server/memberSession";
 import { getServiceHistory, serviceNames } from "@/server/serviceHistory";
+import { getSupportPosting } from "@/server/supportPosting";
 import { supportPrompt } from "../../support/supportPrompt";
 
 function getAccountReferences(memberAccount: MemberAccount, transaction?: MemberAccount["ledger"][number]) {
@@ -52,15 +53,16 @@ const policyReferences = [
 ];
 
 function getPostingReferences(memberAccount: MemberAccount, selected?: Posting) {
-  const linked = memberAccount.assignments.flatMap(({ id, postingId }) => {
+  const linked = memberAccount.assignments.flatMap(({ id, postingId, ledgerEntryId }) => {
     const posting = postingId && getPosting(postingId);
-    return posting ? [{ posting, assignment: id }] : [];
+    const entry = memberAccount.ledger.find(({ id }) => id === ledgerEntryId);
+    return posting ? [{ posting, assignment: id, ledgerEntryId, recordedPayoutTokens: entry?.amount, ledgerStatus: entry?.status }] : [];
   });
   const ids = [...new Set([...(selected ? [selected.id] : []), ...linked.map(({ posting }) => posting.id)])];
   return ids.map((id) => {
     const posting = getPosting(id)!;
     const { id: postingId, title, category, client, duration, payout, price, posted, schedule, level, status, applicants, openings, summary, responsibilities, requirements, success } = posting;
-    const listing = { id: postingId, title, category, client, duration, payoutTokens: payout, posted, schedule, level, status, applicants, openings, summary, responsibilities, requirements, success };
+    const listing = { id: postingId, title, category, client, duration, currentPostingPayoutTokens: payout, posted, schedule, level, status, applicants, openings, summary, responsibilities, requirements, success };
     const acceptance = [...posting.acceptance, ...standardAcceptance];
     return {
       id: `J:${posting.id}`,
@@ -70,9 +72,10 @@ function getPostingReferences(memberAccount: MemberAccount, selected?: Posting) 
       text: JSON.stringify({
         ...listing,
         acceptance,
-        clientPaysDollars: price,
+        currentClientPriceDollars: price,
         countsTowardUnicornTrainee: posting.herdEligible ?? false,
-        memberAssignments: linked.filter((item) => item.posting.id === id).map(({ assignment }) => assignment),
+        memberAssignments: linked.filter((item) => item.posting.id === id).map(({ assignment, ledgerEntryId, recordedPayoutTokens, ledgerStatus }) => ({ assignment, ledgerEntryId, recordedPayoutTokens, ledgerStatus })),
+        payoutNote: "Use each assignment’s ledger entry as account evidence for the amount earned or pending. The current posting payout applies to new work.",
       }),
     };
   });
@@ -98,7 +101,7 @@ const openingRequest: Message = {
 };
 
 function classifyEvidence(source: { label: string; href: string }) {
-  return { ...source, kind: source.href.startsWith("/account?") ? "account" : source.href.startsWith("/demandeternal/jobs/") || source.href.startsWith("/careers/") ? "posting" : "policy" };
+  return { ...source, kind: source.href.startsWith("/account?") ? "account" : source.href.startsWith("/demandeternal/jobs/") || source.href.startsWith("/sublaborix/jobs/") || source.href.startsWith("/careers/") ? "posting" : "policy" };
 }
 
 export async function POST(request: Request) {
@@ -122,7 +125,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "Transaction not found." }, { status: 404 });
   }
 
-  const posting = typeof body.posting === "string" ? getPosting(body.posting) : undefined;
+  const posting = getSupportPosting(body.posting);
   if (body.posting != null && !posting) {
     return Response.json({ error: "Posting not found." }, { status: 404 });
   }
@@ -132,7 +135,21 @@ export async function POST(request: Request) {
   }
 
   try {
-    const postingReferences = getPostingReferences(memberAccount, posting);
+    const postingReferences = getPostingReferences(memberAccount, posting?.brand === "Goodshift" ? posting.posting : undefined);
+    if (posting?.brand === "HelpingHand") {
+      const { slug, title, category, site, duration, payout, price, summary, duties, requirements, acceptance, href } = posting.posting;
+      postingReferences.push({
+        id: `J:${posting.id}`,
+        label: `HelpingHand posting · ${title}`,
+        href,
+        excerpt: acceptance,
+        text: JSON.stringify({ slug, title, category, site, duration, payoutTokens: payout, clientPaysDollars: price, summary, duties, requirements, acceptance, countsTowardUnicornTrainee: false }),
+      });
+    }
+    const opening = posting ? {
+      role: "user" as const,
+      content: `Welcome me by name and open with the ${posting.brand} posting “${posting.posting.title}” [J:${posting.id}]. Briefly summarize what I’d do, the posted payout and duration, and ask what I’d like to know about the shift. Cite the posting. Do not switch to an unrelated account issue.`,
+    } : openingRequest;
     const references: { id: string; label: string; href: string; text: string; excerpt?: string }[] =
       [...getAccountReferences(memberAccount, transaction), ...postingReferences, ...getRoleReferences(role), ...policyReferences];
     const { content, provider } = await complete([
@@ -142,13 +159,13 @@ export async function POST(request: Request) {
           supportPrompt,
           `Member: ${memberAccount.name}. Account date: ${memberAccount.date}. Household: ${memberAccount.household}. Employer: ${memberAccount.employer}.`,
           ...(transaction ? ["The member opened this chat from [A:transaction]. Use it as the active transaction when the member refers to this payment or purchase. In the opening, offer help with that record. Cite [A:transaction] if you discuss it."] : []),
-          ...(posting ? [`The member opened this chat from the Goodshift posting “${posting.title}” [J:${posting.id}]. Use it as the active posting when the member refers to this job, shift, or assignment. In the opening, offer help with that posting. Cite [J:${posting.id}] if you discuss it.`] : []),
+          ...(posting ? [`The member opened this chat from the ${posting.brand} posting “${posting.posting.title}” [J:${posting.id}]. Use it as the active posting when the member refers to this job, shift, or assignment. In the opening, offer help with that posting. Cite [J:${posting.id}] if you discuss it.`] : []),
           ...(role ? [`The member opened this chat from the Unicorn Warehouse careers role “${role.title}” [C:${role.id}]. Use it as the active role when the member refers to this job, role, or the herd. In the opening, offer help with that role. Cite [C:${role.id}] if you discuss it.`] : []),
           "Reference material:",
           ...references.map(({ id, text }) => `[${id}] ${text}`),
         ].join("\n\n"),
       },
-      ...(messages[0]?.role === "user" ? [] : [openingRequest]),
+      ...(messages[0]?.role === "user" ? [] : [opening]),
       ...messages,
     ], 0.35);
     const ids = new Set([...content.matchAll(/\[((?:A|T|P|J|C):[^\]\s]+)\]/g)].map((match) => match[1]));

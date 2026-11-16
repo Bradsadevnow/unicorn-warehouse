@@ -39,3 +39,5 @@
 @media (max-width: 760px) {
   .hero, .benefits ul { grid-template-columns: minmax(0, 1fr); }
 }
+
+.jobCategories li[id] { scroll-margin-top: 100px; }

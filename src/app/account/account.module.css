@@ -54,3 +54,11 @@
 @media (max-width: 760px) {
   .overview, .columns { grid-template-columns: minmax(0,1fr); }
 }
+
+.panel[id="fun-hours"] { grid-column: 1 / -1; }
+.funHours { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.funHours progress { width: 100%; accent-color: var(--ice); }
+.funHours ol { padding: 0; }
+@media (max-width: 760px) {
+  .funHours { grid-template-columns: minmax(0, 1fr); }
+}

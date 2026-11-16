@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { postingCategories, postingPath, postings } from "@/content/goodshiftPostings";
+import { brightsideBriefId, brightsideCatalog, helpingHandCatalog } from "@/content/gigCatalogs";
+import { helpingHandJobsPath, helpingHandPostings } from "@/content/helpingHandPostings";
 import Marketplace from "./Marketplace";
 import s from "./work-platform.module.css";
 
@@ -39,42 +41,6 @@ const platforms = {
   },
 } as const;
 
-const helpingHandCatalog = [
-  { category: "Fast food", jobs: [["Bag orders during the lunch rush", 18, 24], ["Cover dinner rush pickup", 22, 30], ["Restock the condiment station", 10, 10], ["Reset the dining room", 15, 18]] },
-  { category: "Warehouse", jobs: [["Unload a delivery", 28, 12], ["Sort incoming cartons", 18, 22], ["Stage pickup orders", 16, 20], ["Count one aisle of stock", 24, 30]] },
-  { category: "Retail", jobs: [["Restock the front shelves", 16, 24], ["Set up a window display", 26, 34], ["Apply shelf labels", 12, 14], ["Pack online orders", 20, 26]] },
-  { category: "Events", jobs: [["Set up tables", 24, 36], ["Arrange chairs", 20, 24], ["Staff the check-in desk", 32, 42], ["Clear the room after an event", 30, 40]] },
-  { category: "Cleaning", jobs: [["Sweep a storefront", 12, 12], ["Wipe down tables and counters", 14, 16], ["Clean a break room", 18, 22], ["Reset a fitting room", 12, 14]] },
-  { category: "Deliveries and errands", jobs: [["Collect a local supply order", 18, 24], ["Run a parcel to the mailroom", 8, 8], ["Move boxes between departments", 15, 18], ["Stage outgoing shipments", 22, 28]] },
-] as const;
-
-const brightsideCatalog = [
-  {
-    category: "Product demos",
-    jobs: [
-      ["Unbox the Lodge Collection", 60, "One 15-second clip", 60, "Everair"],
-      ["First Impression Pack", 100, "Two 15-second clips with different opening lines", 100],
-      ["Casual Countertop Demo", 80, "One 30-second clip filmed at home", 80],
-    ],
-  },
-  {
-    category: "Before and after",
-    jobs: [
-      ["Show us your morning face", 125, "Two 20-second clips", 125, "Dreamwell"],
-      ["The Day-One Glow-Up", 150, "Three clips showing the first day of use", 150],
-      ["The Repeat Customer", 110, "Two clips with a follow-up one week later", 110],
-    ],
-  },
-  {
-    category: "Sponsored shorts",
-    jobs: [
-      ["Make a lunch rush look easy", 90, "One 30-second clip", 90, "HelpingHand"],
-      ["Stop the Scroll", 75, "Three alternate hooks for one sponsored short", 75],
-      ["Launch Day Takeover", 180, "Three 30-second shorts for launch week", 180],
-    ],
-  },
-] as const;
-
 const goodshiftCatalog = postingCategories.map((category) => ({
   category,
   jobs: postings
@@ -82,6 +48,8 @@ const goodshiftCatalog = postingCategories.map((category) => ({
     .map(({ title, price, duration, payout }) => [title, price, duration, payout] as const),
 }));
 const postingPaths = new Map(postings.map((posting) => [posting.title, postingPath(posting)]));
+
+const helpingHandPaths = new Map<string, string>(helpingHandPostings.map(({ title, href }) => [title, href]));
 
 export default function WorkPlatform({
   brand,
@@ -98,10 +66,9 @@ export default function WorkPlatform({
   const catalog = isBrightside ? brightsideCatalog : isHelpingHand ? helpingHandCatalog : goodshiftCatalog;
   const listings = catalog.map(({ category, jobs }) => ({
     category,
-    jobs: jobs.map(([task, price, detail, payout, sponsor]) => ({
-      task, price,
-      payout: typeof detail === "number" ? detail : payout,
-      detail: typeof detail === "string" ? (sponsor ? `${sponsor} · ${detail}` : detail) : undefined,
+    jobs: jobs.map(([task, , detail, payout, sponsor]) => ({
+      task, payout,
+      detail: sponsor ? `${sponsor} · ${detail}` : detail,
     })),
   }));
 
@@ -112,7 +79,7 @@ export default function WorkPlatform({
           brand={platform.name}
           catalog={catalog.map(({ category, jobs }) => ({
             category,
-            jobs: jobs.map(([task, price, detail]) => [task, price, typeof detail === "string" ? detail : undefined] as const),
+            jobs: jobs.map(([task, price, detail]) => [task, price, detail] as const),
           }))}
           workerPath={platform.path}
         />
@@ -131,23 +98,28 @@ export default function WorkPlatform({
           <p>{platform.name} · {platform.tagline}</p>
           <h1>{content.title}</h1>
           <p>{content.intro}</p>
-          <a href="#platform-preview">{isBrightside ? "Browse creator briefs" : "Browse jobs and payouts"} ↓</a>
+          {isHelpingHand
+            ? <Link href={helpingHandJobsPath}>Browse local shifts →</Link>
+            : <a href="#platform-preview">{isBrightside ? "Browse creator briefs" : "Browse jobs and payouts"} ↓</a>}
           <Link href="/tokens">See how Tokens work →</Link>
         </header>
       </div>
       <section className={`${s.preview} ${s.jobCatalog}`} id="platform-preview" aria-labelledby="job-catalog-heading">
         <h2 id="job-catalog-heading">{content.board}</h2>
-        <p>{isBrightside ? "Sample briefs. Payouts in Tokens per approved package." : brand === "goodshift" ? "Open a posting for the full assignment. Payouts in Tokens per job." : "Sample postings. Payouts in Tokens per job."}</p>
+        <p>{isBrightside ? "Sample briefs. Payouts in Tokens per approved package." : brand === "goodshift" ? "Open a posting for the full assignment. Payouts in Tokens per job." : "Open a posting for the worksite, duties, and payout."}</p>
         <div className={s.jobCategories}>
           {listings.map(({ category, jobs }) => (
             <div key={category}>
               <h3>{category}</h3>
-              <ul>{jobs.map(({ task, payout, detail }) => (
-                <li key={task}>
-                  {detail ? <div><b>{brand === "goodshift" && postingPaths.has(task) ? <Link className={s.posting} href={postingPaths.get(task)!}>{task}</Link> : task}</b><span>{detail}</span></div> : <span>{task}</span>}
+              <ul>{jobs.map(({ task, payout, detail }) => {
+                const href = isHelpingHand ? helpingHandPaths.get(task) : brand === "goodshift" ? postingPaths.get(task) : undefined;
+                return (
+                <li key={task} id={isBrightside ? brightsideBriefId(task) : undefined}>
+                  {detail ? <div><b>{href ? <Link className={s.posting} href={href}>{task}</Link> : task}</b><span>{detail}</span></div> : <span>{task}</span>}
                   {isHelpingHand ? <strong>{payout} Tokens</strong> : <small>{payout} Tokens</small>}
                 </li>
-              ))}</ul>
+                );
+              })}</ul>
             </div>
           ))}
         </div>

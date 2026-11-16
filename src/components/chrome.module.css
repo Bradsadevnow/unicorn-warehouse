@@ -151,8 +151,16 @@
   white-space: nowrap;
 }
 .groupLinks a:hover { color: var(--ice); }
+.groupLinks .careersLink {
+  flex-shrink: 0;
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: #dff3e7;
+  color: #234e3c;
+}
+.groupLinks .careersLink:hover { background: #cae9d6; color: #234e3c; }
 
-@media (max-width: 800px) {
+@media (max-width: 1060px) {
   .nav { display: grid; gap: 5px; padding-block: 8px; }
   .groupLinks { overflow-x: auto; scrollbar-width: thin; padding: 3px 1px 5px; }
   .groupLinks .pill { padding-block: 4px; }

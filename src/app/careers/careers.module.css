@@ -1,22 +1,9 @@
-.page { max-width: 1160px; margin-inline: auto; padding: 112px var(--gutter) 72px; display: grid; gap: 40px; }
 .page a:not(.primary) { text-decoration: underline; text-underline-offset: 3px; }
 .eyebrow { font: 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
 .fine { font-size: 13px; color: var(--dim); }
-.hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: clamp(16px, 4vw, 48px); padding: clamp(24px, 5vw, 56px); border: 1px solid var(--line); border-radius: 28px; background: linear-gradient(120deg, #ffe2f3, #fff6cd 55%, #e9ddff); }
-.hero > div { display: grid; gap: 14px; justify-items: start; }
-.hero h1 { font: 800 clamp(38px, 6.4vw, 78px)/1 var(--display); }
-.hero img { width: clamp(160px, 26vw, 340px); height: auto; }
-.lede { font: 800 clamp(20px, 2.6vw, 28px)/1.2 var(--display); color: var(--ice); }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 4px; }
 .primary { display: inline-block; padding: 13px 26px; border-radius: 999px; background: var(--ice); color: #fff; font-weight: 800; }
-.posters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.posters figure { display: grid; align-content: space-between; gap: 28px; min-height: 250px; margin: 0; padding: 26px; border: 1px solid var(--line); border-radius: 24px; background: #ffe2f3; }
-.posters figure[data-tone="mint"] { background: #dcf5e7; }
-.posters figure[data-tone="lilac"] { background: #e9ddff; }
-.posters p { font: 800 clamp(26px, 3.2vw, 40px)/1.05 var(--display); }
-.posters figcaption { font-size: 12px; color: var(--dim); }
 .section { display: grid; gap: 14px; scroll-margin-top: 96px; }
-.section h2 { font: 800 clamp(28px, 4vw, 44px)/1.1 var(--display); }
 .ladder { display: grid; gap: 10px; }
 .ladder a { display: grid; grid-template-columns: auto minmax(0, 1.3fr) minmax(0, 1fr) auto; align-items: center; gap: 12px 22px; padding: 18px 22px; border: 1px solid var(--line); border-radius: 20px; background: #fffaff; text-decoration: none !important; }
 .ladder a:hover { background: #f4e6fa; }
@@ -35,16 +22,45 @@
 .progress h3 { font: 800 20px/1.2 var(--display); }
 .progress progress { width: 100%; height: 14px; accent-color: var(--ice); }
 .count b { font: 800 34px/1 var(--display); color: var(--ice); }
-.welcomes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.welcomes li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: #fffaff; }
-.welcomes img { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 1px solid var(--line); }
-.welcomes div { display: grid; gap: 10px; align-content: start; }
-.welcomes blockquote { font-size: 17px; line-height: 1.45; }
 .closing { display: grid; gap: 12px; justify-items: center; text-align: center; padding: clamp(28px, 5vw, 56px); border-radius: 28px; background: linear-gradient(120deg, #e9ddff, #ffe2f3); }
 .closing p:first-child { font: 800 clamp(30px, 5vw, 54px)/1 var(--display); }
+
+.page { max-width: 1320px; margin-inline: auto; padding: clamp(100px, 10vw, 144px) var(--gutter) 76px; display: grid; gap: clamp(42px, 7vw, 100px); }
+.hero { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: clamp(20px, 4vw, 62px); }
+.hero > div { gap: clamp(12px, 2vw, 24px); }
+.hero h1 { font: 900 clamp(45px, 7.1vw, 105px)/.93 var(--display); letter-spacing: -.05em; }
+.hero h1 em { display: block; color: var(--ice); font-style: normal; }
+.hero img { display: block; width: 100%; height: auto; border-radius: clamp(18px, 3vw, 32px); box-shadow: 0 16px 48px #63258220; }
+.lede { max-width: 40ch; color: var(--dim); font-size: clamp(16px, 1.8vw, 21px); line-height: 1.5; }
+.life { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 70px); align-items: center; padding: clamp(26px, 6vw, 74px); border-radius: 32px; background: linear-gradient(130deg, #ffeaf6, #ede2fe); }
+.life > div { display: grid; gap: 15px; }
+.life h2, .section h2 { font: 900 clamp(32px, 5.1vw, 62px)/1 var(--display); letter-spacing: -.025em; }
+.life p:not(.eyebrow) { max-width: 45ch; color: var(--dim); }
+.perks { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.perks li { padding: 14px 18px; border-left: 2px solid #bc89d4; background: #fffaff9c; border-radius: 0 14px 14px 0; }
+.perks h3, .teams h3 { font: 800 clamp(18px, 2.1vw, 26px)/1.15 var(--display); }
+.teams { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; padding: 0; list-style: none; }
+.teams a:not(.primary) { display: block; height: 100%; overflow: hidden; border: 1px solid var(--line); border-radius: 24px; background: #fffaff; text-decoration: none; }
+.teams a:hover { box-shadow: 0 10px 24px #63258218; }
+.teams img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
+.teams a > div { display: grid; align-content: start; gap: 6px; padding: clamp(14px, 2.4vw, 24px); }
+.teams span { color: var(--ice); font-weight: 700; }
+.testimonial { display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); align-items: center; gap: clamp(20px, 5vw, 70px); padding: clamp(22px, 5vw, 60px); border-radius: 32px; background: #382249; color: #fff8ff; }
+.testimonial img { display: block; width: 100%; height: auto; border-radius: 22px; }
+.testimonial figure { display: grid; gap: 18px; margin: 0; }
+.testimonial blockquote { font: 700 clamp(23px, 3.6vw, 47px)/1.12 var(--display); margin: 0; }
+.testimonial figcaption { color: #f1c9ef; }
+.testimonial figcaption a { color: #fff8ff; font-weight: 700; }
 @media (max-width: 860px) {
-  .hero, .posters, .eligibility, .welcomes { grid-template-columns: minmax(0, 1fr); }
-  .hero img { grid-row: 1; }
+  .hero, .life, .eligibility { grid-template-columns: minmax(0, 1fr); }
   .ladder a { grid-template-columns: auto minmax(0, 1fr); }
   .ladder dl, .view { grid-column: 2; }
 }
+@media (max-width: 720px) {
+  .testimonial { grid-template-columns: minmax(0, 1fr); }
+  .testimonial img { max-width: 220px; }
+}
+
+@media (max-width: 1100px) { .teams { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .teams { grid-template-columns: minmax(0, 1fr); } }
+.page section[id="benefits"] { scroll-margin-top: 96px; }

@@ -8,7 +8,11 @@ Unicorn Warehouse is a fictional membership company and a work of satire. Its ca
 
 - **Everair Lodge Collection** · Four seasonal air blends and Summit Reserve, the lodge's signature unscented oxygen.
 - **Token Economy** · Pick up a shift at Goodshift or make a sponsored clip with Brightside. Tokens carry over and never expire.
-- **Token Redemption** · Spend 5 Tokens to boost a clip, 60 for a premium Lodge Collection canister, or 500 a day for a full night with Dreamwell Complete.
+- **Token Redemption** · Spend 5 Tokens to commission a clip, 60 for a premium Lodge Collection canister, or 20 a day for a full night with Dreamwell Complete.
+
+See [Economy Standard](ECONOMY.md) for the wage anchors, household scenarios, and pricing rules.
+
+See [Business roadmap](BUSINESS-ROADMAP.md) for the industry-by-industry checklist.
 
 ## Run locally
 

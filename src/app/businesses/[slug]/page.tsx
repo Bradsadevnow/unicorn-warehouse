@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { businessPath, businesses, getBusiness } from "@/content/businesses";
 import { rolePath, roles } from "@/content/careers";
 import { postingPath, postings } from "@/content/goodshiftPostings";
+import { helpingHandJobsPath, helpingHandPostings } from "@/content/helpingHandPostings";
 import s from "../businesses.module.css";
 
 export function generateStaticParams() {
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: PageProps<"/businesses/[slug]
 }
 
 const boards = {
-  HelpingHand: "/sublaborix",
+  HelpingHand: helpingHandJobsPath,
   Goodshift: "/demandeternal/jobs",
   Brightside: "/termiflux",
 } as const;
@@ -32,12 +33,13 @@ export default function BusinessPage({ params }: PageProps<"/businesses/[slug]">
 async function BusinessDetails({ params }: Pick<PageProps<"/businesses/[slug]">, "params">) {
   const business = getBusiness((await params).slug);
   if (!business) notFound();
+  if (business.careersHref) permanentRedirect(business.careersHref);
   const level = roles.find(({ rung }) => rung === business.role.rung);
   const open = business.status === "Open";
 
   return (
     <main className={s.page}>
-      <Link className={s.back} href="/businesses">← Our businesses</Link>
+      <Link className={s.back} href="/home#businesses">← Explore businesses</Link>
       <header className={s.hero} data-tone={business.tone}>
         <span className={s.icon} aria-hidden="true">{business.icon}</span>
         <p className={s.eyebrow}>{business.industry} · {business.status}</p>
@@ -55,13 +57,15 @@ async function BusinessDetails({ params }: Pick<PageProps<"/businesses/[slug]">,
           <ul className={s.gigs}>
             {business.gigs.map(({ title, tokens, board }) => {
               const posting = board === "Goodshift" ? postings.find((item) => item.title === title) : undefined;
+              const helpingHand = board === "HelpingHand" ? helpingHandPostings.find((job) => job.title === title) : undefined;
+              const href = posting ? postingPath(posting) : helpingHand?.href;
               return (
                 <li key={title}>
                   <div>
-                    <b>{posting ? <Link href={postingPath(posting)}>{title}</Link> : title}</b>
+                    <b>{href ? <Link href={href}>{title}</Link> : title}</b>
                     <span>Listed on <Link href={boards[board]}>{board}</Link></span>
                   </div>
-                  <small>{tokens} Tokens</small>
+                  <small>{posting?.payout ?? tokens} Tokens</small>
                 </li>
               );
             })}

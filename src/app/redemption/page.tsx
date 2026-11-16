@@ -2,8 +2,20 @@ import type { Metadata } from "next";
 import CancellationDetails from "@/components/CancellationDetails";
 import Image from "next/image";
 import { TransitionLink } from "@/components/Veil";
+import { dreamwellPricing } from "@/content/dreamwellPricing";
 import { dreamwellBenefits, dreamwellBenefitNote } from "@/content/dreamwellBenefits";
 import { softspaceRewards, softspaceRewardPrice, softspaceSubscriptions } from "@/content/softspaceRewards";
+import { dispatchPlus } from "@/content/dispatch";
+import dispatchArt from "@/assets/dispatch-store.webp";
+import { adventurePlus } from "@/content/funplex";
+import { flockContinuity } from "@/content/flock";
+import { publicWorksCycle, publicWorksPlans } from "@/content/publicWorks";
+import { alpineMembershipCycle, alpineMemberships } from "@/content/alpineResort";
+import flockArt from "@/assets/flock-hero.webp";
+import { wellnessCycleDays, wellnessPlans } from "@/content/wellness";
+import { pharmacyPlans } from "@/content/wellnessPharmacy";
+import { houseContent } from "@/content/houseContent";
+import funplex from "@/assets/funplex-hero.webp";
 import aero from "@/assets/aero-chibi.webp";
 import lodge from "@/assets/everair-alpine-hq.webp";
 import sleepTwo from "@/assets/dreamwell-2-hours.webp";
@@ -20,6 +32,15 @@ export const metadata: Metadata = {
   title: "Token Redemption",
   description: "Browse Portfolio rewards you can save up for with Tokens.",
 };
+
+const { nap: napPrice, subscriptions, subscriptionUnit } = dreamwellPricing;
+
+const portfolioSubscriptions = [
+  { id: "alpine-resort", name: "Grand Alpine Resort", plans: alpineMemberships, days: alpineMembershipCycle, details: "/alpine-resort#memberships", label: "Visit Grand Alpine" },
+  { id: "wellness", name: "Wellness", plans: wellnessPlans, days: wellnessCycleDays, details: "/wellness#plans", label: "Visit Wellness" },
+  { id: "wellness-pharmacy", name: "Wellness Pharmacy", plans: pharmacyPlans, days: wellnessCycleDays, details: "/wellness#pharmacy", label: "Visit the pharmacy" },
+  { id: "public-works", name: "Public Works", plans: publicWorksPlans, days: publicWorksCycle, details: "/public-works#memberships", label: "Visit Public Works" },
+] as const;
 
 const rewards = [
   {
@@ -38,7 +59,7 @@ const rewards = [
     name: "20-Minute Nap",
     company: "Dreamwell",
     slug: "somnara",
-    tokens: 25,
+    tokens: napPrice.tokens,
     image: nap,
     alt: "A sleepy lavender unicorn curled up in a nap pod beside a pink alarm clock",
     description: "Dreamwell Hello. A little moment, just for you. Includes Rest Access.",
@@ -88,7 +109,7 @@ const sleepPlans = [
   {
     name: "Two Hours of Sleep",
     tier: "Dreamwell Essential",
-    tokens: 125,
+    tokens: subscriptions.essential.tokens,
     image: sleepTwo,
     alt: "A bleary unicorn clutching a giant mug of coffee",
     description: "Two hours in a private pod. Your eyes are open. The coffee is handling the rest.",
@@ -97,7 +118,7 @@ const sleepPlans = [
   {
     name: "Four Hours of Sleep",
     tier: "Dreamwell Plus",
-    tokens: 250,
+    tokens: subscriptions.plus.tokens,
     image: sleepFour,
     alt: "A yawning unicorn wrapped in a blanket and rubbing one eye",
     description: "Four quiet hours. Awake enough to find your slippers. Give yourself a minute for the second one.",
@@ -106,7 +127,7 @@ const sleepPlans = [
   {
     name: "Six Hours of Sleep",
     tier: "Dreamwell Premium",
-    tokens: 375,
+    tokens: subscriptions.premium.tokens,
     image: sleepSix,
     alt: "A mostly refreshed unicorn stretching with a sleepy smile",
     description: "Six hours and a gentle wake-up. You might even say good morning first.",
@@ -115,7 +136,7 @@ const sleepPlans = [
   {
     name: "One Whole Night",
     tier: "Dreamwell Complete",
-    tokens: 500,
+    tokens: subscriptions.complete.tokens,
     image: sleepEight,
     alt: "A fully rested unicorn beaming with both hooves raised",
     description: "Eight quiet hours. You might become a morning person.",
@@ -141,61 +162,156 @@ export default function RedemptionPage() {
         <header className={styles.intro}>
           <h1>Token <em>Redemption</em></h1>
           <p>Use your Tokens now, or save for a reward you’ve had your eye on.</p>
-          <a href="#sleep-subscriptions" className={styles.link}>Browse sleep subscriptions ↓</a>
-          <a href="#softspace-subscriptions" className={styles.link}>Browse Softspace subscriptions ↓</a>
+          <a href="#subscriptions" className={styles.link}>Browse all subscriptions ↓</a>
           <a href="#rewards" className={styles.link}>Browse rewards ↓</a>
         </header>
       </div>
 
-      <section id="sleep-subscriptions" className={styles.sleepSection} aria-labelledby="sleep-heading">
-        <h2 id="sleep-heading">Dreamwell subscriptions</h2>
-        <p>{dreamwellBenefitNote} Rest Access starts with Dreamwell Hello.</p>
-        <div className={styles.sleepPlans}>
-          {sleepPlans.map((plan) => (
-            <article className={styles.reward} key={plan.tier}>
-              <div className={styles.art}>
-                <Image src={plan.image} alt={plan.alt} fill sizes="(max-width: 700px) 24vw, 160px" />
-              </div>
-              <div className={styles.details}>
-                <p className="label">{plan.name}</p>
-                <h3>{plan.tier}</h3>
-                <p className={styles.price}>{plan.tokens} Tokens / day</p>
-                <p className={styles.description}>{plan.description}</p>
-                <ul className={styles.benefits}>
-                  {plan.benefits.map((benefit) => <li key={benefit}>{benefit}</li>)}
-                </ul>
-              </div>
-            </article>
-          ))}
-        </div>
-        <div className={styles.sleepLinks}>
-          <TransitionLink href="/somnara#memberships" className={styles.link}>See all Dreamwell memberships →</TransitionLink>
-          <TransitionLink href="/demandeternal" className={styles.link}>A few Tokens short? Pick up a shift →</TransitionLink>
-        </div>
-      </section>
+      <section id="subscriptions" className={styles.subscriptions} aria-labelledby="subscriptions-heading">
+        <h2 id="subscriptions-heading">Subscriptions</h2>
+        <section id="sleep-subscriptions" className={styles.sleepSection} aria-labelledby="sleep-heading">
+          <h3 id="sleep-heading">Dreamwell subscriptions</h3>
+          <p>{dreamwellBenefitNote} Rest Access starts with Dreamwell Hello.</p>
+          <div className={styles.sleepPlans}>
+            {sleepPlans.map((plan) => (
+              <article className={styles.reward} key={plan.tier}>
+                <div className={styles.art}>
+                  <Image src={plan.image} alt={plan.alt} fill sizes="(max-width: 700px) 24vw, 160px" />
+                </div>
+                <div className={styles.details}>
+                  <p className="label">{plan.name}</p>
+                  <h4>{plan.tier}</h4>
+                  <p className={styles.price}>{plan.tokens} Tokens / {subscriptionUnit}</p>
+                  <p className={styles.description}>{plan.description}</p>
+                  <ul className={styles.benefits}>
+                    {plan.benefits.map((benefit) => <li key={benefit}>{benefit}</li>)}
+                  </ul>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className={styles.sleepLinks}>
+            <TransitionLink href="/somnara#memberships" className={styles.link}>See all Dreamwell memberships →</TransitionLink>
+            <TransitionLink href="/demandeternal" className={styles.link}>A few Tokens short? Pick up a shift →</TransitionLink>
+          </div>
+        </section>
 
-      <section id="softspace-subscriptions" className={styles.sleepSection} aria-labelledby="softspace-heading">
-        <h2 id="softspace-heading">Softspace subscriptions</h2>
-        <div className={`${styles.sleepPlans} ${styles.softspacePlans}`}>
-          {softspaceSubscriptions.map((plan) => (
-            <article className={styles.reward} key={plan.name}>
-              <div className={styles.art}>
-                <Image src={plan.image} alt="" fill sizes="(max-width: 700px) 92vw, 50vw" placeholder="blur" />
-              </div>
-              <div className={styles.details}>
-                <h3>{plan.name}</h3>
-                <p className={styles.price}>{plan.price}</p>
-                <p className={styles.description}>{plan.body}</p>
-                <ul className={styles.benefits}>
-                  {plan.benefits.map((benefit) => <li key={benefit}>{benefit}</li>)}
-                </ul>
-              </div>
-            </article>
-          ))}
-        </div>
-        <div className={styles.sleepLinks}>
-          <TransitionLink href="/comfortflow" className={styles.link}>Visit Softspace →</TransitionLink>
-        </div>
+        <section id="softspace-subscriptions" className={styles.sleepSection} aria-labelledby="softspace-heading">
+          <h3 id="softspace-heading">Softspace subscriptions</h3>
+          <div className={`${styles.sleepPlans} ${styles.softspacePlans}`}>
+            {softspaceSubscriptions.map((plan) => (
+              <article className={styles.reward} key={plan.name}>
+                <div className={styles.art}>
+                  <Image src={plan.image} alt="" fill sizes="(max-width: 700px) 92vw, 50vw" placeholder="blur" />
+                </div>
+                <div className={styles.details}>
+                  <h4>{plan.name}</h4>
+                  <p className={styles.price}>{plan.price}</p>
+                  <p className={styles.description}>{plan.body}</p>
+                  <ul className={styles.benefits}>
+                    {plan.benefits.map((benefit) => <li key={benefit}>{benefit}</li>)}
+                  </ul>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className={styles.sleepLinks}>
+            <TransitionLink href="/comfortflow" className={styles.link}>Visit Softspace →</TransitionLink>
+          </div>
+        </section>
+
+        <section id="flock-subscriptions" className={styles.sleepSection} aria-labelledby="flock-heading">
+          <h3 id="flock-heading">Flock by Clover Cloud</h3>
+          <article className={`${styles.reward} ${styles.adventure}`}>
+            <div className={styles.art}>
+              <Image src={flockArt} alt="Pastel birds perched on little birdhouses along the walk home" fill sizes="(max-width: 700px) 90vw, 520px" placeholder="blur" />
+            </div>
+            <div className={styles.details}>
+              <h4>Household Continuity</h4>
+              <p className={styles.price}>{flockContinuity.price} Tokens / {flockContinuity.days} days</p>
+              <p className={styles.description}>Flock check-ins are included with eligible employment. Household Continuity keeps the little notes coming for your household after employer sponsorship ends.</p>
+              <TransitionLink href="/flock" className={styles.link}>Meet your flock →</TransitionLink>
+            </div>
+          </article>
+        </section>
+
+        <section id="funplex-subscriptions" className={styles.sleepSection} aria-labelledby="funplex-heading">
+          <h3 id="funplex-heading">Funplex subscriptions</h3>
+          <article className={[styles.reward, styles.adventure].join(" ")}>
+            <div className={styles.art}>
+              <Image src={funplex} alt="" fill sizes="(max-width: 700px) 90vw, 520px" placeholder="blur" />
+            </div>
+            <div className={styles.details}>
+              <h4>{adventurePlus.name}</h4>
+              <p className={styles.price}>{adventurePlus.price}</p>
+              <p className={styles.description}>{adventurePlus.line}</p>
+              <ul className={styles.benefits}>
+                {adventurePlus.includes.map((benefit) => <li key={benefit}>{benefit}</li>)}
+              </ul>
+              <p className={styles.description}>{adventurePlus.fine}</p>
+              <TransitionLink href="/funplex#adventure-plus" className={styles.link}>Explore Adventure Plus →</TransitionLink>
+            </div>
+          </article>
+        </section>
+
+        <section id="dispatch-subscriptions" className={styles.sleepSection} aria-labelledby="dispatch-heading">
+          <h3 id="dispatch-heading">Dispatch subscriptions</h3>
+          <article className={[styles.reward, styles.adventure].join(" ")}>
+            <div className={styles.art}>
+              <Image src={dispatchArt} alt="" fill sizes="(max-width: 700px) 90vw, 520px" placeholder="blur" />
+            </div>
+            <div className={styles.details}>
+              <h4>{dispatchPlus.name}</h4>
+              <p className={styles.price}>{dispatchPlus.tokens} Tokens / {dispatchPlus.interval}</p>
+              <p className={styles.description}>{dispatchPlus.description}</p>
+              <ul className={styles.benefits}><li>{dispatchPlus.boosts} Priority Matching boosts per cycle</li></ul>
+              <p className={styles.description}>{dispatchPlus.fine}</p>
+              <TransitionLink href="/dispatch#dispatch-plus" className={styles.link}>Explore Dispatch Plus →</TransitionLink>
+            </div>
+          </article>
+        </section>
+
+        {portfolioSubscriptions.map(({ id, name, plans, days, details, label }) => (
+          <section key={id} id={`${id}-subscriptions`} className={`${styles.sleepSection} ${styles.otherPlans}`} aria-labelledby={`${id}-subscriptions-heading`}>
+            <h3 id={`${id}-subscriptions-heading`}>{name} subscriptions</h3>
+            {id === "wellness-pharmacy" && <p>Membership covers refill services. Order contents are billed separately in Everyday Tokens.</p>}
+            <ul>
+              {plans.map((plan) => (
+                <li key={plan.id}>
+                  <h4>{plan.name}</h4>
+                  <p className={styles.price}>{plan.price} Tokens / {days} days</p>
+                  <p>{plan.benefit}</p>
+                </li>
+              ))}
+            </ul>
+            <div className={styles.sleepLinks}>
+              <TransitionLink href={details} className={styles.link}>{label} →</TransitionLink>
+            </div>
+          </section>
+        ))}
+
+        <section className={styles.otherPlans} aria-labelledby="other-plans-heading">
+          <h3 id="other-plans-heading">More memberships</h3>
+          <ul>
+            {houseContent.aerovitalux.plans?.filter(({ price }) => price !== "Complimentary").map(({ name, body }) => (
+              <li key={name}>
+                <h4>{name}</h4>
+                <p>{body}</p>
+                <TransitionLink href="/aerovitalux#memberships" className={styles.link}>See Everair membership details →</TransitionLink>
+              </li>
+            ))}
+            <li>
+              <h4>Everair AirLink Premium</h4>
+              <p>Download an offline breathing allowance before you head out.</p>
+              <TransitionLink href="/product-details#everair" className={styles.link}>See AirLink Premium details →</TransitionLink>
+            </li>
+            <li>
+              <h4>Dreamwell Unlimited</h4>
+              <p>Eight hours of rest with a flexible wake-up.</p>
+              <TransitionLink href="/somnara#memberships" className={styles.link}>See Dreamwell membership details →</TransitionLink>
+            </li>
+          </ul>
+        </section>
       </section>
 
       <section id="rewards" className={styles.catalog} aria-label="Rewards catalog">

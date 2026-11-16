@@ -1,0 +1,31 @@
+.page { --plum: #683868; max-width: 1300px; margin: auto; padding: 108px var(--gutter) 72px; display: grid; gap: clamp(34px, 6vw, 82px); }
+.hero { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: clamp(18px, 5vw, 60px); }
+.hero > div { display: grid; gap: 16px; justify-items: start; }
+.hero h1 { font: 900 clamp(48px, 8vw, 105px)/.93 var(--display); letter-spacing: -.046em; }
+.hero em { display: block; color: var(--plum); font-style: normal; }
+.hero img, .venue img { display: block; width: 100%; height: auto; }
+.hero img { border-radius: 28px; }
+.hero p { max-width: 45ch; }
+.catalog, .venue, .booking { scroll-margin-top: 96px; }
+.catalog { display: grid; gap: 16px; }
+.catalog h2 { font: 900 clamp(30px, 5vw, 60px)/1 var(--display); }
+.filters, .venues { display: grid; gap: 14px; }
+.filters { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 18px; border-radius: 20px; background: #f3e5f6; }
+.filters label { display: grid; gap: 5px; font-weight: 700; }
+.filters select, .filters input { min-width: 0; border: 1px solid var(--line); padding: 8px; border-radius: 8px; background: #fffaff; color: inherit; font: inherit; }
+.venues { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.venue { overflow: hidden; border: 1px solid var(--line); border-radius: 24px; background: #fffaff; }
+.venue img { aspect-ratio: 3 / 2; object-fit: cover; }
+.venueCopy, .booking { display: grid; gap: 8px; padding: clamp(16px, 3vw, 27px); }
+.venue h3, .booking h3 { font: 900 clamp(21px, 3vw, 33px)/1.08 var(--display); }
+.detail { color: var(--dim); }
+.links { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; }
+.links a:not(.button) { color: var(--plum); text-decoration: underline; text-underline-offset: 4px; }
+.button { width: fit-content; display: inline-block; border-radius: 999px; padding: 9px 16px; background: var(--plum); color: white; font-weight: 800; }
+.booking { border: 1px solid var(--line); border-radius: 24px; background: #f8e8ef; }
+.booking h2 { font-size: clamp(26px, 4vw, 42px); }
+.booking dl { margin: 0; }
+.booking dl div { display: flex; flex-wrap: wrap; gap: 8px; }
+.booking dd { margin: 0; font-weight: 700; }
+@media (max-width: 800px) { .hero { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 690px) { .venues, .filters { grid-template-columns: minmax(0, 1fr); } }

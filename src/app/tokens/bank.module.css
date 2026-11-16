@@ -1,0 +1,41 @@
+.bank { max-width: 1140px; margin: clamp(24px, 5vw, 56px) auto; display: grid; gap: clamp(24px, 4vw, 40px); scroll-margin-top: 96px; }
+.bank [data-tone="pink"] { --tone: #ffe2f3; }
+.bank [data-tone="mint"] { --tone: #dcf5e7; }
+.bank [data-tone="lilac"] { --tone: #e9ddff; }
+.bank [data-tone="butter"] { --tone: #fff3c4; }
+.bank a { color: var(--ice); text-decoration: underline; text-underline-offset: 3px; }
+.eyebrow { font: 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+.fine { font-size: 13px; color: var(--dim); }
+.section { display: grid; gap: 14px; scroll-margin-top: 96px; }
+.section h2 { font: 800 clamp(28px, 4vw, 44px)/1.1 var(--display); }
+.card { display: grid; gap: 8px; padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: #fffaff; }
+.card h3 { font: 800 clamp(22px, 3vw, 28px)/1.1 var(--display); color: var(--ice); }
+.accounts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.account { display: grid; gap: 8px; padding: 22px; border: 1px solid var(--line); border-radius: 22px; background: var(--tone); }
+.balance { font: 800 clamp(30px, 3.6vw, 42px)/1 var(--display); }
+.account dl, .advance dl { display: grid; gap: 6px; margin: 8px 0; padding: 12px; border-radius: 12px; background: #fffaffb0; font-size: 14px; }
+.account dl div { display: flex; justify-content: space-between; gap: 12px; }
+.account dt { color: var(--dim); }
+.account dd { margin: 0; font-weight: 700; text-align: right; }
+.account progress { width: 100%; height: 12px; accent-color: var(--ice); }
+.advance { display: grid; gap: 8px; }
+.products { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.products > li { display: grid; gap: 8px; align-content: start; padding: 24px; border: 1px solid var(--line); border-radius: 22px; background: var(--tone); scroll-margin-top: 96px; }
+.products h3 { font: 800 clamp(24px, 3vw, 32px)/1.1 var(--display); }
+.line { font-weight: 700; color: var(--ice); }
+.products ul { display: grid; gap: 4px; padding-left: 20px; list-style: disc; }
+.tableWrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 20px; background: #fffaff; }
+.fees { width: 100%; border-collapse: collapse; font-size: 15px; }
+.fees th, .fees td { padding: 12px 16px; text-align: left; border-top: 1px solid var(--line); vertical-align: top; }
+.fees thead th { border-top: 0; font: 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+.fees td:nth-child(2) { font-weight: 700; white-space: nowrap; }
+.fees td:last-child { color: var(--dim); }
+.work { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+.gigs { display: grid; gap: 8px; }
+.gigs li { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 14px 16px; border-radius: 14px; background: #f2e9ff; }
+.gigs div { display: grid; }
+.gigs span { font-size: 13px; color: var(--dim); }
+.gigs small { color: var(--ice); font-weight: 700; white-space: nowrap; }
+@media (max-width: 900px) {
+  .accounts, .products, .work { grid-template-columns: minmax(0, 1fr); }
+}

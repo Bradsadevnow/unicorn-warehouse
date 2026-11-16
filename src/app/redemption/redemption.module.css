@@ -47,9 +47,10 @@
   margin-bottom: 32px;
   scroll-margin-top: 88px;
 }
-.sleepSection > h2 {
+.subscriptions > h2 {
   font: 800 clamp(30px, 5vw, 56px)/1 var(--display);
 }
+.sleepSection > h3, .otherPlans > h3 { font: 800 clamp(24px, 3.5vw, 38px)/1.1 var(--display); margin-bottom: 12px; }
 .sleepSection > p { margin-block: 8px 16px; color: var(--dim); }
 .sleepPlans {
   display: grid;
@@ -58,7 +59,7 @@
 }
 .sleepPlans .art { min-height: 150px; }
 .sleepPlans .details { grid-template-columns: minmax(0, 1fr); }
-.sleepPlans h3 { font: 800 clamp(22px, 2.5vw, 32px)/1.05 var(--display); }
+.sleepPlans h4, .adventure h4 { font: 800 clamp(22px, 2.5vw, 32px)/1.05 var(--display); }
 .benefits { list-style: disc; padding-inline-start: 1.2em; font-size: 14px; }
 .sleepLinks { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 14px; }
 
@@ -153,4 +154,19 @@
 
 @media (max-width: 380px) {
   .details .price { grid-column: 1 / -1; }
+}
+
+.subscriptions { margin-bottom: 32px; scroll-margin-top: 88px; }
+.subscriptions > h2 { margin-bottom: 24px; }
+.adventure { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto; }
+.adventure .art { min-height: 210px; }
+.adventure .art img { object-fit: cover; }
+.adventure .details { grid-template-columns: minmax(0, 1fr); }
+.otherPlans ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 0; }
+.otherPlans li { display: grid; align-content: start; gap: 8px; padding: 18px; border: 1px solid var(--line); border-radius: 20px; background: #fffaff; }
+.otherPlans h4 { font: 800 21px/1.1 var(--display); }
+.otherPlans p:not(.price) { color: var(--dim); font-size: 14px; }
+@media (max-width: 700px) {
+  .adventure, .otherPlans ul { grid-template-columns: minmax(0, 1fr); }
+  .adventure .art { min-height: 0; aspect-ratio: 3 / 2; }
 }

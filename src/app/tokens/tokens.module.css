@@ -16,7 +16,7 @@
   margin-bottom: clamp(24px, 5vw, 56px);
 }
 
-.intro h1, .card h2, .wallet h2 {
+.intro h1, .card h2 {
   font-family: var(--display);
   font-weight: 700;
   line-height: 1;
@@ -36,7 +36,7 @@
   font-weight: 700;
 }
 .actions a:first-child { background: var(--token-accent); color: white; }
-.actions a:hover, .card a:hover, .wallet a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.actions a:hover, .card a:hover { text-decoration: underline; text-underline-offset: 4px; }
 
 .heroArt {
   display: grid;
@@ -48,21 +48,7 @@
 }
 .heroArt > img { width: min(100%, 410px); height: auto; }
 
-.wallet {
-  width: 100%;
-  padding: 16px 20px;
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  background: #fffaff;
-}
-.wallet h2 { margin-bottom: 8px; font-size: 21px; }
-.wallet a, .card a { color: var(--token-accent); font-weight: 700; }
-.balance { margin: 4px 0 10px; }
-.balance strong { font-family: var(--display); font-size: 36px; line-height: 1; }
-.walletDetails { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0 0 12px; }
-.walletDetails div { display: flex; gap: 6px; font-size: .875rem; }
-.walletDetails dt { color: var(--dim); }
-.walletDetails dd { margin: 0; font-weight: 700; }
+.card a { color: var(--token-accent); font-weight: 700; }
 
 .guide { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .card { overflow: hidden; border: 1px solid var(--line); border-radius: 26px; background: #fffaff; }

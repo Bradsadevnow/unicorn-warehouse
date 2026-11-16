@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useEffectEvent, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import styles from "./support.module.css";
 
@@ -17,15 +17,16 @@ const evidenceGroups = [
   { kind: "policy", title: "Policy evidence", description: "What the company is permitted or required to do." },
 ] as const;
 
-export default function SupportChat({ sessionId, transaction, posting, role, suggestions }: {
+export default function SupportChat({ sessionId, transaction, posting, role, suggestions, autoStart }: {
   sessionId: string;
+  autoStart: boolean;
   transaction?: { id: string; label: string };
   posting?: { id: string; label: string };
   role?: { id: string; label: string };
   suggestions: { id: string; question: string }[];
 }) {
   const [draft, setDraft] = useState("");
-  const [started, setStarted] = useState(false);
+  const [started, setStarted] = useState(autoStart);
   const [showTrace, setShowTrace] = useState(false);
   const [pending, setPending] = useState("");
   const [error, setError] = useState("");
@@ -72,6 +73,15 @@ export default function SupportChat({ sessionId, transaction, posting, role, sug
     }
   }
 
+  const startPostingChat = useEffectEvent(() => { void ask(""); });
+  const autoOpened = useRef(false);
+
+  useEffect(() => {
+    if (!autoStart || autoOpened.current) return;
+    autoOpened.current = true;
+    startPostingChat();
+  }, [autoStart]);
+
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (draft.trim()) ask(draft);
@@ -89,6 +99,7 @@ export default function SupportChat({ sessionId, transaction, posting, role, sug
   return (
     <div className={styles.workspace} data-trace={showTrace}>
     <section className={styles.chat} aria-label="Support chat">
+      {posting && <p>Chatting about {posting.label}</p>}
       <button type="button" className={styles.traceToggle} aria-expanded={showTrace} aria-controls="support-trace" onClick={() => setShowTrace(!showTrace)}>
         {showTrace ? "Hide answer trace" : "Show answer trace"} ✨
       </button>

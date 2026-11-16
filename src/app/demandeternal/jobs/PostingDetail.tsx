@@ -79,7 +79,7 @@ export default function PostingDetail({ posting }: { posting: Posting }) {
           </section>
           <section className={s.card}>
             <h3>Questions about this posting?</h3>
-            <Link className={s.support} href={`/support?posting=${posting.slug}`}>Ask a support unicorn →</Link>
+            <Link className={s.support} href={`/support?posting=${posting.slug}&start=1`}>Chat with a support unicorn →</Link>
           </section>
         </aside>
       </div>

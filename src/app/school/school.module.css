@@ -1,0 +1,49 @@
+.page {
+  width: min(94%, 75rem);
+  margin-inline: auto;
+  padding-block: clamp(1.6rem, 5vw, 4rem);
+  display: grid;
+  gap: clamp(2.7rem, 6vw, 5.5rem);
+  color: #233f38;
+}
+
+.hero, .life, .visit {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+  border-radius: 1.5rem;
+}
+
+.hero { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); background: #fcf1d6; }
+.intro { display: grid; align-content: center; gap: 1rem; padding: clamp(1.4rem, 5vw, 3.75rem); }
+.intro > p { max-width: 40ch; }
+.hero h1 { font: 850 clamp(3.1rem, 6.4vw, 6rem)/.93 var(--display); letter-spacing: -.035em; }
+.hero img { width: 100%; height: 100%; min-height: 20rem; object-fit: cover; }
+.page h2 { font: 800 clamp(2rem, 4.3vw, 3.4rem)/1.05 var(--display); }
+.page h3 { font: 800 clamp(1.35rem, 2.5vw, 1.9rem)/1.1 var(--display); }
+.section, .visit { scroll-margin-top: 6rem; }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .9rem; margin-top: 1.2rem; }
+.cards article { display: grid; align-content: start; padding: clamp(1rem, 2.8vw, 1.8rem); gap: .65rem; background: #e0f3e9; border: 1px solid #c4e1d4; border-radius: 1.2rem; }
+.cards article:nth-child(2) { background: #e4effb; border-color: #cbddec; }
+.cards article:nth-child(3) { background: #f0e5f9; border-color: #dfcdeb; }
+.kicker { font-size: .85rem; font-weight: 750; }
+.life, .visit { align-items: center; gap: 1rem; padding: clamp(1.25rem, 4vw, 2.8rem); }
+.life { background: #fae9ed; }
+.life p, .visit p { margin-block: .6rem; }
+.life ul { list-style: none; padding: 0; display: grid; gap: .8rem; }
+.life li { display: grid; gap: .15rem; }
+.visit { background: #e2f3eb; }
+.visitPlan { padding: 1.15rem; border-radius: 1rem; background: #fffdf7; }
+.visit label { display: grid; gap: .35rem; max-width: 22rem; font-weight: 700; }
+.visit select { width: 100%; padding: .6rem; border-radius: .6rem; border: 1px solid #90b8a4; color: inherit; font: inherit; background: #fffdf7; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.15rem; }
+.actions a { color: #245746; text-decoration: underline; text-underline-offset: .2em; }
+.actions .button { background: #245746; color: white; font-weight: 700; text-decoration: none; border-radius: 999px; padding: .65rem 1rem; }
+.actions .button:hover { background: #163c30; }
+
+@media (max-width: 760px) {
+  .hero, .life, .visit { grid-template-columns: 1fr; }
+  .hero img { min-height: 0; height: auto; }
+}
+
+@media (max-width: 590px) { .cards { grid-template-columns: 1fr; } }

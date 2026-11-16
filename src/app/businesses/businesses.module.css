@@ -41,3 +41,5 @@
 @media (max-width: 800px) {
   .columns { grid-template-columns: minmax(0, 1fr); }
 }
+
+.grid .visitLink { align-self: end; padding: 7px 12px; margin-top: 5px; border-color: transparent; background: transparent; color: var(--ice); text-decoration: underline; text-underline-offset: 3px; }

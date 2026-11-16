@@ -36,3 +36,11 @@
   .hero, .layout { grid-template-columns: minmax(0, 1fr); }
   .cart { position: static; max-height: none; }
 }
+.orderHub { display: grid; gap: 1rem; margin-block: 2.25rem; scroll-margin-top: 96px; padding: clamp(1.25rem, 4vw, 2.5rem); background: #e7f4eb; border: 1px solid #c2ddcf; border-radius: 1.5rem; }
+.orderHub h2 { font: 850 clamp(2rem, 5vw, 3.7rem)/1 var(--display); margin-block: .35rem; }
+.orderStages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
+.orderStages article { display: grid; align-content: start; gap: .6rem; padding: 1rem; border-radius: 1rem; background: #fffaff; }
+.orderStages h3 { font: 800 1.5rem/1.1 var(--display); }
+.orderStages ul, .orderStages ol { display: grid; gap: .45rem; padding-inline-start: 1.2rem; }
+.orderHub a { color: #633888; text-decoration: underline; text-underline-offset: .2em; }
+@media (max-width: 760px) { .orderStages { grid-template-columns: 1fr; } }

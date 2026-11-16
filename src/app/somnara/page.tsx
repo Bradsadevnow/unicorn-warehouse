@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { dreamwellCareersPath } from "@/content/businesses";
 import CancellationDetails from "@/components/CancellationDetails";
 import HouseExperience from "@/components/house/HouseExperience";
 
@@ -13,6 +15,7 @@ export default function Page() {
     <main>
       <HouseExperience slug="somnara" />
       <CancellationDetails section="dreamwell">You can use booked sessions through the end of your billing period. Dream Retention access ends with your membership. Your final productivity briefing stays in your account.</CancellationDetails>
+      <footer style={{ padding: "24px var(--gutter)" }}><Link href={dreamwellCareersPath}>Work at Dreamwell →</Link></footer>
     </main>
   );
 }

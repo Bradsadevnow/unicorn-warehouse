@@ -5,12 +5,10 @@ import sublaborixStill from "@/assets/helpinghand-unicorn.webp";
 import brightsideStill from "@/assets/brightside-creator.webp";
 import undieflowStill from "@/assets/softspace-unicorn.webp";
 import demandeternalStill from "@/assets/goodshift-unicorn.webp";
+import funplexStill from "@/assets/funplex-home.webp";
+import dispatchStill from "@/assets/dispatch-store.webp";
+import quickserveStill from "@/assets/quickserve-home.webp";
 import marketStill from "@/assets/market-unicorn.webp";
-
-export const productGroups = [
-  { id: "personal-essentials", name: "Personal essentials", products: ["aerovitalux", "somnara", "comfortflow", "market"] },
-  { id: "work-and-attention", name: "Work and attention", products: ["sublaborix", "termiflux", "demandeternal"] },
-];
 
 export type House = {
   slug: string;
@@ -32,6 +30,36 @@ export const market = {
   domain: "Market",
   line: "Everyday essentials, all payable in Tokens.",
   still: marketStill,
+  open: true,
+};
+
+export const funplex = {
+  slug: "funplex",
+  name: "Unicorn Warehouse Funplex",
+  category: "Arcade, games, and dining",
+  domain: "Recreation",
+  line: "A night out. All in one place.",
+  still: funplexStill,
+  open: true,
+};
+
+export const quickserve = {
+  slug: "quickserve",
+  name: "Horn & Fries",
+  category: "Burgers, fries, and shakes",
+  domain: "Dining",
+  line: "Good food. Right now.",
+  still: quickserveStill,
+  open: true,
+};
+
+export const dispatch = {
+  slug: "dispatch",
+  name: "Unicorn Warehouse Dispatch",
+  category: "Local delivery and errands",
+  domain: "Delivery",
+  line: "Right to your door.",
+  still: dispatchStill,
   open: true,
 };
 

@@ -117,7 +117,11 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 28px;
+  scroll-margin-top: 100px;
 }
+.businessJump { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.65rem; }
+.businessJump a { padding: .35rem .8rem; border-radius: 999px; border: 1px solid var(--line); background: #fff9fd; color: #673986; font-weight: 700; font-size: .875rem; }
+.businessJump a:hover { background: #eedcf9; }
 .suiteTitle {
   font-family: var(--display);
   font-size: clamp(48px, 8vw, 120px);
@@ -373,8 +377,11 @@
 .suiteTitle { color: #51296e; font-size: clamp(44px, 7.5vw, 104px); }
 .suiteTitle span { color: #bd478e; font-size: 0.48em; vertical-align: top; }
 .suiteGroup { --card: #fff0f7; --card-active: #f8d8ee; --chip: #f5d5ec; }
-.suiteGroup:nth-child(2) { --card: #edf9f2; --card-active: #d4f2e2; --chip: #d4f2e2; }
-.suiteGroup:nth-child(3) { --card: #f2ebff; --card-active: #e7d7ff; --chip: #e7d7ff; }
+.suiteGroup[id="health-and-wellness"] { --card: #edf9f2; --card-active: #d4f2e2; --chip: #d4f2e2; }
+.suiteGroup[id="food-and-fun"] { --card: #fff6df; --card-active: #f9e9bd; --chip: #f9e9bd; }
+.suiteGroup[id="work-and-attention"] { --card: #f2ebff; --card-active: #e7d7ff; --chip: #e7d7ff; }
+.suiteGroup[id="delivery-and-trades"] { --card: #eaf4ff; --card-active: #d8eafb; --chip: #d8eafb; }
+.suiteGroup[id="school-and-community"] { --card: #fff0e6; --card-active: #f9dfcf; --chip: #f9dfcf; }
 .suiteGroup > h3 {
   display: inline-block;
   padding: 5px 13px;
@@ -404,3 +411,37 @@
 @media (prefers-reduced-motion: reduce) { .row { transition: none; } }
 .supportLink { position: relative; z-index: 2; grid-column: 1 / -1; justify-self: center; width: fit-content; max-width: 100%; padding: 12px 20px; border-radius: 999px; border: 1px solid #c880bd; background: linear-gradient(110deg, #ffe2f3, #fff6cd, #e9ddff); box-shadow: 0 4px 20px #e6a4d887; color: #54215e; font-weight: 800; text-align: center; }
 .supportLink:hover { box-shadow: 0 4px 24px #d989c8bf; }
+
+.careersFeature { padding-block: clamp(1.5rem, 4vw, 3rem); }
+.careersCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  max-width: 1260px;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid #c9dfd3;
+  border-radius: 1.6rem;
+  background: #e9f7ef;
+}
+.careersCard img { width: 100%; height: 100%; object-fit: cover; }
+.careersCopy { display: grid; align-content: center; gap: 1rem; padding: clamp(1.2rem, 4vw, 3.1rem); }
+.careersCopy h2 { font: 850 clamp(2.3rem, 4.5vw, 4.6rem)/.98 var(--display); color: #234e3c; letter-spacing: -.035em; }
+.careersButton { justify-self: start; border-radius: 999px; padding: .65rem 1.1rem; background: #234e3c; color: white; font-weight: 800; }
+.careersButton:hover { background: #164032; }
+.careersTeams { display: grid; gap: .5rem; }
+.careersTeams a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .7rem;
+  padding: .6rem .9rem;
+  border-radius: .75rem;
+  background: #fbfffc;
+  color: #234e3c;
+}
+.careersTeams a:hover { background: #d6f0e1; }
+.careersTeams small { display: block; color: #49615a; }
+@media (max-width: 750px) {
+  .careersCard { grid-template-columns: 1fr; }
+  .careersCard img { height: auto; }
+}

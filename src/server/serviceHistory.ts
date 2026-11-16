@@ -114,8 +114,7 @@ export function getServiceHistory(account: MemberAccount): HistoryRecord[] {
     };
   });
 
-  const membership = membershipEvents.filter(({ member }) => member === account.id)
-    .map(({ member: _member, ...event }) => event);
+  const membership = membershipEvents.flatMap(({ member, ...event }) => member === account.id ? [event] : []);
   const records: HistoryRecord[] = [...market, ...dreamwell, ...work, ...membership];
   if (new Set(records.map(({ eventId }) => eventId)).size !== records.length) {
     throw new Error(`Duplicate service event for ${account.id}`);

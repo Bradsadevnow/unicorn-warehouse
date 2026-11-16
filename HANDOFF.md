@@ -6,9 +6,9 @@ The Next.js app lives in `web`. At handoff, the local production preview was run
 
 The user approved the Token Economy redesign and its original art. No next feature is queued.
 
-- The local `semantic-hallucination-generators/crystal.html` was the layout reference. The new `/tokens` has a split hero, a compact wallet preview, and three illustrated cards for earning, saving, and spending. The page and styles live in `src/app/tokens/page.tsx` and `src/app/tokens/tokens.module.css`.
-- The original illustrations in `src/assets` are `tokens-earn.webp` (mint payroll window), `tokens-save.webp` (lavender piggy bank), and `tokens-spend.webp` (pink grocery checkout). The hero uses `public/token-economy.webp`.
-- The wallet reads the active fictional member session on the server. It uses `getTokenBalances` to derive available, pending, and held Tokens from the ledger. It links to `/account?tab=wallet`. Signed-out visitors see the wallet link without member balances.
+- The local `semantic-hallucination-generators/crystal.html` was the layout reference. The new `/tokens` has a split hero, member banking accounts, and three illustrated cards for earning, saving, and spending. The page and styles live in `src/app/tokens/page.tsx` and `src/app/tokens/tokens.module.css`.
+- The original illustrations in `src/assets` are `tokens-earn.webp` (mint payroll window), `tokens-save.webp` (lavender piggy bank), and `tokens-spend.webp` (pink grocery cart). The hero uses `public/token-economy.webp`.
+- The Bank reads the active fictional member session on the server and derives the balances from the ledger. Everyday Tokens links to the wallet statement. Signed-out visitors see a sign-in link.
 - Earn links to HelpingHand, Goodshift, and Brightside. Spend links to Market, A Little Clip, and Dreamwell subscriptions. Save links to the 10,000-Token Saturday Suite.
 
 The production build passed after the art was added. The preview was restarted and all three image URLs returned HTTP 200. The signed-in wallet rendered in a smoke test before the art change. Browser layout review and publishing are unverified.
@@ -40,6 +40,22 @@ Goodshift is becoming a real job board. Each posting is one record in `src/conte
 - Shifts on a business page are titles and Token amounts only. Most are not posting records yet. HelpingHand still has no posting records, so no HelpingHand shift counts toward the Trainee quota.
 - Trainee progress counts only accepted assignments from herd-eligible postings (`src/server/herdEligibility.ts`). Poppy is at 1 of 40.
 - Business policies live in the registry and are not in the Terms yet, so the support unicorn cannot cite them.
+
+## Unicorn Warehouse Bank
+
+Banking now lives at `/tokens#bank`. The former `/bank` address redirects to `/tokens`. Products, the fee schedule, and rates live in `src/content/bank.ts`. `src/server/bankAccount.ts` derives every figure on the page from the member's Token ledger: available, held, and pending balances, Sparkle earned, pace toward the Saturday Suite goal, and the Early Payday offer on each pending payout.
+
+- The Bank adds no ledger entries. Fees are waived during a welcome period ending December 31, 2026, which is why no fees appear on a statement. Charging fees later means adding ledger entries.
+- Bank rules are a `bank` section at the end of Product Details, so the support unicorn can cite them.
+- Checked signed in as Poppy. Juniper's view and a support chat about the Bank have not been checked.
+
+## Unicorn Warehouse Funplex
+
+`/funplex` is the designated recreation venue: bowling, mini golf, a cinema, an arcade with a Prize Counter, laser tag, go-karts, karaoke, and dining, plus Adventure Plus and birthday parties. Arcade winnings are FunPoints, which never convert to Tokens. Attractions and prizes live in `src/content/funplex.ts`. Every member is scheduled for two Fun Hours a month. `src/server/funHours.ts` counts completed Fun Hours from ledger entries labeled "Funplex" and schedules the rest on the last days of the month at 6:00 a.m.
+
+- No member has a Funplex ledger entry, so both show 0 of 2 with two scheduled Fun Hours. The 60 Tokens due is shown as a future charge and is not on the ledger.
+- Funplex rules are a `funplex` section at the end of Product Details.
+- Checked signed in as Poppy. A support chat about Fun Hours has not been checked.
 
 ## Project decisions to carry forward
 

@@ -1,22 +1,23 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Reveal from "@/components/Reveal";
 import GlitterLogo from "./GlitterLogo";
 import { TransitionLink } from "@/components/Veil";
-import { houses, market, productGroups } from "@/content/houses";
+import { houses } from "@/content/houses";
+import type { businessGroups as homeBusinessGroups } from "@/content/homeBusinesses";
 import s from "./home.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const products = [...houses, market];
-
-export default function HomeExperience() {
+export default function HomeExperience({ careers, businessGroups }: { careers: ReactNode; businessGroups: typeof homeBusinessGroups }) {
   const root = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
+  const products = businessGroups.flatMap((group) => [...group.businesses]);
+  const [active, setActive] = useState(products[0].slug);
+  const current = products.find(({ slug }) => slug === active) ?? products[0];
   const [word, setWord] = useState(0);
 
   // "Now subscribing" cycles through what we hold.
@@ -34,7 +35,9 @@ export default function HomeExperience() {
           trigger: row,
           start: "top 58%",
           end: "bottom 58%",
-          onToggle: (self) => self.isActive && setActive(Number(row.dataset.house)),
+          onToggle: (self) => {
+            if (self.isActive && row.dataset.house) setActive(row.dataset.house);
+          },
         });
       });
 
@@ -75,69 +78,55 @@ export default function HomeExperience() {
         </TransitionLink>
       </section>
 
-      {/* ---------- Houses ---------- */}
-      <section className={s.houses} id="houses">
-        <div className={s.housesHead}>
-          <h2 className={s.suiteTitle}>The good stuff <span aria-hidden="true">✦</span></h2>
+      {careers}
+
+      <section className={s.houses} id="houses" aria-labelledby="businesses-heading">
+        <div className={s.housesHead} id="businesses">
+          <h2 className={s.suiteTitle} id="businesses-heading">The good stuff <span aria-hidden="true">✦</span></h2>
         </div>
+        <nav className={s.businessJump} aria-label="Business categories">
+          {businessGroups.map(({ id, name }) => <a key={id} href={`#${id}`}>{name}</a>)}
+        </nav>
         <div className={s.housesGrid}>
           <div>
-          {productGroups.map((group) => (
-            <section className={s.suiteGroup} id={group.id} key={group.id}>
-            <h3>{group.name}</h3>
-            <ul className={s.list}>
-            {group.products.map((slug) => {
-              const i = products.findIndex((product) => product.slug === slug);
-              const h = products[i];
-              const inner = (
-                <>
-                  <Image className={s.thumbnail} src={h.still} alt="" width={72} height={72} />
-                  <span className={s.meta}>
-                    <span className={s.name}>{h.name}</span>
-                    <span>{h.line}</span>
-                  </span>
-                  <span className={s.state} aria-hidden={h.open}>{h.open ? "↗" : "In preparation"}</span>
-                </>
-              );
-              const cls = `${s.row} ${i === active ? s.rowActive : ""} ${h.open ? s.rowOpen : ""}`;
-              return (
-                <li key={h.slug} data-house={i} onPointerEnter={() => setActive(i)} onFocus={() => setActive(i)}>
-                  {h.open ? (
-                    <TransitionLink href={`/${h.slug}`} className={cls}>
-                      {inner}
-                    </TransitionLink>
-                  ) : (
-                    <div className={cls}>{inner}</div>
-                  )}
-                </li>
-              );
-            })}
-            </ul>
-            </section>
-          ))}
+            {businessGroups.map(({ id, name, businesses }) => (
+              <section className={s.suiteGroup} id={id} key={id}>
+                <h3>{name}</h3>
+                <ul className={s.list}>
+                  {businesses.map((business) => (
+                    <li key={business.slug} data-house={business.slug} onPointerEnter={() => setActive(business.slug)} onFocus={() => setActive(business.slug)}>
+                      <TransitionLink href={business.href} className={`${s.row} ${s.rowOpen} ${business.slug === active ? s.rowActive : ""}`}>
+                        <Image className={s.thumbnail} src={business.still} alt="" width={72} height={72} />
+                        <span className={s.meta}>
+                          <span className={s.name}>{business.name}</span>
+                          <span>{business.line}</span>
+                        </span>
+                        <span className={s.state} aria-hidden="true">↗</span>
+                      </TransitionLink>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
           </div>
 
           <aside className={s.preview} aria-hidden>
             <div className={s.frame}>
-              {products.map((h, i) => (
-                <div key={h.slug} className={`${s.plate} ${i === active ? s.plateOn : ""}`}>
+              {products.map((h) => (
+                <div key={h.slug} className={`${s.plate} ${h.slug === current.slug ? s.plateOn : ""}`}>
                   <Image src={h.still} alt="" fill sizes="(max-width: 900px) 0px, 34vw" placeholder="blur" />
                 </div>
               ))}
             </div>
             <div className={s.caption}>
-              <span className="label">
-                  {products[active].domain}
-              </span>
-              <p key={active} className={s.captionLine}>
-                {products[active].category}
+              <span className="label">{current.domain}</span>
+              <p key={current.slug} className={s.captionLine}>
+                {current.category}
               </p>
             </div>
           </aside>
         </div>
       </section>
-
-
     </div>
   );
 }

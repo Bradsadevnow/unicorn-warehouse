@@ -1,0 +1,29 @@
+.page { width: min(94%, 76rem); margin-inline: auto; display: grid; gap: clamp(2rem, 6vw, 5rem); padding-block: clamp(2rem, 5vw, 5rem); }
+.hero, .visit { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: #e6f5ee; border-radius: 1.5rem; overflow: hidden; }
+.hero > div, .visit > div { display: grid; align-content: center; gap: .85rem; padding: clamp(1.4rem, 5vw, 3rem); }
+.hero h1 { font: 850 clamp(3rem, 6vw, 5.7rem)/.95 var(--display); }
+.hero img { width: 100%; height: 100%; object-fit: cover; }
+.page h2 { font: 800 clamp(2rem, 4vw, 3.5rem)/1 var(--display); }
+.page h3 { font: 800 clamp(1.35rem, 2.5vw, 1.8rem)/1.05 var(--display); }
+.section { scroll-margin-top: 6rem; display: grid; gap: .85rem; }
+.plans { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.pharmacyPlans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.plan { display: flex; flex-direction: column; gap: .65rem; border: 1px solid #d9c9e1; border-radius: 1.15rem; padding: 1.25rem; background: #f0e6fb; }
+.plan[data-tone="mint"] { background: #e3f6eb; }
+.plan[data-tone="peach"] { background: #ffe9dc; }
+.plan[data-tone="sky"] { background: #e2f0fb; }
+.plan[data-tone="pink"] { background: #f9e4f1; }
+.plan[data-tone="butter"] { background: #fff3cf; }
+.price { margin-top: auto; }
+.price strong { color: #5f3581; font-size: 1.25rem; }
+.visit { background: #f0e6fb; }
+.visit label { display: grid; gap: .35rem; font-weight: 700; }
+.visit select { width: 100%; min-width: 0; padding: .6rem; background: white; border: 1px solid #bfacd1; border-radius: .6rem; font: inherit; color: inherit; }
+.checks { margin: 1rem; padding: clamp(1rem, 4vw, 2rem); display: grid; align-content: center; gap: 1rem; background: #fffaff; border-radius: 1rem; }
+.checks dt { font-weight: 800; }
+.checks dd { margin: .2rem 0 0; }
+.links { display: flex; flex-wrap: wrap; gap: 1rem; }
+.links a { color: #623787; text-decoration: underline; text-underline-offset: .2em; }
+@media(max-width: 930px) { .plans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media(max-width: 700px) { .hero, .visit, .pharmacyPlans { grid-template-columns: 1fr; } .hero img { height: auto; } }
+@media(max-width: 480px) { .plans { grid-template-columns: 1fr; } }

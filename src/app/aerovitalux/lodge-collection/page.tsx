@@ -25,6 +25,7 @@ export default function LodgeCollectionPage() {
           <h1>The Lodge Collection</h1>
           <p>Some mornings are worth bottling. Explore seasonal blends and premium oxygen from the Everair Alpine Lodge.</p>
           <TransitionLink href="/redemption#lodge-collection-premium-blend">Find it in Token Redemption →</TransitionLink>
+          <TransitionLink href="/alpine-resort">Visit Grand Alpine Resort &amp; Casino →</TransitionLink>
         </div>
         <Image src={lodge} alt="The Everair Alpine Lodge above the clouds" sizes="(max-width: 760px) 100vw, 55vw" />
       </header>

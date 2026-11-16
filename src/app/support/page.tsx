@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import unicorn from "@/assets/support-unicorn.webp";
 import { getRole } from "@/content/careers";
-import { getPosting } from "@/content/goodshiftPostings";
+import { getSupportPosting } from "@/server/supportPosting";
 import SupportChat from "./SupportChat";
 import { getMemberSession } from "@/server/memberSession";
 import styles from "./support.module.css";
@@ -37,10 +37,11 @@ async function MemberSupport({ searchParams }: Pick<PageProps<"/support">, "sear
   const query = await searchParams;
   const transaction = session.account.ledger.find(({ id }) => id === query.transaction);
   if (query.transaction !== undefined && !transaction) notFound();
-  const posting = typeof query.posting === "string" ? getPosting(query.posting) : undefined;
+  const posting = getSupportPosting(query.posting);
   if (query.posting !== undefined && !posting) notFound();
   const role = typeof query.role === "string" ? getRole(query.role) : undefined;
   if (query.role !== undefined && !role) notFound();
+  const autoStart = !!posting && query.start === "1";
   const suggestions = [
     ...(role ? [
       { id: "role-eligible", question: "Am I eligible for this role?" },
@@ -60,8 +61,8 @@ async function MemberSupport({ searchParams }: Pick<PageProps<"/support">, "sear
     { id: "cancellation", question: "What happens if I cancel?" },
     { id: "human-review", question: "Can I speak to a human?" },
   ];
-  return <SupportChat key={session.sessionId + (transaction?.id ?? "") + (posting?.id ?? "") + (role?.id ?? "")} sessionId={session.sessionId}
+  return <SupportChat key={session.sessionId + (transaction?.id ?? "") + (posting?.id ?? "") + (role?.id ?? "") + String(autoStart)} sessionId={session.sessionId} autoStart={autoStart}
     transaction={transaction && { id: transaction.id, label: transaction.label }}
-    posting={posting && { id: posting.id, label: `Goodshift · ${posting.title}` }}
+    posting={posting && { id: posting.id, label: `${posting.brand} · ${posting.posting.title}` }}
     role={role && { id: role.id, label: `Careers · ${role.title}` }} suggestions={suggestions} />;
 }

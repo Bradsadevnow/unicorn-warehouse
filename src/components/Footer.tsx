@@ -24,7 +24,9 @@ export default function Footer() {
           <li><TransitionLink href="/product-details">Product Details</TransitionLink></li>
           <li><TransitionLink href="/product-details#harmony">Portfolio Harmony™</TransitionLink></li>
           <li><TransitionLink href="/governance">Corporate Governance</TransitionLink></li>
-          <li><TransitionLink href="/businesses">Our businesses</TransitionLink></li>
+          <li><TransitionLink href="/tokens">Token Economy</TransitionLink></li>
+          <li><TransitionLink href="/funplex">Unicorn Warehouse Funplex</TransitionLink></li>
+          <li><TransitionLink href="/home#businesses">Explore businesses</TransitionLink></li>
           <li><TransitionLink href="/careers">Careers</TransitionLink></li>
         </ul>
       </div>

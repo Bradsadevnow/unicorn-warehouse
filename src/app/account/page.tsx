@@ -6,6 +6,7 @@ import { getTokenBalances } from "@/content/memberAccount";
 import { getMemberReportStatus } from "@/server/companyWorkflows";
 import { getMemberSession } from "@/server/memberSession";
 import { getServiceHistory, serviceNames } from "@/server/serviceHistory";
+import FunHours from "./FunHours";
 import WalletChart from "./WalletChart";
 import styles from "./account.module.css";
 
@@ -101,6 +102,7 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
             <Link href="/account?tab=activity">View activity and requests →</Link>
           </section>
         </div>
+        <FunHours account={account} />
       </div>}
 
       {tab === "wallet" && <WalletChart account={account} days={query.days === "30" ? 30 : 90} />}

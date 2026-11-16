@@ -30,10 +30,14 @@ function roadPosition({ x, y }: Point): Coordinates {
 }
 
 function CameraSetup({ reset, controls }: { reset: number; controls: OrbitControlsInstance | null }) {
-  const { camera, size, invalidate } = useThree();
+  const size = useThree((state) => state.size);
+  const invalidate = useThree((state) => state.invalidate);
+  const get = useThree((state) => state.get);
 
   useLayoutEffect(() => {
     if (!controls) return;
+    // Read the camera from the store so the effect does not mutate a hook return value.
+    const { camera } = get();
     camera.position.set(overview[0] + offset[0], overview[1] + offset[1], overview[2] + offset[2]);
     controls.target.set(...overview);
     camera.lookAt(...overview);
@@ -41,7 +45,7 @@ function CameraSetup({ reset, controls }: { reset: number; controls: OrbitContro
     camera.updateProjectionMatrix();
     controls.update();
     invalidate();
-  }, [camera, controls, invalidate, reset, size.height, size.width]);
+  }, [controls, get, invalidate, reset, size.height, size.width]);
 
   return null;
 }

@@ -1,69 +1,56 @@
 # Unicorn Warehouse handoff
 
-The Next.js app lives in `web`. At handoff, the local production preview was running at http://localhost:3150/tokens.
+The Next.js app lives in `web`. Unicorn Warehouse has grown from a membership company into a company town, Unicornopolis, where every business parodies an industry. As of commit `00afb76` every business in the registry has its own page, everything is pushed to `main`, and `npm run lint` and `tsc` pass with no warnings.
 
-## Where we left off
+Read these alongside this file:
 
-The user approved the Token Economy redesign and its original art. No next feature is queued.
+- [BUSINESS-ROADMAP.md](BUSINESS-ROADMAP.md) is the per-business checklist and the record of what is built. Its "After the pages" section is the next phase.
+- [ECONOMY.md](ECONOMY.md) is the pricing standard: 1 Token is roughly $1 of purchasing power, wages by career rung, household budgets, and how offers are priced and settled.
+- [AGENTS.md](AGENTS.md) has the model-call rules for support and department deliverables.
 
-- The local `semantic-hallucination-generators/crystal.html` was the layout reference. The new `/tokens` has a split hero, member banking accounts, and three illustrated cards for earning, saving, and spending. The page and styles live in `src/app/tokens/page.tsx` and `src/app/tokens/tokens.module.css`.
-- The original illustrations in `src/assets` are `tokens-earn.webp` (mint payroll window), `tokens-save.webp` (lavender piggy bank), and `tokens-spend.webp` (pink grocery cart). The hero uses `public/token-economy.webp`.
-- The Bank reads the active fictional member session on the server and derives the balances from the ledger. Everyday Tokens links to the wallet statement. Signed-out visitors see a sign-in link.
-- Earn links to HelpingHand, Goodshift, and Brightside. Spend links to Market, A Little Clip, and Dreamwell subscriptions. Save links to the 10,000-Token Saturday Suite.
+## What exists
 
-The production build passed after the art was added. The preview was restarted and all three image URLs returned HTTP 200. The signed-in wallet rendered in a smoke test before the art change. Browser layout review and publishing are unverified.
+**Businesses.** `src/content/businesses.ts` is the registry, and each business has its own content module in `src/content` and a public page:
 
-## Goodshift postings (in progress)
+| Area | Businesses and routes |
+| --- | --- |
+| Personal essentials | Market `/market`, Everair `/aerovitalux` (Lodge Collection, Grand Alpine Resort `/alpine-resort` and Casino `/alpine-resort/casino`), Dreamwell `/somnara`, Softspace `/comfortflow` |
+| Work and attention | Goodshift `/demandeternal`, HelpingHand `/sublaborix`, Brightside `/termiflux` |
+| Town businesses | Horn & Fries `/quickserve`, Fulfillment `/fulfillment`, Dispatch `/dispatch`, Gatherings `/gatherings`, Funplex `/funplex`, Construction `/construction`, Living `/living` and Homes `/businesses/homes`, Motorworks `/motorworks`, Wellness `/wellness` with its pharmacy, Cloverfield School `/school`, Public Works `/public-works`, Flock `/flock` |
+| Money | Token Economy `/tokens` with the Bank on the same page (`/bank` redirects there), Redemption `/redemption` |
+| Company | Governance `/governance`, Careers `/careers`, Terms `/terms`, Product Details `/product-details` |
 
-Goodshift is becoming a real job board. Each posting is one record in `src/content/goodshiftPostings.ts` (16 so far, seeded from the old catalog), with its own page at `/demandeternal/jobs/[slug]`. The jobs routes share a two-pane layout: a persistent listings panel on the left and the selected posting on the right. The board and the employer marketplace derive their listings from those records.
+The homepage groups every business, and `/businesses` redirects there. Outline pages remain at `/businesses/[slug]`.
 
-- Member assignments link to a posting through `postingId` in `src/content/memberAccount.ts`. Poppy's two weekly reports point at `GS-P-2001`.
-- The support unicorn receives postings as `[J:<posting id>]` references: the posting the chat was opened from (`/support?posting=<slug>`) plus any posting tied to the member's assignments. The answer trace shows them as Posting evidence.
-- Checked in the dev preview signed in as Poppy with Gemma. The production build has not been run with these changes, and they are uncommitted.
+**Unicornopolis.** `/map` is a 20 × 20 town grid with named streets, an address for every lot, Living rents on residential blocks, delivery routes, and the Clover Loop bus. Lot data is in `src/content/unicornopolis.ts`. A 3D view of the town exists in `src/app/map/TownScene.tsx`, using `public/unicornopolis/town.glb` with clickable regions from `src/content/unicornopolisScene.json`, but no page renders it yet, so `/map` shows only the 2D grid. The Blender source files and renders sit in the project root.
 
-## Careers (in progress)
+**Work boards.** Goodshift (21 office postings, `src/content/goodshiftPostings.ts`) and HelpingHand (54 on-site postings, `src/content/helpingHandPostings.ts`) share the two-pane board layout at `/demandeternal/jobs` and `/sublaborix/jobs`. Business careers pages link each role to its listing.
 
-`/careers` is the "Become a Unicorn" recruitment page for employment at Unicorn Warehouse itself. Role records live in `src/content/careers.ts` (five rungs from Unicorn Trainee to Executive Unicorn, plus the poster lines and executive welcome messages), and each role has a page at `/careers/[slug]`.
+**Careers.** `/careers` is "Become a Unicorn" with the five-rung horn ladder in `src/content/careers.ts`. Each business has a careers page under `/careers/<business>`. Applying for Unicorn Trainee takes 40 accepted assignments from herd-eligible postings (`src/server/herdEligibility.ts`).
 
-- Applying for Unicorn Trainee requires 40 accepted Goodshift or HelpingHand assignments. The careers page reads the signed-in member's assignments and shows their progress. Pending assignments are not counted.
-- Horn, probation, eligibility, magic, family, and Employee Happiness rules are in a new `careers` section at the end of the Terms. Keep new Terms sections at the end, because support cites clauses by position.
-- The support unicorn receives a role as a `[C:<role id>]` reference when the chat opens from `/support?role=<slug>`.
-- The posters are type on pastel cards and the hero reuses the mascot. Original art for the hero and posters is still to come.
-- Checked in the dev preview as Poppy. Support replies took 90 to 115 seconds with Gemma once the Careers terms and role were added to the prompt.
+**Member data.** Poppy (`UW-0482`) and Juniper (`UW-0716`) live in `src/content/memberAccount.ts`. The ledger is authoritative. Bank balances (`src/server/bankAccount.ts`), Fun Hours (`src/server/funHours.ts`, also shown in the account portal), and Trainee progress are derived from it and add no entries of their own.
 
-## Businesses (outlines)
+**Support unicorn.** `/api/support` gives the model account evidence `[A:…]`, Terms `[T:…]`, Product Details `[P:…]`, postings `[J:…]`, and careers roles `[C:…]`. A chat can open from a transaction, a posting (`/support?posting=<slug>`, or `helpinghand:<slug>` for HelpingHand), or a role (`/support?role=<slug>`).
 
-`src/content/businesses.ts` is the registry of Unicorn Warehouse businesses. Each record carries its industry, tagline, the shifts members can pick up there, one corporate role mapped to a rung of the careers ladder, one policy, and its connections to the rest of the Portfolio. `/businesses` is the directory and `/businesses/[slug]` is each outline page.
+## Open threads
 
-- Open businesses (Market, Everair, Dreamwell, Brightside) link to their existing pages. The rest are outlines marked "Opening soon": Quickserve, Fulfillment, Dispatch, Gatherings, Living, Homes, Bank, Motorworks, Wellness.
-- The plan is to build the outlines out one at a time. Each parodies an industry, never a named company.
-- Shifts on a business page are titles and Token amounts only. Most are not posting records yet. HelpingHand still has no posting records, so no HelpingHand shift counts toward the Trainee quota.
-- Trainee progress counts only accepted assignments from herd-eligible postings (`src/server/herdEligibility.ts`). Poppy is at 1 of 40.
-- Business policies live in the registry and are not in the Terms yet, so the support unicorn cannot cite them.
-
-## Unicorn Warehouse Bank
-
-Banking now lives at `/tokens#bank`. The former `/bank` address redirects to `/tokens`. Products, the fee schedule, and rates live in `src/content/bank.ts`. `src/server/bankAccount.ts` derives every figure on the page from the member's Token ledger: available, held, and pending balances, Sparkle earned, pace toward the Saturday Suite goal, and the Early Payday offer on each pending payout.
-
-- The Bank adds no ledger entries. Fees are waived during a welcome period ending December 31, 2026, which is why no fees appear on a statement. Charging fees later means adding ledger entries.
-- Bank rules are a `bank` section at the end of Product Details, so the support unicorn can cite them.
-- Checked signed in as Poppy. Juniper's view and a support chat about the Bank have not been checked.
-
-## Unicorn Warehouse Funplex
-
-`/funplex` is the designated recreation venue: bowling, mini golf, a cinema, an arcade with a Prize Counter, laser tag, go-karts, karaoke, and dining, plus Adventure Plus and birthday parties. Arcade winnings are FunPoints, which never convert to Tokens. Attractions and prizes live in `src/content/funplex.ts`. Every member is scheduled for two Fun Hours a month. `src/server/funHours.ts` counts completed Fun Hours from ledger entries labeled "Funplex" and schedules the rest on the last days of the month at 6:00 a.m.
-
-- No member has a Funplex ledger entry, so both show 0 of 2 with two scheduled Fun Hours. The 60 Tokens due is shown as a future charge and is not on the ledger.
-- Funplex rules are a `funplex` section at the end of Product Details.
-- Checked signed in as Poppy. A support chat about Fun Hours has not been checked.
+- **HelpingHand does not count toward Trainee.** No HelpingHand posting is marked herd-eligible, and eligibility only checks Goodshift postings. Juniper is at 0 of 40 and Poppy is at 1 of 40.
+- **Poppy's history predates the current prices.** Her weekly reports paid 140 Tokens each, while that posting now pays 84 under ECONOMY.md. Reconcile this when member histories are reseeded.
+- **The next phase is records, not pages.** The roadmap's "After the pages" section covers it: give orders, leases, assignments, and service records IDs, link them to the ledger, show them in Account and Support, then seed histories with fees, renewals, refunds, and holds.
+- **Charges shown but not posted.** Bank fees are waived through December 31, 2026, and scheduled Fun Hours show as a future 60-Token charge. Neither is on the ledger. Posting them means adding ledger entries.
+- **Unchecked.** Support chats about the Bank, Fun Hours, and HelpingHand postings have not been run. Replies with Gemma have taken 90–115 seconds as the reference material has grown.
+- **3D town view.** `TownScene.tsx` is built but not mounted on `/map`. It has not been checked in a browser.
+- **Art.** The Careers hero and posters still use type and the mascot rather than original art.
 
 ## Project decisions to carry forward
 
-- **Voice and art.** Unicorn Warehouse sells everything with adorable unicorns, cheerful copy, and a straight face. Let the nastiest jokes surface in the Terms, Product Details, employer and buyer experiences, and support answers grounded in policy. Ordinary purchases, refunds, and payouts should behave like real account history.
+- **Voice and art.** Unicorn Warehouse sells everything with adorable unicorns, cheerful copy, and a straight face. Let the nastiest jokes surface in the Terms, Product Details, fees, fine print, employer and buyer experiences, and support answers grounded in policy. The public pitch should stay inviting. Ordinary purchases, refunds, and payouts should behave like real account history.
+- **Industries, not companies.** Each business parodies an industry. Do not use real company names, people, or lookalike branding.
 - **Economy.** Employers and buyers pay dollars. Members earn, save, and spend Tokens. Tokens carry over and never expire. The ledger is authoritative. Pending payouts and held Tokens have distinct states, and account views derive totals from the same records.
 - **Member data.** Resolve the active member through the server session. Keep member records and internal records in separate server-side modules. Use stable IDs and correlation IDs for cross-service events. When adding history, reconcile refunds and payouts and apply household eligibility consistently.
-- **Support and AI.** Demo questions go to the model. In the trace, account evidence establishes what happened and policy evidence establishes what the company can do. Give each distinct department deliverable its own model call, including with Gemma in LM Studio. See [AGENTS.md](AGENTS.md) for the model-call rules.
-- **Publishing.** Keep provider credentials out of Git and client code. Review the working tree before committing or pushing.
+- **Support and AI.** Demo questions go to the model. In the trace, account evidence establishes what happened, posting evidence establishes what a listing offers, and policy evidence establishes what the company can do. Give each distinct department deliverable its own model call, including with Gemma in LM Studio.
+- **Terms order.** Support cites clauses by position, such as `[T:13.2]`. Add new Terms and Product Details sections at the end of their lists, and add clauses at the end of a section, so existing citations keep their numbers.
+- **Publishing.** Keep provider credentials out of Git and client code. Review the working tree before committing or pushing. The repository's `.git` belongs to a different Windows user, so run git with `-c safe.directory=<path>`.
 
 ## Run the local preview
 
@@ -74,4 +61,4 @@ npm.cmd --prefix web run build
 npm.cmd --prefix web run start -- --port 3150
 ```
 
-If an earlier Unicorn Warehouse preview owns port 3150, stop that instance before starting the new one.
+If an earlier Unicorn Warehouse preview owns port 3150, stop that instance before starting the new one. For development, `npm.cmd --prefix web run dev` serves on port 3000.

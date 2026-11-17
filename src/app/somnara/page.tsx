@@ -16,7 +16,6 @@ export default function Page() {
       <HouseExperience slug="somnara" />
       <CancellationDetails section="dreamwell">You can use booked sessions through the end of your billing period. Dream Retention access ends with your membership. Your final productivity briefing stays in your account.</CancellationDetails>
       <footer style={{ padding: "24px var(--gutter)" }}>
-        <p><Link href="/quests/horn-fitting?stop=dreamwell#quest-counter">Visit the Rest Desk →</Link></p>
         <p><Link href={dreamwellCareersPath}>Work at Dreamwell →</Link></p>
       </footer>
     </main>

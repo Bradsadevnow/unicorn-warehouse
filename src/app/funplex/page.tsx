@@ -135,7 +135,6 @@ export default function FunplexPage() {
         <h2 id="visit-heading">Plan your visit</h2>
         <p>Open daily from 6 a.m. to midnight.</p>
         <div className={s.actions}>
-          <Link href="/account#fun-hours">View your Fun Hours →</Link>
           <Link href="/terms#funplex-visit">Visit terms →</Link>
           <Link href="/terms#funplex-consent">Waivers and consent →</Link>
           <Link href="/product-details#funplex">Funplex product details →</Link>

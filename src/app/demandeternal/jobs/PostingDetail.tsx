@@ -80,10 +80,6 @@ export default function PostingDetail({ posting }: { posting: Posting }) {
             </dl>
             <p className={s.fine}>Dollars and Tokens are separate units. They are not compared.</p>
           </section>
-          <section className={s.card}>
-            <h3>Questions about this posting?</h3>
-            <Link className={s.support} href={`/support?posting=${posting.slug}&start=1`}>Chat with a support unicorn →</Link>
-          </section>
         </aside>
       </div>
     </article>

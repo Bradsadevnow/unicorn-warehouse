@@ -127,10 +127,6 @@ async function RankDetails({ params }: Pick<PageProps<"/careers/[slug]">, "param
                 <Link className={c.support} href={rolePath(next)}>{next.title} →</Link>
               </section>
             )}
-            <section className={c.card}>
-              <h2>Questions about horn ranks?</h2>
-              <Link className={c.support} href={`/support?role=${rank.slug}`}>Ask a support unicorn →</Link>
-            </section>
           </aside>
         </div>
       </article>

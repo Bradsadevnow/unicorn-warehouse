@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
 import campaign from "@/assets/careers-welcome.webp";
 import { promotionSummary, rolePath, roles, welcomes } from "@/content/careers";
 import { entryPositions, payByLevel, trackPath, tracks } from "@/content/careerTracks";
 import { trackArt } from "@/content/trackArt";
-import { getEmployeeRecord, type EmployeeRecord } from "@/server/employeeRecord";
-import { getMemberSession } from "@/server/memberSession";
+import type { EmployeeRecord } from "@/server/employeeRecord";
 import s from "./careers.module.css";
 
 export const metadata: Metadata = {
@@ -60,9 +58,7 @@ export default function CareersPage() {
           </p>
           <p className={s.fine}>The two records are kept separately, and neither determines the other. See the <Link href="/terms#careers">Careers terms</Link>.</p>
         </div>
-        <Suspense fallback={<ProfileCard heading="Employee profile" record={sampleRecord} sample />}>
-          <MemberProfile />
-        </Suspense>
+        <ProfileCard heading="Employee profile" record={sampleRecord} sample />
       </section>
 
       <section id="tracks" className={s.section} aria-labelledby="tracks-heading">
@@ -160,12 +156,6 @@ const sampleRecord: ProfileRecord = {
   probation: { day: 1, of: 90, complete: false },
 };
 
-async function MemberProfile() {
-  const session = await getMemberSession();
-  if (!session) return <ProfileCard heading="Employee profile" record={sampleRecord} sample />;
-  return <ProfileCard heading={`${session.account.name}’s employee profile`} record={getEmployeeRecord(session.account)} />;
-}
-
 function ProfileCard({ heading, record, sample = false }: { heading: string; record: ProfileRecord; sample?: boolean }) {
   const { counted, awaitingAcceptance, otherTrack, required } = record.qualifyingShifts;
   return (
@@ -187,7 +177,6 @@ function ProfileCard({ heading, record, sample = false }: { heading: string; rec
           <progress value={counted.length} max={required} aria-label={`Qualifying shifts toward ${record.nextRank.title}`} />
           {awaitingAcceptance.length > 0 && <p className={s.fine}>{awaitingAcceptance.length} awaiting client acceptance, not counted.</p>}
           {otherTrack.length > 0 && <p className={s.fine}>{otherTrack.length} outside your current track enrollment.</p>}
-          {!sample && record.nextRank.title === "Junior Unicorn Associate" && <Link href="/quests/horn-fitting">Open The Horn Fitting →</Link>}
         </div>
       )}
       <p className={s.fine}>Your position reflects your assigned responsibilities. Your horn rank reflects your recognized value to the herd. 💖</p>

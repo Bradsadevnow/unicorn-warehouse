@@ -1,5 +1,7 @@
 # Unicorn Warehouse handoff
 
+> **This is the `teaser` branch.** It is the public in-universe website, built from `main` at `d79391e` with the game removed: no sign-in, accounts, saves, Support chat, town map, interiors, or quests (see README.md). The game itself is now being built in Unity. Everything below describes the web game prototype on `main`, so most of it does not apply to this branch. Keep teaser changes to site content, and make game changes on `main`.
+
 The Next.js app lives in `web`. Unicorn Warehouse has grown from a membership company into a company town, Unicornopolis, where every business parodies an industry. Every business in the registry has its own page, the 3D town is the homepage navigation, and `npm run lint` and `tsc` pass with no warnings.
 
 ## Where we left off (2026-11-17)

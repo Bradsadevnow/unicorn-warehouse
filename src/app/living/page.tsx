@@ -4,7 +4,6 @@ import Link from "next/link";
 import hero from "@/assets/living-hero.webp";
 import { livingCareersPath } from "@/content/businesses";
 import { starterHomes } from "@/content/living";
-import { townPath } from "@/content/unicornopolis";
 import { starterHomeAddress } from "@/server/starterHomes";
 import RentalFinder from "./RentalFinder";
 import s from "./living.module.css";
@@ -43,7 +42,7 @@ export default function LivingPage() {
                 <ul className={s.tags}>{home.amenities.map((amenity) => <li key={amenity}>{amenity}</li>)}</ul>
                 <p className={s.note}>{home.finePrint}</p>
                 <strong>{home.weeklyRent} Tokens a week</strong>
-                <Link className={s.textButton} href={townPath(home.lotId)}>{starterHomeAddress(home)} · See on the map</Link>
+                <span className={s.neighborhood}>{starterHomeAddress(home)}</span>
               </div>
             </article>
           ))}

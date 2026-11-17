@@ -19,7 +19,6 @@ export default function Footer() {
             </li>
           ))}
           <li><TransitionLink href="/redemption">Token Redemption</TransitionLink></li>
-          <li><TransitionLink href="/support">Customer Support</TransitionLink></li>
           <li><TransitionLink href="/terms">Terms &amp; Conditions</TransitionLink></li>
           <li><TransitionLink href="/product-details">Product Details</TransitionLink></li>
           <li><TransitionLink href="/product-details#harmony">Portfolio Harmony™</TransitionLink></li>

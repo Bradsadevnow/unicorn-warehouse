@@ -47,10 +47,6 @@ export default function PostingDetail({ posting }: { posting: HelpingHandPosting
               <div><dt>You earn</dt><dd>{posting.payout} Tokens</dd></div>
             </dl>
           </section>
-          <section className={s.card}>
-            <h3>Questions about this shift?</h3>
-            <Link className={s.support} href={`/support?posting=helpinghand:${posting.slug}&start=1`}>Chat with a support unicorn →</Link>
-          </section>
         </aside>
       </div>
     </article>

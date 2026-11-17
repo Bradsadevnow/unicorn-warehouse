@@ -1,12 +1,8 @@
 import Link from "next/link";
-import { Suspense } from "react";
-import InteriorPanel from "@/components/interior/InteriorPanel";
-import { annualPercentageSparkle, bankWork, fees, products, welcomePeriodEnds } from "@/content/bank";
+import { bankWork, fees, products, welcomePeriodEnds } from "@/content/bank";
 import { bankAutoFinancing, quoteAutoFinancing } from "@/content/autoFinancing";
 import { getPosition, payByLevel, trackPath, tracks } from "@/content/careerTracks";
 import { sampleRepairTotal, vehicles } from "@/content/motorworks";
-import { getBankAccount } from "@/server/bankAccount";
-import { getMemberSession } from "@/server/memberSession";
 import s from "./bank.module.css";
 
 const tokens = (amount: number) => `${amount.toLocaleString("en-US")} Tokens`;
@@ -17,9 +13,7 @@ export function TokenBankAccounts() {
       <div className={s.section} id="accounts">
         <h2 id="accounts-heading">Your Unicorn Warehouse Bank accounts</h2>
         <p>Your payouts land here automatically. Banking comes with every membership.</p>
-        <Suspense fallback={<p className={s.card}>Opening the vault… ✨</p>}>
-          <Accounts />
-        </Suspense>
+        <p className={s.card}>Member enrollment opens soon. Your Everyday Tokens and Sparkle Savings accounts will be ready on your first day. ✨</p>
       </div>
     </section>
   );
@@ -33,7 +27,6 @@ export function TokenBankDetails() {
   const repairQuote = quoteAutoFinancing("repair", sampleRepairTotal, 0, 12);
   return (
     <div className={s.bank}>
-      <InteriorPanel id="bank" />
       <section className={s.section} aria-labelledby="products-heading">
         <h2 id="products-heading">Banking that’s already yours</h2>
         <ul className={s.products}>
@@ -106,68 +99,3 @@ export function TokenBankDetails() {
   );
 }
 
-async function Accounts() {
-  const session = await getMemberSession();
-  if (!session) {
-    return <p className={s.card}><Link href="/">Sign in</Link> to see your accounts. Your Tokens are already here.</p>;
-  }
-  const bank = getBankAccount(session.account);
-  const { goal } = bank;
-  const years = goal.monthsToGoal ? goal.monthsToGoal / 12 : undefined;
-  const pace = years === undefined
-    ? "A date isn’t available at your current pace."
-    : years >= 2
-      ? `At your current pace, you’ll get there in about ${Math.ceil(years).toLocaleString("en-US")} years.`
-      : `At your current pace, you’ll get there in about ${goal.monthsToGoal} months.`;
-
-  return (
-    <div className={s.accounts}>
-      <article className={s.account} data-tone="mint">
-        <p className={s.eyebrow}>Everyday Tokens · {session.account.id}</p>
-        <p className={s.balance}>{tokens(bank.available)}</p>
-        <p>Available balance</p>
-        <dl>
-          <div><dt>Total balance</dt><dd>{tokens(bank.total)}</dd></div>
-          <div><dt>On hold</dt><dd>{tokens(bank.held)}</dd></div>
-          <div><dt>Pending, not deposited</dt><dd>{tokens(bank.pending)}</dd></div>
-        </dl>
-        <Link href="/account?tab=wallet#statement">View statement →</Link>
-      </article>
-
-      <article className={s.account} data-tone="lilac">
-        <p className={s.eyebrow}>Sparkle Savings</p>
-        <p className={s.balance}>{bank.sparkle.toLocaleString("en-US")} ✨</p>
-        <p>Sparkle earned in {bank.daysOpen} days</p>
-        <dl>
-          <div><dt>Annual Percentage Sparkle</dt><dd>{(annualPercentageSparkle * 100).toFixed(2)}%</dd></div>
-          <div><dt>Goal</dt><dd><Link href={goal.href}>{goal.name}</Link></dd></div>
-          <div><dt>Saved</dt><dd>{tokens(goal.saved)} of {tokens(goal.tokens)}</dd></div>
-        </dl>
-        <progress value={goal.saved} max={goal.tokens} aria-label={`Progress toward ${goal.name}`} />
-        <p className={s.fine}>{pace} Sparkle is not redeemable.</p>
-      </article>
-
-      <article className={s.account} data-tone="butter">
-        <p className={s.eyebrow}>Early Payday</p>
-        {bank.advances.length === 0 && <>
-          <p className={s.balance}>0 Tokens</p>
-          <p>No pending payouts to advance. Submit an assignment to unlock Early Payday.</p>
-        </>}
-        {bank.advances.map(({ ledgerEntryId, label, payout, advance, fee, deposited }) => (
-          <div key={ledgerEntryId} className={s.advance}>
-            <p className={s.balance}>{tokens(deposited)}</p>
-            <p>Available today against {label}</p>
-            <dl>
-              <div><dt>Pending payout</dt><dd>{tokens(payout)}</dd></div>
-              <div><dt>Advance</dt><dd>{tokens(advance)}</dd></div>
-              <div><dt>Fee</dt><dd>{tokens(fee)}</dd></div>
-              <div><dt>You repay</dt><dd>{tokens(advance)}</dd></div>
-            </dl>
-            <Link href={`/support?transaction=${encodeURIComponent(ledgerEntryId)}`}>Ask a support unicorn about this advance →</Link>
-          </div>
-        ))}
-        <p className={s.fine}>If the payout is not accepted, the advance settles against future earnings.</p>
-      </article>
-    </div>
-  );
-}

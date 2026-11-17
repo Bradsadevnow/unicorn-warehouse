@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import art from "@/assets/public-works-hero.webp";
 import { publicWorksCycle, publicWorksPlans, worksNotices, worksProjects } from "@/content/publicWorks";
-import { cloverLoopStops, townLots, townPath } from "@/content/unicornopolis";
+import { cloverLoopStops, townLots } from "@/content/unicornopolis";
 import WorksRequestPreview from "./WorksRequestPreview";
 import s from "./publicWorks.module.css";
 
@@ -16,9 +16,9 @@ const [fire, police, bundle] = publicWorksPlans;
 const bundleSavings = fire.price + police.price - bundle.price;
 const serviceDirectory = [
   { icon: "🚧", title: "Roads & Transit", copy: "Potholes, street signs, lane closures, and Clover Loop shelters.", href: "#clover-loop", label: "Find a bus stop" },
-  { icon: "🌊", title: "Water & Shoreline", copy: "Water service on town land, the marina ramp, and the Clover Lake walking path.", href: townPath("marina"), label: "Find the marina" },
-  { icon: "🚒", title: "Fire & Rescue", copy: "Station visits, incident records, and household preparedness.", href: townPath("fire-rescue"), label: "Find the fire hall" },
-  { icon: "🌷", title: "Neighborhood Police", copy: "Lost property, case updates, and the neighborhood counter.", href: townPath("police"), label: "Find the police station" },
+  { icon: "🌊", title: "Water & Shoreline", copy: "Water service on town land, the marina ramp, and the Clover Lake walking path.", href: "#marina", label: "Find the marina" },
+  { icon: "🚒", title: "Fire & Rescue", copy: "Station visits, incident records, and household preparedness.", href: "#campus", label: "Find the fire hall" },
+  { icon: "🌷", title: "Neighborhood Police", copy: "Lost property, case updates, and the neighborhood counter.", href: "#campus", label: "Find the police station" },
 ] as const;
 
 const campus = townLots.filter(({ id }) => ["public-works", "fire-rescue", "police"].includes(id));
@@ -68,7 +68,6 @@ export default function PublicWorksPage() {
               <h3>{title}</h3>
               <p>{copy}</p>
               <Link href={href}>{label} →</Link>
-              {title === "Neighborhood Police" && <p><Link href="/quests/horn-fitting?stop=lost-property#quest-counter">Visit Lost Property →</Link></p>}
             </article>
           ))}
         </div>
@@ -91,7 +90,6 @@ export default function PublicWorksPage() {
               <h3>{name}</h3>
               <p>{address}</p>
               <p>{copy}</p>
-              <Link href={townPath(id)}>See it on the town map →</Link>
             </article>
           ))}
         </div>
@@ -127,11 +125,11 @@ export default function PublicWorksPage() {
         <p>Memberships cover household profiles, updates, and records. Emergency response is separate from membership.</p>
         <Link href="/redemption#public-works-subscriptions">Find memberships in Token Redemption →</Link>
       </section>
-      <section className={s.yard} aria-labelledby="yard-heading">
+      <section className={s.yard} id="campus" aria-labelledby="yard-heading">
         <div><h2 id="yard-heading">A little yard with a lot to do.</h2><p>Road crews, Fire &amp; Rescue, and the blue-roofed police station all share the Depot District campus.</p></div>
         <ul className={s.campusAddresses}>
           {campus.map(({ id, name, address }) => (
-            <li key={id}><Link href={townPath(id)}>{name} →</Link><span>{address}</span></li>
+            <li key={id}><strong>{name}</strong><span>{address}</span></li>
           ))}
         </ul>
       </section>

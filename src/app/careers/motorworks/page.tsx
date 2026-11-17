@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import campaign from "@/assets/motors-careers.webp";
-import { getBusiness } from "@/content/businesses";
-import { rolePath, roles } from "@/content/careers";
+import TrackCallout from "@/components/TrackCallout";
 import { postingPath, postings } from "@/content/goodshiftPostings";
 import { helpingHandPostings } from "@/content/helpingHandPostings";
 import s from "../careers.module.css";
@@ -22,8 +21,6 @@ const departments = [
 ] as const;
 
 export default function MotorsCareersPage() {
-  const motors = getBusiness("motorworks")!;
-  const level = roles.find(({ rung }) => rung === motors.role.rung);
 
   return (
     <main className={s.page}>
@@ -67,19 +64,7 @@ export default function MotorsCareersPage() {
           })}
         </ul>
       </section>
-      {level && (
-        <section className={s.life} aria-labelledby="career-heading">
-          <div>
-            <p className={s.eyebrow}>Grow with Motorworks</p>
-            <h2 id="career-heading">{motors.role.title}</h2>
-            <p>Own the inspection process, review service recommendations, and help the next technician understand what the member deferred.</p>
-          </div>
-          <div>
-            <p><strong>{level.title} · {level.rateNote}</strong></p>
-            <Link href={rolePath(level)}>See the career level and requirements →</Link>
-          </div>
-        </section>
-      )}
+      <TrackCallout business="motorworks" />
     </main>
   );
 }

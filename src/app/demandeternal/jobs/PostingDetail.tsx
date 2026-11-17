@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { getTrack, goodshiftTrack, trackPath } from "@/content/careerTracks";
+
+const officeTrack = getTrack(goodshiftTrack)!;
 import { type Posting, standardAcceptance } from "@/content/goodshiftPostings";
 import ApplyButton from "./[slug]/ApplyButton";
 import s from "./[slug]/posting.module.css";
@@ -66,7 +69,7 @@ export default function PostingDetail({ posting }: { posting: Posting }) {
               <div><dt>Length</dt><dd>{posting.duration}</dd></div>
               <div><dt>Openings</dt><dd>{posting.openings}</dd></div>
               <div><dt>Applicants</dt><dd>{posting.applicants}</dd></div>
-              <div><dt>Herd eligibility</dt><dd>{posting.herdEligible ? <Link href="/careers/unicorn-trainee#eligible">Counts 🦄</Link> : "Not counted"}</dd></div>
+              <div><dt>Career track</dt><dd><Link href={trackPath(officeTrack)}>{officeTrack.name}</Link></dd></div>
             </dl>
           </section>
           <section className={s.card}>

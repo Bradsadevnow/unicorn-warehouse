@@ -25,9 +25,6 @@
 .summary { max-width: 52ch; color: var(--dim); }
 .application { align-content: start; justify-items: start; padding: clamp(16px, 3vw, 28px); border: 1px solid var(--line); border-radius: 22px; background: #fffaff; }
 .pay { font: 900 clamp(22px, 3vw, 36px)/1.05 var(--display); }
-.gate { display: grid; gap: 10px; }
-.action { width: fit-content; padding: 9px 14px; border-radius: 999px; background: var(--ice); color: #fff; font-weight: 700; }
-.action:hover { text-decoration: underline; text-underline-offset: 3px; }
 .invite { color: var(--dim); }
 
 .layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(230px, 1fr); align-items: start; gap: clamp(18px, 4vw, 52px); }
@@ -42,14 +39,15 @@
 .card dl div { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; }
 .card dt { color: var(--dim); }
 .card dd { margin: 0; font-weight: 700; text-align: right; }
-.eligible { scroll-margin-top: 100px; }
-.eligible > ul { list-style: none; padding-left: 0; margin-top: 14px; gap: 10px; }
-.eligible a { display: grid; gap: 3px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: #f2e9ff; }
-.eligible a:hover { border-color: var(--ice); }
-.eligible span { font-size: 13px; color: var(--dim); }
-.eligible .counts { margin-top: 4px; color: var(--bone); }
-.eligible i { font-style: normal; font-weight: 700; color: var(--ice); }
 
 @media (max-width: 760px) {
   .hero, .layout { grid-template-columns: minmax(0, 1fr); }
 }
+
+.unlocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; margin-top: 12px; }
+.unlocks > div { padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: #fffaff; }
+.unlocks h3 { margin-bottom: 8px; font: 800 18px/1.2 var(--display); }
+.unlocks h3 a { color: var(--ice); text-decoration: underline; text-underline-offset: 3px; }
+.unlocks ul { display: grid; gap: 8px; padding: 0; list-style: none; }
+.unlocks li { display: grid; gap: 1px; }
+.unlocks li span { font-size: 13px; color: var(--dim); }

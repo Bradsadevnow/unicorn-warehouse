@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import campaign from "@/assets/fulfillment-careers.webp";
 import { getBusiness } from "@/content/businesses";
-import { rolePath, roles } from "@/content/careers";
+import TrackCallout from "@/components/TrackCallout";
 import { helpingHandPostings } from "@/content/helpingHandPostings";
 import s from "../careers.module.css";
 import styles from "../worksite.module.css";
@@ -22,7 +22,6 @@ const departments = [
 
 export default function FulfillmentCareersPage() {
   const fulfillment = getBusiness("fulfillment")!;
-  const level = roles.find(({ rung }) => rung === fulfillment.role.rung);
 
   return (
     <main className={s.page}>
@@ -81,20 +80,7 @@ export default function FulfillmentCareersPage() {
         </ul>
       </section>
 
-      {level && (
-        <section className={s.life} aria-labelledby="path-heading">
-          <div>
-            <p className={s.eyebrow}>Grow with Fulfillment</p>
-            <h2 id="path-heading">{fulfillment.role.title}</h2>
-            <p>Coach the floor on picking, call out personal bests, and help the team keep up as each new standard is published.</p>
-          </div>
-          <div>
-            <p><strong>{level.title} · {level.rateNote}</strong></p>
-            <Link href={rolePath(level)}>See the career level and requirements →</Link>
-            <Link href="/careers#eligibility">Check your progress toward the Herd →</Link>
-          </div>
-        </section>
-      )}
+      <TrackCallout business="fulfillment" />
 
       <footer className={s.closing}>
         <p>See you on the floor.</p>

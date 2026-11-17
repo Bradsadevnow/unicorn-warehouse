@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import campaign from "@/assets/wellness-careers.webp";
-import { getBusiness } from "@/content/businesses";
-import { rolePath, roles } from "@/content/careers";
+import TrackCallout from "@/components/TrackCallout";
 import { postingPath, postings } from "@/content/goodshiftPostings";
 import { helpingHandPostings } from "@/content/helpingHandPostings";
 import s from "../careers.module.css";
@@ -21,8 +20,6 @@ const departments = [
 ] as const;
 
 export default function WellnessCareersPage() {
-  const wellness = getBusiness("wellness")!;
-  const level = roles.find(({ rung }) => rung === wellness.role.rung);
 
   return (
     <main className={s.page}>
@@ -59,16 +56,7 @@ export default function WellnessCareersPage() {
           })}
         </ul>
       </section>
-      {level && (
-        <section className={s.life}>
-          <div>
-            <p className={s.eyebrow}>Grow with Wellness</p>
-            <h2>{wellness.role.title}</h2>
-            <p>Help members take the next step when the previous step is still under review.</p>
-          </div>
-          <Link href={rolePath(level)}>{level.title} · {level.rateNote} →</Link>
-        </section>
-      )}
+      <TrackCallout business="wellness" />
     </main>
   );
 }

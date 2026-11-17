@@ -3,8 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import site from "@/assets/construction-site.webp";
 import { getBusiness } from "@/content/businesses";
+import TrackCallout from "@/components/TrackCallout";
 import { getWorkListingPath } from "@/content/workListingPath";
-import { rolePath, roles } from "@/content/careers";
 import s from "../careers.module.css";
 import w from "../worksite.module.css";
 
@@ -22,7 +22,6 @@ const departments = [
 
 export default function ConstructionCareersPage() {
   const construction = getBusiness("construction")!;
-  const level = roles.find(({ rung }) => rung === construction.role.rung);
 
   return (
     <main className={s.page}>
@@ -53,10 +52,7 @@ export default function ConstructionCareersPage() {
           })}
         </ul>
       </section>
-      {level && <section className={s.life}>
-        <div><h2>{construction.role.title}</h2><p>Keep the work moving and give the next crew a schedule it can use.</p></div>
-        <Link href={rolePath(level)}>{level.title} · {level.rateNote} →</Link>
-      </section>}
+      <TrackCallout business="construction" />
     </main>
   );
 }

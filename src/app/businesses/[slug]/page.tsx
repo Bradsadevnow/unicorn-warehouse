@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { notFound, permanentRedirect } from "next/navigation";
 import { businessPath, businesses, getBusiness } from "@/content/businesses";
-import { rolePath, roles } from "@/content/careers";
+import { employers, getTrack, payByLevel, positions as trackPositions, trackPath } from "@/content/careerTracks";
 import { postingPath, postings } from "@/content/goodshiftPostings";
 import { helpingHandJobsPath, helpingHandPostings } from "@/content/helpingHandPostings";
 import s from "../businesses.module.css";
@@ -34,7 +34,9 @@ async function BusinessDetails({ params }: Pick<PageProps<"/businesses/[slug]">,
   const business = getBusiness((await params).slug);
   if (!business) notFound();
   if (business.careersHref) permanentRedirect(business.careersHref);
-  const level = roles.find(({ rung }) => rung === business.role.rung);
+  const here = trackPositions.filter((position) => position.business === business.slug);
+  const track = here[0] && getTrack(here[0].track);
+  const entry = here.filter(({ level }) => level === 1);
   const open = business.status === "Open";
 
   return (
@@ -76,12 +78,13 @@ async function BusinessDetails({ params }: Pick<PageProps<"/businesses/[slug]">,
           <section className={s.card} aria-labelledby="career-heading">
             <h2 id="career-heading">Build a career here</h2>
             <p className={s.role}>{business.role.title}</p>
-            {level && (
+            {track && (
               <p>
-                A <Link href={rolePath(level)}>{level.title}</Link> role · {level.rateNote} · {level.horn}
+                Part of the <Link href={trackPath(track)}>{track.name}</Link> track.
+                {entry.length > 0 && ` Start as ${entry.map(({ title }) => title).join(" or ")} at ${payByLevel[1]} Tokens an hour.`}
               </p>
             )}
-            <Link href="/careers#eligibility">Check your eligibility →</Link>
+            {employers[business.slug]?.careersHref && <Link href={employers[business.slug].careersHref!}>Meet the team →</Link>}
           </section>
 
           <section className={s.card} aria-labelledby="policy-heading">

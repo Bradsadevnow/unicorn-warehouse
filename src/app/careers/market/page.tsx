@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import campaign from "@/assets/market-careers.webp";
 import { getBusiness } from "@/content/businesses";
-import { rolePath, roles } from "@/content/careers";
+import TrackCallout from "@/components/TrackCallout";
 import { helpingHandJobsPath, helpingHandPostings } from "@/content/helpingHandPostings";
 import s from "../careers.module.css";
 import styles from "../worksite.module.css";
@@ -63,7 +63,6 @@ const departments = [
 
 export default function MarketCareersPage() {
   const market = getBusiness("market")!;
-  const associate = roles.find(({ rung }) => rung === market.role.rung);
 
   return (
     <main className={s.page}>
@@ -105,20 +104,7 @@ export default function MarketCareersPage() {
         <Link href={helpingHandJobsPath}>Browse HelpingHand shifts →</Link>
       </section>
 
-      {associate && (
-        <section className={s.life} aria-labelledby="path-heading">
-          <div>
-            <p className={s.eyebrow}>Grow with Market</p>
-            <h2 id="path-heading">{market.role.title}</h2>
-            <p>Help the team keep shelves full and make it easier for members to find what they need.</p>
-          </div>
-          <div>
-            <p><strong>{associate.title} · {associate.rateNote}</strong></p>
-            <Link href={rolePath(associate)}>See the career level and requirements →</Link>
-            <Link href="/careers#eligibility">Check your progress toward the Herd →</Link>
-          </div>
-        </section>
-      )}
+      <TrackCallout business="market" />
 
       <footer className={s.closing}>
         <p>See you on the floor.</p>

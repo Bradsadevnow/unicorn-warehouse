@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTrack, helpingHandTrack, trackPath } from "@/content/careerTracks";
 import type { HelpingHandPosting } from "@/content/helpingHandPostings";
 import ApplyButton from "../../demandeternal/jobs/[slug]/ApplyButton";
 import s from "../../demandeternal/jobs/[slug]/posting.module.css";
@@ -6,6 +7,7 @@ import s from "../../demandeternal/jobs/[slug]/posting.module.css";
 const dollars = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
 export default function PostingDetail({ posting }: { posting: HelpingHandPosting }) {
+  const track = getTrack(helpingHandTrack(posting.site) ?? "");
   return (
     <article className={s.detail}>
       <header className={s.header}>
@@ -39,6 +41,7 @@ export default function PostingDetail({ posting }: { posting: HelpingHandPosting
             <h3>Shift details</h3>
             <dl>
               <div><dt>Worksite</dt><dd>{posting.site}</dd></div>
+              {track && <div><dt>Career track</dt><dd><Link href={trackPath(track)}>{track.name}</Link></dd></div>}
               <div><dt>Booked time</dt><dd>{posting.duration}</dd></div>
               <div><dt>Client pays</dt><dd>{dollars.format(posting.price)}</dd></div>
               <div><dt>You earn</dt><dd>{posting.payout} Tokens</dd></div>

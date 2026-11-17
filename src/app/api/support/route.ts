@@ -1,10 +1,10 @@
-import { type CareerRole, getRole, rolePath } from "@/content/careers";
+import { type CareerRole, getRole, promotionSummary, rolePath } from "@/content/careers";
 import { type Posting, getPosting, postingPath, standardAcceptance } from "@/content/goodshiftPostings";
 import { type MemberAccount, getTokenBalances } from "@/content/memberAccount";
 import { terms, productDetails } from "@/content/portfolioTerms";
 import { getMemberReportStatus } from "@/server/companyWorkflows";
 import { complete } from "@/server/model";
-import { getHerdEligibility } from "@/server/herdEligibility";
+import { getEmployeeRecord } from "@/server/employeeRecord";
 import { getMemberSession } from "@/server/memberSession";
 import { getServiceHistory, serviceNames } from "@/server/serviceHistory";
 import { getSupportPosting } from "@/server/supportPosting";
@@ -25,7 +25,8 @@ function getAccountReferences(memberAccount: MemberAccount, transaction?: Member
     { id: "A:memberships", label: "Memberships", href: "/account?tab=memberships#memberships", text: JSON.stringify(memberAccount.subscriptions) },
     { id: "A:requests", label: "Support requests", href: "/account?tab=activity#requests", text: JSON.stringify(memberAccount.requests) },
     { id: "A:activity", label: "Member notices", href: "/account?tab=activity#notices", text: JSON.stringify(memberAccount.notices) },
-    { id: "A:work", label: "Assignment history", href: "/account?tab=work#work", text: JSON.stringify({ assignments: memberAccount.assignments, unicornTraineeProgress: getHerdEligibility(memberAccount) }) },
+    { id: "A:work", label: "Assignment history", href: "/account?tab=work#work", text: JSON.stringify(memberAccount.assignments) },
+    { id: "A:employment", label: "Employee profile", href: "/careers#profile", text: JSON.stringify(getEmployeeRecord(memberAccount)) },
     ...serviceRefs,
     ...(report ? [{ id: "A:report", label: "Goodshift report status", href: "/account?tab=wallet&transaction=report#transaction", text: JSON.stringify(report) }] : []),
     ...(transaction ? [{
@@ -73,7 +74,7 @@ function getPostingReferences(memberAccount: MemberAccount, selected?: Posting) 
         ...listing,
         acceptance,
         currentClientPriceDollars: price,
-        countsTowardUnicornTrainee: posting.herdEligible ?? false,
+        careerTrack: "Office & Money",
         memberAssignments: linked.filter((item) => item.posting.id === id).map(({ assignment, ledgerEntryId, recordedPayoutTokens, ledgerStatus }) => ({ assignment, ledgerEntryId, recordedPayoutTokens, ledgerStatus })),
         payoutNote: "Use each assignment’s ledger entry as account evidence for the amount earned or pending. The current posting payout applies to new work.",
       }),
@@ -83,13 +84,14 @@ function getPostingReferences(memberAccount: MemberAccount, selected?: Posting) 
 
 function getRoleReferences(role?: CareerRole) {
   if (!role) return [];
-  const { id, title, rung, rateNote, horn, summary, status, applicants, openings, schedule, responsibilities, requirements, benefits, advancement } = role;
+  const { id, title, rung, horn, summary, expectations, benefits } = role;
+  const howEarned = promotionSummary(role);
   return [{
     id: `C:${id}`,
-    label: `Careers · ${title}`,
+    label: `Horn rank · ${title}`,
     href: rolePath(role),
-    excerpt: [...requirements, ...advancement].join(" "),
-    text: JSON.stringify({ id, title, level: rung, pay: rateNote, horn, summary, status, applicants, openings, schedule, responsibilities, requirements, benefits, advancement }),
+    excerpt: howEarned,
+    text: JSON.stringify({ id, title, hornRank: rung, horn, summary, howEarned, expectations, benefits, pay: "Horn ranks do not set pay. Pay comes from the employee's position." }),
   }];
 }
 

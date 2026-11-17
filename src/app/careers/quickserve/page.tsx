@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import campaign from "@/assets/quickserve-careers.webp";
 import { getBusiness } from "@/content/businesses";
-import { rolePath, roles } from "@/content/careers";
+import TrackCallout from "@/components/TrackCallout";
 import { helpingHandPostings } from "@/content/helpingHandPostings";
 import s from "../careers.module.css";
 import styles from "../worksite.module.css";
@@ -55,7 +55,6 @@ const departments = [
 
 export default function QuickserveCareersPage() {
   const quickserve = getBusiness("quickserve")!;
-  const associate = roles.find(({ rung }) => rung === quickserve.role.rung);
 
   return (
     <main className={s.page}>
@@ -102,20 +101,7 @@ export default function QuickserveCareersPage() {
         </ul>
       </section>
 
-      {associate && (
-        <section className={s.life} aria-labelledby="path-heading">
-          <div>
-            <p className={s.eyebrow}>Grow with Horn & Fries</p>
-            <h2 id="path-heading">{quickserve.role.title}</h2>
-            <p>Coach new teammates, keep the line moving, and help every order leave the counter with a little delight.</p>
-          </div>
-          <div>
-            <p><strong>{associate.title} · {associate.rateNote}</strong></p>
-            <Link href={rolePath(associate)}>See the career level and requirements →</Link>
-            <Link href="/careers#eligibility">Check your progress toward the Herd →</Link>
-          </div>
-        </section>
-      )}
+      <TrackCallout business="quickserve" />
 
       <footer className={s.closing}>
         <p>See you at the counter.</p>

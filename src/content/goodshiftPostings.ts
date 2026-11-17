@@ -23,8 +23,6 @@ export type Posting = {
   readonly requirements: readonly string[];
   readonly success: readonly string[];
   readonly acceptance: readonly string[];
-  /** Accepted assignments from this posting count toward a Unicorn Trainee application. */
-  readonly herdEligible?: true;
 };
 
 export const postingBasePath = "/demandeternal/jobs";
@@ -118,7 +116,6 @@ export const postings: readonly Posting[] = [
     status: "Open",
     applicants: 9,
     openings: 2,
-    herdEligible: true,
     summary: "Review residents’ questions about the property figures used in their renewal offers.",
     responsibilities: ["Check each form against the valuation snapshot.", "Route factual corrections to the appraiser.", "Record whether the renewal deadline is still open."],
     requirements: ["Experience reviewing records and writing clear handoff notes."],
@@ -141,7 +138,6 @@ export const postings: readonly Posting[] = [
     status: "Open",
     applicants: 12,
     openings: 2,
-    herdEligible: true,
     summary: "Walk members through their inspection reports and make sure they know which recommendations have monthly payment options.",
     responsibilities: ["Explain the technician’s recommendations from the written report.", "Send the Bank quote link if asked.", "Record the member’s preferred callback date."],
     requirements: ["A warm phone manner and experience reading service estimates."],
@@ -151,7 +147,6 @@ export const postings: readonly Posting[] = [
   {
     id: "GS-P-1001",
     slug: "triage-the-support-inbox",
-    herdEligible: true,
     title: "Triage the support inbox",
     category: "Customer support",
     client: "A subscription wellness brand",
@@ -296,7 +291,6 @@ export const postings: readonly Posting[] = [
   {
     id: "GS-P-2001",
     slug: "reconcile-the-weekly-report",
-    herdEligible: true,
     title: "Reconcile the weekly report",
     category: "Reporting",
     client: "A mid-size distribution client",
@@ -334,7 +328,6 @@ export const postings: readonly Posting[] = [
   {
     id: "GS-P-2002",
     slug: "clean-up-a-spreadsheet",
-    herdEligible: true,
     title: "Clean up a spreadsheet",
     category: "Reporting",
     client: "A family-owned property manager",
@@ -551,7 +544,6 @@ export const postings: readonly Posting[] = [
   {
     id: "GS-P-3004",
     slug: "write-up-meeting-notes",
-    herdEligible: true,
     title: "Write up meeting notes",
     category: "Administration",
     client: "A healthcare billing group",
@@ -661,7 +653,6 @@ export const postings: readonly Posting[] = [
   {
     id: "GS-P-4003",
     slug: "prepare-the-shift-handoff",
-    herdEligible: true,
     title: "Prepare the shift handoff",
     category: "Operations",
     client: "A logistics coordination desk",
@@ -698,7 +689,6 @@ export const postings: readonly Posting[] = [
   {
     id: "GS-P-4004",
     slug: "check-the-onboarding-queue",
-    herdEligible: true,
     title: "Check the onboarding queue",
     category: "Operations",
     client: "Unicorn Warehouse · Member Experience",
@@ -733,8 +723,6 @@ export const postings: readonly Posting[] = [
     ],
   },
 ];
-
-export const herdEligiblePostings = postings.filter(({ herdEligible }) => herdEligible);
 
 export function getPosting(key: string) {
   return postings.find(({ id, slug }) => id === key || slug === key);

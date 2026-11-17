@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
+import { getTrack, helpingHandTrack } from "@/content/careerTracks";
 import { helpingHandPostingGroups, helpingHandPostings } from "@/content/helpingHandPostings";
 import PostingList from "../../demandeternal/jobs/PostingList";
 import s from "../../demandeternal/jobs/jobs.module.css";
@@ -7,7 +8,7 @@ import s from "../../demandeternal/jobs/jobs.module.css";
 const groups = helpingHandPostingGroups.map(({ category, postings }) => ({
   category,
   postings: postings.map(({ slug, href, title, site, duration, payout }) => ({
-    slug, href, title, client: site, duration, payout, status: "Open", herdEligible: false,
+    slug, href, title, client: site, duration, payout, status: "Open", track: getTrack(helpingHandTrack(site) ?? "")?.name,
   })),
 }));
 

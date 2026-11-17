@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import campaign from "@/assets/everair-careers.webp";
 import { getBusiness } from "@/content/businesses";
-import { rolePath, roles } from "@/content/careers";
+import TrackCallout from "@/components/TrackCallout";
 import { getWorkListingPath } from "@/content/workListingPath";
 import s from "../careers.module.css";
 import styles from "../worksite.module.css";
@@ -54,7 +54,6 @@ const departments = [
 
 export default function EverairCareersPage() {
   const everair = getBusiness("everair")!;
-  const associate = roles.find(({ rung }) => rung === everair.role.rung);
 
   return (
     <main className={s.page}>
@@ -98,20 +97,7 @@ export default function EverairCareersPage() {
         </ul>
       </section>
 
-      {associate && (
-        <section className={s.life} aria-labelledby="path-heading">
-          <div>
-            <p className={s.eyebrow}>Grow with Everair</p>
-            <h2 id="path-heading">{everair.role.title}</h2>
-            <p>Guide members through their first canister, help them find a favorite blend, and get their next delivery on the calendar.</p>
-          </div>
-          <div>
-            <p><strong>{associate.title} · {associate.rateNote}</strong></p>
-            <Link href={rolePath(associate)}>See the career level and requirements →</Link>
-            <Link href="/careers#eligibility">Check your progress toward the Herd →</Link>
-          </div>
-        </section>
-      )}
+      <TrackCallout business="everair" />
 
       <footer className={s.closing}>
         <p>See you above the clouds.</p>

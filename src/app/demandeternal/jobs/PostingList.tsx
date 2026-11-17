@@ -6,7 +6,7 @@ import s from "./jobs.module.css";
 
 type Group = {
   category: string;
-  postings: { slug: string; href: string; title: string; client: string; duration: string; payout: number; status: string; herdEligible: boolean }[];
+  postings: { slug: string; href: string; title: string; client: string; duration: string; payout: number; status: string; track?: string }[];
 };
 
 export default function PostingList({ groups }: { groups: Group[] }) {
@@ -17,14 +17,14 @@ export default function PostingList({ groups }: { groups: Group[] }) {
         <section key={category}>
           <h2>{category}</h2>
           <ul>
-            {postings.map(({ slug, href, title, client, duration, payout, status, herdEligible }) => (
+            {postings.map(({ slug, href, title, client, duration, payout, status, track }) => (
               <li key={slug}>
                 <Link href={href} aria-current={slug === selected ? "page" : undefined}>
                   <b>{title}</b>
                   <span>{client}</span>
                   <span className={s.meta}>
                     <small>{payout} Tokens</small> · {duration}
-                    {herdEligible && <span role="img" aria-label="Counts toward Unicorn Trainee" title="Counts toward Unicorn Trainee">🦄</span>}
+                    {track && <span className={s.track} title={`Counts toward horn rank in the ${track} track`}>{track}</span>}
                     {status !== "Open" && <i data-status={status}>{status}</i>}
                   </span>
                 </Link>

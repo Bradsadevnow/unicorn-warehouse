@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import TrackCallout from "@/components/TrackCallout";
 import school from "@/assets/cloverfield-school.webp";
 import { schoolName, schoolRoles } from "@/content/school";
 import s from "../careers.module.css";
@@ -36,6 +37,7 @@ export default function SchoolCareersPage() {
           ))}
         </ul>
       </section>
+      <TrackCallout business="school" />
     </main>
   );
 }

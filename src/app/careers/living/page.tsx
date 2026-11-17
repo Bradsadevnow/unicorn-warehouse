@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import campaign from "@/assets/living-careers.webp";
-import { getBusiness } from "@/content/businesses";
-import { rolePath, roles } from "@/content/careers";
+import TrackCallout from "@/components/TrackCallout";
 import { postingPath, postings } from "@/content/goodshiftPostings";
 import { helpingHandPostings } from "@/content/helpingHandPostings";
 import s from "../careers.module.css";
@@ -27,8 +26,6 @@ const jobs = new Map<string, { href: string; payout: number; board: "HelpingHand
 ]);
 
 export default function LivingCareersPage() {
-  const living = getBusiness("living")!;
-  const level = roles.find(({ rung }) => rung === living.role.rung);
 
   return (
     <main className={s.page}>
@@ -67,19 +64,7 @@ export default function LivingCareersPage() {
           ))}
         </ul>
       </section>
-      {level && (
-        <section className={s.life}>
-          <div>
-            <p className={s.eyebrow}>Grow with Living</p>
-            <h2>{living.role.title}</h2>
-            <p>Help households find a new reason to stay as renewal approaches.</p>
-          </div>
-          <div>
-            <p><strong>{level.title} · {level.rateNote}</strong></p>
-            <Link href={rolePath(level)}>See the career level and requirements →</Link>
-          </div>
-        </section>
-      )}
+      <TrackCallout business="living" />
     </main>
   );
 }

@@ -2,6 +2,12 @@
 
 The Next.js app lives in `web`. Unicorn Warehouse has grown from a membership company into a company town, Unicornopolis, where every business parodies an industry. Every business in the registry has its own page, the 3D town is the homepage navigation, and `npm run lint` and `tsc` pass with no warnings.
 
+## Where we left off (2026-11-16)
+
+- Done and verified in the dev preview: the careers redesign (M1). Horn ranks are recognition only, track pages exist, department careers pages use `src/components/TrackCallout.tsx`, both job boards label shifts by track, and members have employment records (`src/server/employeeRecord.ts`). `tsc` and `npm run lint` pass with no warnings.
+- Next in ROADMAP.md: M3, the action layer and game engine. Test model tool calling for the support agent during M3.
+- Open: the Bank interior is a greybox. The player unicorn is built in code. Support chats about the new employee profile have not been run. When the Browser pane is hidden, streamed Suspense content does not reveal, because animation frames pause. Check pages with the pane visible or read the server HTML.
+
 Read these alongside this file:
 
 - [ROADMAP.md](ROADMAP.md) sequences the next phase: career tracks and horn ranks, the game engine and action layer, onboarding, PDF saves, walkable Blender interiors, the quest engine, and the support agent bar. Start there.
@@ -35,7 +41,7 @@ Outline pages remain at `/businesses/[slug]`, and `/businesses` redirects to the
 
 **Work boards.** Goodshift (21 office postings, `src/content/goodshiftPostings.ts`) and HelpingHand (54 on-site postings, `src/content/helpingHandPostings.ts`) share the two-pane board layout at `/demandeternal/jobs` and `/sublaborix/jobs`. Business careers pages link each role to its listing.
 
-**Careers.** `/careers` is "Become a Unicorn" with the five-rung horn ladder in `src/content/careers.ts`. Each business has a careers page under `/careers/<business>`. Applying for Unicorn Trainee takes 40 accepted assignments from herd-eligible postings (`src/server/herdEligibility.ts`).
+**Careers.** Every member is an employee with two separate records: a position in one of six career tracks (`src/content/careerTracks.ts`), which sets pay and has a manager, and a horn rank (`src/content/careers.ts`), which is recognition only. Higher positions need a minimum horn rank and a vacancy. Horn ranks advance through accepted extra shifts in the employee's own track, manager approval, and a Recognition Quest. `/careers` shows the Employee Profile, `/careers/tracks/[track]` shows each track, `/careers/[slug]` shows each rank, and `src/server/employeeRecord.ts` derives a member's profile and qualifying shifts. HelpingHand and Goodshift label each shift with the track it counts toward.
 
 **Member data.** Poppy (`UW-0482`) and Juniper (`UW-0716`) live in `src/content/memberAccount.ts`. The ledger is authoritative. Bank balances (`src/server/bankAccount.ts`), Fun Hours (`src/server/funHours.ts`, also shown in the account portal), and Trainee progress are derived from it and add no entries of their own.
 
@@ -43,7 +49,6 @@ Outline pages remain at `/businesses/[slug]`, and `/businesses` redirects to the
 
 ## Open threads
 
-- **HelpingHand does not count toward Trainee.** No HelpingHand posting is marked herd-eligible, and eligibility only checks Goodshift postings. Juniper is at 0 of 40 and Poppy is at 1 of 40.
 - **Poppy's history predates the current prices.** Her weekly reports paid 140 Tokens each, while that posting now pays 84 under ECONOMY.md. Reconcile this when member histories are reseeded.
 - **The next phase is the game.** ROADMAP.md replaces BUSINESS-ROADMAP.md's "After the pages" section. Poppy and Juniper are retired at onboarding (M4), and member history comes from play instead of seeded records.
 - **Charges shown but not posted.** Bank fees are waived through December 31, 2026, and scheduled Fun Hours show as a future 60-Token charge. Neither is on the ledger. Posting them means adding ledger entries.

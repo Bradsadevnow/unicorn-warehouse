@@ -23,3 +23,4 @@
   .board { grid-template-columns: minmax(0, 1fr); }
   .list { position: static; max-height: 260px; }
 }
+.meta .track { margin-left: auto; padding: 1px 8px; border-radius: 999px; background: #e9ddff; color: #51296e; font-size: 11px; font-weight: 700; white-space: nowrap; }

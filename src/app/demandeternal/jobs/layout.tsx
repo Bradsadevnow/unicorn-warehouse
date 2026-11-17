@@ -16,7 +16,6 @@ const groups = postingCategories.map((category) => ({
       duration: posting.duration,
       payout: posting.payout,
       status: posting.status,
-      herdEligible: posting.herdEligible ?? false,
     })),
 }));
 

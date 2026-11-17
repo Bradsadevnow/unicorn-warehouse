@@ -9,6 +9,8 @@ export type MemberAccount = {
   readonly asOf: string;
   readonly household: string;
   readonly employer: string;
+  /** Employment with Unicorn Warehouse: a position in a career track and a separate horn rank. */
+  readonly employment: { readonly positionId: string; readonly hornRank: string; readonly hired: string };
   readonly ledger: readonly {
     readonly id: string;
     readonly date: string;
@@ -30,6 +32,7 @@ const poppyAccount = {
   asOf: "2026-11-14",
   household: "Poppy and her sister Clover",
   employer: "Goodshift · Reporting",
+  employment: { positionId: "reporting-associate", hornRank: "unicorn-trainee", hired: "2026-08-17" },
   ledger: [
     { id: "opening", date: "2026-08-17", label: "Opening balance", amount: 504, status: "posted" },
     { id: "aug-report", date: "2026-08-23", label: "Goodshift · August inventory report", amount: 160, status: "posted" },
@@ -53,10 +56,10 @@ const poppyAccount = {
     { id: "softspace", name: "Softspace Daily Balance", renewal: "Paused", status: "Paused October 7", note: "The next billing date will be set when the membership resumes." },
   ],
   assignments: [
-    { id: "GS-0823-01", ledgerEntryId: "aug-report", status: "Client accepted" },
-    { id: "GS-0910-01", ledgerEntryId: "sep-report", status: "Client accepted" },
+    { id: "GS-0823-01", ledgerEntryId: "aug-report", status: "Client accepted", postingId: "GS-P-2001" },
+    { id: "GS-0910-01", ledgerEntryId: "sep-report", status: "Client accepted", postingId: "GS-P-4001" },
     { id: "GS-1110-01", ledgerEntryId: "overtime", status: "Client accepted", postingId: "GS-P-2001" },
-    { id: "HH-1111-01", ledgerEntryId: "delivery", status: "Completed" },
+    { id: "HH-1111-01", ledgerEntryId: "delivery", status: "Completed", postingId: "helpinghand:unload-a-delivery" },
     { id: "GS-1113-02", ledgerEntryId: "report", status: "Awaiting client acceptance", postingId: "GS-P-2001" },
   ],
   requests: [
@@ -84,6 +87,7 @@ const juniperAccount = {
   asOf: "2026-11-14",
   household: "Juniper",
   employer: "HelpingHand · Retail",
+  employment: { positionId: "shelf-stocker", hornRank: "unicorn-trainee", hired: "2026-08-17" },
   ledger: [
     { id: "opening", date: "2026-08-17", label: "Opening balance", amount: 216, status: "posted" },
     { id: "shelf-shift", date: "2026-08-25", label: "HelpingHand · Restock the front shelves", amount: 36, status: "posted" },
@@ -96,8 +100,8 @@ const juniperAccount = {
     { id: "softspace", name: "Softspace Seasonal Select", renewal: "November 22, 2026", status: "Active", note: "Warming is your primary direction this cycle." },
   ],
   assignments: [
-    { id: "HH-0825-01", ledgerEntryId: "shelf-shift", status: "Completed" },
-    { id: "HH-1002-01", ledgerEntryId: "lunch-shift", status: "Completed" },
+    { id: "HH-0825-01", ledgerEntryId: "shelf-shift", status: "Completed", postingId: "helpinghand:restock-the-front-shelves" },
+    { id: "HH-1002-01", ledgerEntryId: "lunch-shift", status: "Completed", postingId: "helpinghand:bag-orders-during-the-lunch-rush" },
   ],
   requests: [
     { id: "pickup", title: "Market · Pickup window correction", status: "Resolved", date: "November 12, 2026", ledgerEntryId: "market-hold" },

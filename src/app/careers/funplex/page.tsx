@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import campaign from "@/assets/funplex-careers.webp";
 import { getBusiness } from "@/content/businesses";
-import { rolePath, roles } from "@/content/careers";
+import TrackCallout from "@/components/TrackCallout";
 import { helpingHandJobsPath } from "@/content/helpingHandPostings";
 import { getWorkListingPath } from "@/content/workListingPath";
 import s from "../careers.module.css";
@@ -55,7 +55,6 @@ const departments = [
 
 export default function FunplexCareersPage() {
   const funplex = getBusiness("funplex")!;
-  const associate = roles.find(({ rung }) => rung === funplex.role.rung);
 
   return (
     <main className={s.page}>
@@ -103,20 +102,7 @@ export default function FunplexCareersPage() {
         </div>
       </section>
 
-      {associate && (
-        <section className={s.life} aria-labelledby="path-heading">
-          <div>
-            <p className={s.eyebrow}>Grow with Funplex</p>
-            <h2 id="path-heading">{funplex.role.title}</h2>
-            <p>Welcome guests, help them find their next activity, and make sure every visit is recorded before they head home.</p>
-          </div>
-          <div>
-            <p><strong>{associate.title} · {associate.rateNote}</strong></p>
-            <Link href={rolePath(associate)}>See the career level and requirements →</Link>
-            <Link href="/careers#eligibility">Check your progress toward the Herd →</Link>
-          </div>
-        </section>
-      )}
+      <TrackCallout business="funplex" />
 
       <footer className={s.closing}>
         <p>See you on the floor.</p>

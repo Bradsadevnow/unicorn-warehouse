@@ -83,7 +83,7 @@ export const tracks: readonly Track[] = [
     name: "Office & Money",
     tagline: "Keep the numbers kind.",
     summary: "Reports, balances, and leases. The work that keeps every account accurate and every home occupied.",
-    businesses: ["bank", "living"],
+    businesses: ["goodshift", "bank", "living"],
     pathwayKit: { name: "Office & Money Pathway Kit", tokens: 58, items: ["Ergonomic wrist rest", "Headset with mute light", "Business-casual horn cover"] },
     shiftSites: ["Living"],
     goodshift: true,
@@ -146,13 +146,13 @@ export const positions: readonly Position[] = [
   { id: "pick-rate-encouragement-lead", title: "Pick Rate Encouragement Lead", track: "logistics", level: 4, business: "fulfillment", department: "Pick & Pack", manager: "Piper Pick", managerTitle: "Packing Floor Manager", summary: "Set the weekly pick rate and encourage the floor to meet it.", minRank: "unicorn-team-lead", vacancies: 0 },
 
   // Office & Money
-  { id: "reporting-associate", title: "Reporting Associate", track: "office-and-money", level: 1, business: "bank", department: "Goodshift Reporting Desk", manager: "Margin Bloom", managerTitle: "Reporting Desk Manager", summary: "Reconcile the weekly numbers and deliver them to a client review queue.", minRank: "unicorn-trainee", vacancies: 5 },
+  { id: "reporting-associate", title: "Reporting Associate", track: "office-and-money", level: 1, business: "goodshift", department: "Reporting Desk", manager: "Margin Bloom", managerTitle: "Reporting Desk Manager", summary: "Reconcile the weekly numbers and deliver them to a client review queue.", minRank: "unicorn-trainee", vacancies: 5 },
   { id: "teller-unicorn", title: "Teller Unicorn", track: "office-and-money", level: 1, business: "bank", department: "Everyday Tokens Counter", manager: "Ducat Daisy", managerTitle: "Teller Line Manager", summary: "Welcome members at the counter and explain balances they can see but not yet spend.", minRank: "unicorn-trainee", vacancies: 3 },
   { id: "leasing-assistant", title: "Leasing Assistant", track: "office-and-money", level: 1, business: "living", department: "Leasing", manager: "Maple Keyring", managerTitle: "Leasing Manager", summary: "Set up tours, prepare model homes, and walk future residents through their lease estimate.", minRank: "unicorn-trainee", vacancies: 3 },
   { id: "balance-preservation-associate", title: "Balance Preservation Associate", track: "office-and-money", level: 2, business: "bank", department: "Everyday Tokens Counter", manager: "Ducat Daisy", managerTitle: "Teller Line Manager", summary: "Review overdraft appeals and reconcile held balances so they stay held.", minRank: "junior-unicorn-associate", vacancies: 0 },
   { id: "resident-retention-specialist", title: "Resident Retention Specialist", track: "office-and-money", level: 3, business: "living", department: "Resident Services", manager: "Clover Bell", managerTitle: "Resident Services Manager", summary: "Keep residents renewing, and return their deposits as Portfolio Tokens after reconciliation.", minRank: "senior-unicorn", vacancies: 0 },
   { id: "valuation-confidence-analyst", title: "Valuation Confidence Analyst", track: "office-and-money", level: 3, business: "living", department: "Homes", manager: "Pearl Plotline", managerTitle: "Acquisitions & Valuation Director", summary: "Estimate what every home is worth, and separately, what we would offer for it.", minRank: "senior-unicorn", vacancies: 0 },
-  { id: "client-acceptance-manager", title: "Client Acceptance Manager", track: "office-and-money", level: 4, business: "bank", department: "Goodshift Reporting Desk", manager: "Margin Bloom", managerTitle: "Reporting Desk Manager", summary: "Own the acceptance window for every reporting client. The window has no fixed close.", minRank: "unicorn-team-lead", vacancies: 0 },
+  { id: "client-acceptance-manager", title: "Client Acceptance Manager", track: "office-and-money", level: 4, business: "goodshift", department: "Reporting Desk", manager: "Margin Bloom", managerTitle: "Reporting Desk Manager", summary: "Own the acceptance window for every reporting client. The window has no fixed close.", minRank: "unicorn-team-lead", vacancies: 0 },
 
   // Care & Rest
   { id: "suite-turnover-attendant", title: "Suite Turnover Attendant", track: "care-and-rest", level: 1, business: "dreamwell", department: "Guest Suites", manager: "Clover Quilt", managerTitle: "Suite Turnover Manager", summary: "Reset sleep suites to guest standard between sessions.", minRank: "unicorn-trainee", vacancies: 5 },
@@ -191,6 +191,7 @@ export const employers: Record<string, { name: string; href: string; careersHref
   fulfillment: { name: "Fulfillment", href: "/fulfillment", careersHref: "/careers/fulfillment" },
   dispatch: { name: "Dispatch", href: "/dispatch", careersHref: "/careers/dispatch" },
   market: { name: "Market", href: "/market", careersHref: "/careers/market" },
+  goodshift: { name: "Goodshift", href: "/demandeternal" },
   bank: { name: "Unicorn Warehouse Bank", href: "/tokens#bank" },
   living: { name: "Living", href: "/living", careersHref: "/careers/living" },
   wellness: { name: "Wellness", href: "/wellness", careersHref: "/careers/wellness" },

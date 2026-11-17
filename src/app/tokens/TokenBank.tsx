@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import InteriorPanel from "@/components/interior/InteriorPanel";
 import { annualPercentageSparkle, bankWork, fees, products, welcomePeriodEnds } from "@/content/bank";
 import { bankAutoFinancing, quoteAutoFinancing } from "@/content/autoFinancing";
-import { rolePath, roles } from "@/content/careers";
+import { getPosition, payByLevel, trackPath, tracks } from "@/content/careerTracks";
 import { sampleRepairTotal, vehicles } from "@/content/motorworks";
 import { getBankAccount } from "@/server/bankAccount";
 import { getMemberSession } from "@/server/memberSession";
@@ -26,7 +26,8 @@ export function TokenBankAccounts() {
 }
 
 export function TokenBankDetails() {
-  const level = roles.find(({ rung }) => rung === bankWork.role.rung);
+  const teller = getPosition("teller-unicorn")!;
+  const officeTrack = tracks.find(({ id }) => id === teller.track)!;
   const city = vehicles[0];
   const vehicleQuote = quoteAutoFinancing("vehicle", city.price, 0, 60);
   const repairQuote = quoteAutoFinancing("repair", sampleRepairTotal, 0, 12);
@@ -95,8 +96,8 @@ export function TokenBankDetails() {
           </ul>
           <div className={s.card}>
             <p className={s.eyebrow}>Build a career here</p>
-            <h3>{bankWork.role.title}</h3>
-            {level && <p>A <Link href={rolePath(level)}>{level.title}</Link> role · {level.rateNote}</p>}
+            <h3>{teller.title}</h3>
+            <p>{teller.department} · {payByLevel[teller.level]} Tokens an hour · Part of the <Link href={trackPath(officeTrack)}>{officeTrack.name}</Link> track</p>
             <p className={s.fine}>Your pay is deposited to Everyday Tokens after client acceptance.</p>
           </div>
         </div>

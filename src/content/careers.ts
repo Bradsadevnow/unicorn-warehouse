@@ -1,217 +1,148 @@
+/**
+ * Horn ranks: company-wide recognition. A horn rank never sets pay.
+ * Pay comes from the employee's position in a career track (careerTracks.ts).
+ * Higher positions require a minimum horn rank, and horn ranks advance through
+ * qualifying extra shifts in the employee's own track, manager approval, and a Recognition Quest.
+ */
 export type CareerRole = {
   readonly id: string;
   readonly slug: string;
   readonly title: string;
   readonly rung: number;
-  /** Tokens per hour. Undefined where compensation is confidential. */
-  readonly rate?: number;
-  readonly rateNote: string;
   readonly horn: string;
   readonly tagline: string;
   readonly summary: string;
-  readonly applicants: number;
-  readonly openings: number;
-  readonly status: "Open" | "Filling fast" | "By invitation";
-  readonly schedule: string;
-  readonly responsibilities: readonly string[];
-  readonly requirements: readonly string[];
+  /** What holding the rank asks of an employee, whatever their position. */
+  readonly expectations: readonly string[];
   readonly benefits: readonly string[];
-  readonly advancement: readonly string[];
-  /**
-   * How a horn rank is earned. Horn ranks are recognition, separate from position and pay.
-   * Qualifying shifts are accepted extra shifts within the employee's own career track.
-   */
   readonly promotion:
     | { readonly by: "hire" }
     | { readonly by: "qualification"; readonly qualifyingShifts: number; readonly managerApproval: true; readonly quest: { readonly id: string; readonly title: string } }
     | { readonly by: "invitation"; readonly quest: { readonly id: string; readonly title: string } };
 };
 
-export const careersBasePath = "/careers";
+/** Horn ranks are also exported as hornRanks. */
+export type HornRank = CareerRole;
 
-/** Accepted Goodshift or HelpingHand assignments required before applying for Unicorn Trainee. */
-export const traineeEligibility = 40;
+export const careersBasePath = "/careers";
 
 export const roles: readonly CareerRole[] = [
   {
-    id: "UW-C-01",
+    id: "UW-R-01",
     slug: "unicorn-trainee",
     title: "Unicorn Trainee",
     rung: 1,
-    rate: 12,
-    rateNote: "12 Tokens per hour",
     horn: "Horn pending",
-    tagline: "Every unicorn starts somewhere. You start here.",
-    summary: "Begin your journey with the herd. Trainees learn the Unicorn Warehouse way on the warehouse floor, in the support queue, and wherever the day needs them.",
-    applicants: 4812,
-    openings: 6,
-    status: "Filling fast",
-    schedule: "Shifts assigned weekly · Availability required daily",
-    responsibilities: [
-      "Complete the shifts assigned to you across the Portfolio.",
+    tagline: "Every unicorn starts here. You start on day one.",
+    summary: "The rank every employee holds from their first day, whatever their position. It recognizes that you have joined the herd.",
+    expectations: [
       "Attend Sparkle Orientation. Orientation is held before your first paid shift.",
       "Bring your own sparkle. Sparkle is supplied by the trainee.",
       "Greet members with the approved greeting and the approved level of delight.",
-    ],
-    requirements: [
-      `${traineeEligibility} accepted assignments at Goodshift or HelpingHand. Assignments awaiting client acceptance are not counted.`,
-      "An active Unicorn Warehouse membership in good standing.",
-      "A positive attitude, demonstrated continuously.",
+      "Complete 90 days of probation. Probation restarts when you change supervisor, team, shift pattern, or career track.",
     ],
     benefits: [
       "A place in the herd.",
-      "A horn fitting, scheduled when probation is complete.",
+      "Consideration for a horn fitting once probation is complete.",
       "Member pricing on memberships you already hold.",
-    ],
-    advancement: [
-      "Complete 90 days of probation. Probation restarts when you change supervisor, team, or shift pattern.",
-      "Trainees who complete probation are considered for Junior Unicorn Associate at the next review. Reviews are held when a position opens.",
     ],
     promotion: { by: "hire" },
   },
   {
-    id: "UW-C-02",
+    id: "UW-R-02",
     slug: "junior-unicorn-associate",
     title: "Junior Unicorn Associate",
     rung: 2,
-    rate: 18,
-    rateNote: "18 Tokens per hour",
     horn: "Horn issued",
     tagline: "Your first horn. Your first glitter.",
-    summary: "Associates are the heart of the herd. You’ll wear your horn with pride and take on the work that keeps every membership feeling magical.",
-    applicants: 1260,
-    openings: 3,
-    status: "Open",
-    schedule: "Full time · Shift pattern set by your team lead",
-    responsibilities: [
-      "Work your assigned shifts and the shifts of associates who are unavailable.",
-      "Apply glitter under supervision. Associates are eligible for supervised glitter.",
+    summary: "Recognizes employees whose extra shifts, manager, and Recognition Quest all agree they belong. Your position and pay stay as they are.",
+    expectations: [
       "Keep your horn clean, visible, and upright during working hours.",
+      "Apply glitter under supervision.",
       "Welcome trainees and show them how to supply their own sparkle.",
     ],
-    requirements: [
-      "Completed probation as a Unicorn Trainee.",
-      "A signed horn custody agreement.",
-      "No open appeals against the Portfolio.",
-    ],
     benefits: [
-      "A horn, issued for the duration of your employment.",
+      "A horn, issued for the duration of your employment. The horn remains company property.",
       "Supervised glitter.",
       "Standard happiness, included during working hours.",
-    ],
-    advancement: [
-      "Associates are considered for Senior Unicorn after three consecutive reviews at Exceeds Sparkle.",
-      "A review missed by your supervisor is recorded as Meets Sparkle.",
+      "Eligibility to be considered for experienced positions in your track.",
     ],
     promotion: { by: "qualification", qualifyingShifts: 40, managerApproval: true, quest: { id: "horn-fitting", title: "The Horn Fitting" } },
   },
   {
-    id: "UW-C-03",
+    id: "UW-R-03",
     slug: "senior-unicorn",
     title: "Senior Unicorn",
     rung: 3,
-    rate: 35,
-    rateNote: "35 Tokens per hour",
     horn: "Horn issued · Polished quarterly",
     tagline: "Experience shines.",
-    summary: "Senior Unicorns set the standard. You’ll handle the moments that matter most to members and decide, within policy, when a rainbow is warranted.",
-    applicants: 310,
-    openings: 1,
-    status: "Open",
-    schedule: "Full time · On call for member moments",
-    responsibilities: [
-      "Resolve the member moments escalated to you by associates.",
-      "Authorize one rainbow per quarter. Unused rainbows do not carry over.",
+    summary: "Recognizes the employees who set the standard for the herd, and the judgment to decide when a rainbow is warranted.",
+    expectations: [
       "Model the approved level of delight for the herd.",
+      "Authorize one rainbow per quarter. Unused rainbows do not carry over.",
       "Document any associate whose sparkle falls below quota.",
-    ],
-    requirements: [
-      "Three consecutive reviews at Exceeds Sparkle as a Junior Unicorn Associate.",
-      "Sound judgment about rainbows.",
-      "Willingness to remain on call.",
     ],
     benefits: [
       "Rainbow authority, one per quarter.",
       "Quarterly horn polishing.",
       "Eligibility for Premium Employee Happiness through payroll deduction.",
-    ],
-    advancement: [
-      "Senior Unicorns are considered for Unicorn Team Lead when a team lead position opens.",
-      "A team lead position opens when a team lead leaves the herd.",
+      "Eligibility to be considered for supervisory positions in your track.",
     ],
     promotion: { by: "qualification", qualifyingShifts: 120, managerApproval: true, quest: { id: "rainbow-authority", title: "Rainbow Authority" } },
   },
   {
-    id: "UW-C-04",
+    id: "UW-R-04",
     slug: "unicorn-team-lead",
     title: "Unicorn Team Lead",
     rung: 4,
-    rate: 42,
-    rateNote: "42 Tokens per hour",
     horn: "Horn issued · Ribbon authorized",
     tagline: "Help your herd shine brighter.",
-    summary: "Team Leads bring out the best in every unicorn. You’ll set shift patterns, track sparkle, and make sure your team meets its quota together.",
-    applicants: 96,
-    openings: 1,
-    status: "Open",
-    schedule: "Full time · Present for every shift your team works",
-    responsibilities: [
-      "Ensure every unicorn on your team meets their sparkle quota.",
-      "Make up any shortfall in your team’s sparkle from your own.",
-      "Set shift patterns. A change of shift pattern restarts probation for trainees on your team.",
-      "Conduct reviews when a position opens.",
-    ],
-    requirements: [
-      "Experience as a Senior Unicorn.",
-      "A record of teams that met quota.",
-      "Comfort delivering feedback with the approved level of delight.",
+    summary: "Recognizes the leadership qualities of employees who may or may not lead a team. The Unicorn Team Lead rank does not include a team.",
+    expectations: [
+      "Deliver feedback with the approved level of delight.",
+      "Where you lead a team, make up any shortfall in its sparkle from your own.",
+      "Attend the quarterly herd gathering.",
     ],
     benefits: [
       "A ribbon for your horn.",
       "A reserved space in the break room.",
-      "Recognition at the quarterly herd gathering, attendance required.",
-    ],
-    advancement: [
-      "Team Leads who meet quota for eight consecutive quarters may be nominated for the Executive Unicorn program.",
-      "Nominations are made by Executive Unicorns.",
+      "Recognition at the quarterly herd gathering.",
+      "Eligibility to be considered for leadership positions in your track.",
     ],
     promotion: { by: "qualification", qualifyingShifts: 300, managerApproval: true, quest: { id: "quiet-key", title: "The Quiet Key" } },
   },
   {
-    id: "UW-C-05",
+    id: "UW-R-05",
     slug: "executive-unicorn",
     title: "Executive Unicorn",
     rung: 5,
-    rateNote: "Compensation confidential",
     horn: "Horn of solid gold",
     tagline: "Lead the herd into what comes next.",
-    summary: "Executive Unicorns steward the vision of Unicorn Warehouse. The role carries responsibility for the future of the herd and is exempt from shift scheduling.",
-    applicants: 0,
-    openings: 0,
-    status: "By invitation",
-    schedule: "Exempt from shift scheduling",
-    responsibilities: [
+    summary: "Executive Unicorns steward the vision of Unicorn Warehouse. The rank is held by invitation and is exempt from shift scheduling.",
+    expectations: [
       "Set the sparkle quota for the coming year.",
       "Approve the number of rainbows available to the herd.",
       "Speak at the quarterly herd gathering.",
       "Nominate future Executive Unicorns.",
-    ],
-    requirements: [
-      "Nomination by an Executive Unicorn.",
-      "Alignment with the vision.",
-      "Shift experience is not required.",
     ],
     benefits: [
       "A horn of solid gold. The horn is the property of the Executive Unicorn.",
       "Unmetered rainbows.",
       "Premium Employee Happiness, included.",
     ],
-    advancement: [
-      "Executive Unicorns have reached the top of the herd.",
-    ],
     promotion: { by: "invitation", quest: { id: "executive-floor", title: "The Executive Floor" } },
   },
 ];
+
+export const hornRanks = roles;
+
+/** One line describing how a rank is earned. */
+export function promotionSummary(rank: CareerRole) {
+  const { promotion } = rank;
+  if (promotion.by === "hire") return "Held by every employee from their first day.";
+  if (promotion.by === "invitation") return `By invitation from an Executive Unicorn. Recognition Quest: ${promotion.quest.title}.`;
+  return `${promotion.qualifyingShifts} accepted extra shifts in your track, your manager’s approval, and ${promotion.quest.title}.`;
+}
 
 export const posters = [
   { headline: "You were born to shine!", fine: "Shine availability subject to departmental approval.", tone: "pink" },

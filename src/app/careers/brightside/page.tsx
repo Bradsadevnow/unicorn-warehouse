@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import campaign from "@/assets/brightside-careers.webp";
 import { getBusiness } from "@/content/businesses";
-import { rolePath, roles } from "@/content/careers";
+import TrackCallout from "@/components/TrackCallout";
 import { brightsideBriefId } from "@/content/gigCatalogs";
 import s from "../careers.module.css";
 import styles from "../worksite.module.css";
@@ -54,7 +54,6 @@ const departments = [
 
 export default function BrightsideCareersPage() {
   const brightside = getBusiness("brightside")!;
-  const careerLevel = roles.find(({ rung }) => rung === brightside.role.rung);
 
   return (
     <main className={s.page}>
@@ -99,20 +98,7 @@ export default function BrightsideCareersPage() {
         </ul>
       </section>
 
-      {careerLevel && (
-        <section className={s.life} aria-labelledby="path-heading">
-          <div>
-            <p className={s.eyebrow}>Grow with Brightside</p>
-            <h2 id="path-heading">{brightside.role.title}</h2>
-            <p>Review creator submissions for tone, timing, and how naturally they deliver the reaction the buyer asked for.</p>
-          </div>
-          <div>
-            <p><strong>{careerLevel.title} · {careerLevel.rateNote}</strong></p>
-            <Link href={rolePath(careerLevel)}>See the career level and requirements →</Link>
-            <Link href="/careers#eligibility">Check your progress toward the Herd →</Link>
-          </div>
-        </section>
-      )}
+      <TrackCallout business="brightside" />
 
       <footer className={s.closing}>
         <p>See you on set.</p>

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import campaign from "@/assets/dispatch-careers.webp";
 import { getBusiness } from "@/content/businesses";
-import { rolePath, roles } from "@/content/careers";
+import TrackCallout from "@/components/TrackCallout";
 import { helpingHandPostings } from "@/content/helpingHandPostings";
 import s from "../careers.module.css";
 import styles from "../worksite.module.css";
@@ -54,7 +54,6 @@ const departments = [
 
 export default function DispatchCareersPage() {
   const dispatch = getBusiness("dispatch")!;
-  const associate = roles.find(({ rung }) => rung === dispatch.role.rung);
 
   return (
     <main className={s.page}>
@@ -102,20 +101,7 @@ export default function DispatchCareersPage() {
         </ul>
       </section>
 
-      {associate && (
-        <section className={s.life} aria-labelledby="path-heading">
-          <div>
-            <p className={s.eyebrow}>Grow with Dispatch</p>
-            <h2 id="path-heading">{dispatch.role.title}</h2>
-            <p>Coordinate deliveries from offer to handoff. Dispatch pays for the accepted delivery. Travel to pickup and travel home are the courier’s own time.</p>
-          </div>
-          <div>
-            <p><strong>{associate.title} · {associate.rateNote}</strong></p>
-            <Link href={rolePath(associate)}>See the career level and requirements →</Link>
-            <Link href="/careers#eligibility">Check your progress toward the Herd →</Link>
-          </div>
-        </section>
-      )}
+      <TrackCallout business="dispatch" />
 
       <footer className={s.closing}>
         <p>See you out there.</p>

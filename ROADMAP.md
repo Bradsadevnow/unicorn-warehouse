@@ -24,7 +24,7 @@ Three lanes can move at the same time: content (careers), code (engine), and art
 
 ### M1 · Career tracks and horn ranks · content
 
-Status: data and rules done. `careerTracks.ts` holds 6 tracks and 45 positions, horn ranks carry their promotion rules, the Careers terms are updated, and ECONOMY.md is keyed by position level. The pages still show the old model, including horn-rank pay in 20 places. Next: the `/careers` redesign and track pages.
+Status: done, except the onboarding flow. `careerTracks.ts` holds 6 tracks and 45 positions with pay, managers, minimum ranks, and Pathway Kits. Horn ranks in `careers.ts` are recognition only. `/careers` explains the two records with a live Employee Profile, track pages live at `/careers/tracks/[track]`, rank pages at `/careers/[slug]`, and every department careers page shows its track. Both job boards label shifts by track. Poppy and Juniper have employment records, read through `src/server/employeeRecord.ts`, which the support unicorn also receives.
 
 - `src/content/careerTracks.ts`: six tracks, departments, managers, positions with level, pay, minimum horn rank, and what they lead to. Pathway Kit per track. Qualifying extra shifts per track.
 - Horn ranks become recognition only. Each rank's advancement rule lists qualifying shifts, manager approval, and a quest slot.

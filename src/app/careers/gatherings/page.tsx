@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import campaign from "@/assets/gatherings-careers.webp";
 import { getBusiness } from "@/content/businesses";
-import { rolePath, roles } from "@/content/careers";
+import TrackCallout from "@/components/TrackCallout";
 import { helpingHandPostings } from "@/content/helpingHandPostings";
 import s from "../careers.module.css";
 import styles from "../worksite.module.css";
@@ -22,7 +22,6 @@ const departments = [
 
 export default function GatheringsCareersPage() {
   const gatherings = getBusiness("gatherings")!;
-  const associate = roles.find(({ rung }) => rung === gatherings.role.rung);
 
   return (
     <main className={s.page}>
@@ -68,20 +67,7 @@ export default function GatheringsCareersPage() {
         </ul>
       </section>
 
-      {associate && (
-        <section className={s.life} aria-labelledby="path-heading">
-          <div>
-            <p className={s.eyebrow}>Grow with Gatherings</p>
-            <h2 id="path-heading">{gatherings.role.title}</h2>
-            <p>Coordinate the venue, the guest experience, and the crew’s handoff. The event ends when the last guest leaves. Your assignment ends at its scheduled time.</p>
-          </div>
-          <div>
-            <p><strong>{associate.title} · {associate.rateNote}</strong></p>
-            <Link href={rolePath(associate)}>See the career level and requirements →</Link>
-            <Link href="/careers#eligibility">Check your progress toward the Herd →</Link>
-          </div>
-        </section>
-      )}
+      <TrackCallout business="gatherings" />
 
       <footer className={s.closing}>
         <p>See you at the party.</p>

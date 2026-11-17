@@ -3,8 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import art from "@/assets/public-works-hero.webp";
 import { getBusiness } from "@/content/businesses";
+import TrackCallout from "@/components/TrackCallout";
 import { getWorkListingPath } from "@/content/workListingPath";
-import { rolePath, roles } from "@/content/careers";
 import s from "../careers.module.css";
 import w from "../worksite.module.css";
 
@@ -22,7 +22,6 @@ const teams = [
 
 export default function PublicWorksCareers() {
   const works = getBusiness("public-works")!;
-  const level = roles.find(({ rung }) => rung === works.role.rung);
 
   return (
     <main className={s.page}>
@@ -57,12 +56,7 @@ export default function PublicWorksCareers() {
           })}
         </ul>
       </section>
-      {level && (
-        <section className={s.life}>
-          <div><h2>{works.role.title}</h2><p>Prepare the crews, coordinate the forms, and help the town stay ready for whatever it has already scheduled.</p></div>
-          <Link href={rolePath(level)}>{level.title} · {level.rateNote} →</Link>
-        </section>
-      )}
+      <TrackCallout business="public-works" />
     </main>
   );
 }

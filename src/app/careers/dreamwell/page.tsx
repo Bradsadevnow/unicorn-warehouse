@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import campaign from "@/assets/dreamwell-careers.webp";
 import { getBusiness } from "@/content/businesses";
-import { rolePath, roles } from "@/content/careers";
+import TrackCallout from "@/components/TrackCallout";
 import { brightsideBriefId } from "@/content/gigCatalogs";
 import { helpingHandPostings } from "@/content/helpingHandPostings";
 import s from "../careers.module.css";
@@ -55,7 +55,6 @@ const departments = [
 
 export default function DreamwellCareersPage() {
   const dreamwell = getBusiness("dreamwell")!;
-  const associate = roles.find(({ rung }) => rung === dreamwell.role.rung);
 
   return (
     <main className={s.page}>
@@ -103,20 +102,7 @@ export default function DreamwellCareersPage() {
         </ul>
       </section>
 
-      {associate && (
-        <section className={s.life} aria-labelledby="path-heading">
-          <div>
-            <p className={s.eyebrow}>Grow with Dreamwell</p>
-            <h2 id="path-heading">{dreamwell.role.title}</h2>
-            <p>Help guests find the right rest session and keep each suite ready for the next booking.</p>
-          </div>
-          <div>
-            <p><strong>{associate.title} · {associate.rateNote}</strong></p>
-            <Link href={rolePath(associate)}>See the career level and requirements →</Link>
-            <Link href="/careers#eligibility">Check your progress toward the Herd →</Link>
-          </div>
-        </section>
-      )}
+      <TrackCallout business="dreamwell" />
 
       <footer className={s.closing}>
         <p>See you this evening.</p>

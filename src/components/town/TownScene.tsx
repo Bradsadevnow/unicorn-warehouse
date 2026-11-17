@@ -69,6 +69,42 @@ function TownGeometry({ onReady }: { onReady: () => void }) {
   return <primitive object={scene} dispose={null} />;
 }
 
+/** Starter homes added after the town model was baked. Simple shapes in the town's palette. */
+function StarterHomes() {
+  const windows = [-3, -1.8, -0.6, 0.6, 1.8, 3];
+  return (
+    <>
+      {/* Employee Bunkhouse: a long prefab barracks on the Depot District service road. */}
+      <group position={[100, 0, -10]}>
+        <mesh position={[0, 1.3, 0]}><boxGeometry args={[8, 2.6, 5]} /><meshStandardMaterial color="#c9c3cf" /></mesh>
+        <mesh position={[0, 2.75, 0]}><boxGeometry args={[8.3, 0.3, 5.3]} /><meshStandardMaterial color="#9d95a6" /></mesh>
+        {windows.map((x) => (
+          <mesh key={x} position={[x, 1.75, 2.52]}><boxGeometry args={[0.55, 0.4, 0.05]} /><meshStandardMaterial color="#fff2c4" /></mesh>
+        ))}
+        <mesh position={[0, 0.75, -2.52]}><boxGeometry args={[0.9, 1.5, 0.05]} /><meshStandardMaterial color="#7d728a" /></mesh>
+        <mesh position={[3.2, 3.2, -1.2]}><boxGeometry args={[0.9, 0.6, 0.9]} /><meshStandardMaterial color="#b4adbb" /></mesh>
+      </group>
+      {/* The Potting Shed: behind The Garden Residence. */}
+      <group position={[40, 0, 70]}>
+        <mesh position={[0, 0.95, 0]}><boxGeometry args={[3, 1.9, 2.6]} /><meshStandardMaterial color="#b9d6b0" /></mesh>
+        <mesh position={[0, 2.3, 0]} rotation={[0, Math.PI / 4, 0]} scale={[1.55, 1, 1.4]}>
+          <coneGeometry args={[1.5, 0.9, 4]} /><meshStandardMaterial color="#9b7f6c" />
+        </mesh>
+        <mesh position={[0.6, 0.7, 1.32]}><boxGeometry args={[0.7, 1.4, 0.05]} /><meshStandardMaterial color="#7a9a70" /></mesh>
+        <mesh position={[-0.7, 1.2, 1.32]}><boxGeometry args={[0.6, 0.45, 0.05]} /><meshStandardMaterial color="#fff2c4" /></mesh>
+        <mesh position={[1.75, 0.2, 0.6]} rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[0.28, 0.07, 6, 12]} /><meshStandardMaterial color="#6fae6a" /></mesh>
+      </group>
+      {/* The Fryer Loft: a room on the Horn & Fries roof, with the kitchen exhaust beside it. */}
+      <group position={[-19.5, 3.65, 20]}>
+        <mesh position={[-1.2, 0.8, 0.6]}><boxGeometry args={[3.6, 1.6, 3.4]} /><meshStandardMaterial color="#f1d6b8" /></mesh>
+        <mesh position={[-1.2, 1.7, 0.6]}><boxGeometry args={[3.8, 0.2, 3.6]} /><meshStandardMaterial color="#c99d7d" /></mesh>
+        <mesh position={[-1.2, 0.95, 2.32]}><boxGeometry args={[0.8, 0.5, 0.05]} /><meshStandardMaterial color="#fff2c4" /></mesh>
+        <mesh position={[2, 1.1, -1.8]}><cylinderGeometry args={[0.35, 0.35, 2.2, 10]} /><meshStandardMaterial color="#b8b4bd" /></mesh>
+      </group>
+    </>
+  );
+}
+
 function HitRegion({ target, highlighted, onEnter, onLeave, onSelect }: {
   target: Target;
   highlighted: boolean;
@@ -150,6 +186,7 @@ function Viewer({ selected, onSelect, onReady, names }: TownSceneProps) {
         <ZoomStep request={zoomRequest} controls={controls} />
         <Suspense fallback={null}>
           <TownGeometry onReady={flagReady} />
+          <StarterHomes />
           {locations.map((target) => (
             <HitRegion
               key={target.id}

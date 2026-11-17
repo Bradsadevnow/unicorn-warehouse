@@ -24,7 +24,15 @@ The game now runs on a calendar clock. `GameState` is version 2: `now` ("YYYY-MM
 
 **Step C, the calendar (done).** My account has a 🗓️ Calendar tab: a month grid with a day agenda, covering this month and the next two. `src/server/gameCalendar.ts` builds it by playing the real event queue forward on a copy of the game with no player actions, using the `observe` hook on `advanceClock`. It shows exactly what the engine would charge if nothing else happens, including bills the balance cannot cover. It also shows today's booked blocks, overdue bills, and the end of probation. A check that projected three months and then played those days one at a time matched item for item.
 
-Next: (D) consequences, starting with survival stats (the user is drafting a design), then the home address and timed deliveries below.
+**Starter homes (done).** New players pick one of three starter homes after choosing a job (`starterHomes` in `src/content/living.ts`): the **Employee Bunkhouse** (Bunk C-14, 91 Depot Avenue, 140 Tokens a week), **The Fryer Loft** (upstairs at Horn & Fries, 121 Clover Avenue, 175 a week), and **The Potting Shed** (behind The Garden Residence, 171 Market Avenue, 160 a week). Onboarding shows rent, address, fine print, and the walk to the chosen job (`src/server/starterHomes.ts`, 80 m a minute along `streetRoute`).
+
+- `GameState.home` holds `{ homeId, movedIn }`. Rent is weekly from move-in, first charge one week in, so the welcome credit still covers the Pathway Kit. `nextStarterRentDue` and `getRentBill` in `gameContext.ts` handle it; the rent event reschedules itself weekly. Saves without a home keep the old monthly sample leases unchanged (the 50-day playthrough matches).
+- Saves from before starter homes get a **Choose a starter home** panel on My account (`move-in` action, 1 hour). Moving between homes is not available yet.
+- The address shows on My account (🏠 panel, linked to the map), the account header household line, the calendar, the Member Records PDF, and Support as `[A:home]`. The Living page has a `#starter-homes` section.
+- Map: two new lots, `starter-bunkhouse` (19,8) and `starter-shed` (13,16), with hit regions in `unicornopolisScene.json`. The town GLB predates them, so `TownScene.tsx` draws the bunkhouse, the shed, and the loft on the Horn & Fries roof as simple shapes. Rebake them into the GLB when the model is next exported. The shapes were not visually checked in a browser.
+- About 1,360 of 3,800 cookie characters after 62 days in a starter home.
+
+Next: (D) consequences with survival stats (Oxygen, Satiety, Energy, Morale, Comfort; Hygiene is dropped and Comfort ties to the Softspace subscription), then timed deliveries to the home address.
 
 ## Next build · The member panel and life at an address
 

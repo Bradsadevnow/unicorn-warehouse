@@ -4,7 +4,9 @@ import { type Posting, getPosting, postingPath, standardAcceptance } from "@/con
 import type { MemberAccount } from "@/content/memberAccount";
 import { getMemberReportStatus } from "@/server/companyWorkflows";
 import { getEmployeeRecord } from "@/server/employeeRecord";
+import { getStarterHome } from "@/content/living";
 import { getRentBill } from "@/server/gameActions";
+import { starterHomeAddress } from "@/server/starterHomes";
 import type { GameState } from "@/server/gameState";
 import { getMemberSession } from "@/server/memberSession";
 import { getServiceHistory, serviceNames } from "@/server/serviceHistory";
@@ -45,6 +47,7 @@ function getAccountReferences(memberAccount: MemberAccount, game: GameState, tra
       text: JSON.stringify({ now: game.now, unpaid: game.unpaid, inventory: game.inventory,
         rent: rent && { ...rent, paid: game.ledger.some(({ id }) => id === rent.id) },
         funHoursOutstanding: memberAccount.outstandingFunDates }) },
+    ...homeRef(game),
     ...serviceRefs,
     ...(report ? [{ id: "A:report", label: "Goodshift report status and payout entry", href: "/account?tab=wallet&transaction=report#transaction",
       text: JSON.stringify({ review: report, ledgerEntry: reportEntry }) }] : []),
@@ -196,4 +199,14 @@ export async function POST(request: Request) {
     console.error("Support model unavailable", error);
     return Response.json({ error: "Support model unavailable." }, { status: 503 });
   }
+}
+
+/** The member's starter home and lease terms, when they have one. */
+function homeRef(game: GameState) {
+  const home = getStarterHome(game.home?.homeId);
+  if (!home) return [];
+  return [{ id: "A:home", label: "Home address and lease", href: "/account#home", text: JSON.stringify({
+    home: home.name, address: starterHomeAddress(home), neighborhood: home.neighborhood, movedIn: game.home!.movedIn,
+    weeklyRent: home.weeklyRent, rentEveryDays: 7, amenities: home.amenities, leaseTerms: home.finePrint,
+  }) }];
 }

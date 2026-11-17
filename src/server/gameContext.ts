@@ -2,10 +2,10 @@ import "server-only";
 
 import { dreamwellPricing } from "@/content/dreamwellPricing";
 import { funHourRate } from "@/content/funplex";
-import { rentals } from "@/content/living";
+import { getStarterHome, rentals, starterRentDays } from "@/content/living";
 import { getTokenBalances, type MemberAccount } from "@/content/memberAccount";
 import { completedFunHours } from "./funHours";
-import { gameDay, projectGameAccount, type Bill, type GameState, type ObjectiveId } from "./gameState";
+import { addDays, gameDay, projectGameAccount, type Bill, type GameState, type ObjectiveId } from "./gameState";
 
 export const sampleLeases: Record<string, string> = { "UW-0482": "peach", "UW-0716": "sunbeam" };
 export const firstRentDate = "2026-12-01";
@@ -22,7 +22,26 @@ export function reject(message: string): never {
   throw new GameActionError(message);
 }
 
+/**
+ * The next weekly rent date on or after `from` that has not been charged or recorded as unpaid.
+ * Starter rent falls due every seven days from move-in, starting one week in.
+ */
+export function nextStarterRentDue(game: GameState, from: string) {
+  if (!game.home) return undefined;
+  const billed = new Set([...game.ledger.map(({ id }) => id), ...game.unpaid.map(({ id }) => id)]);
+  let due = addDays(game.home.movedIn, starterRentDays);
+  while (due < from || billed.has(`rent-${due}`)) due = addDays(due, starterRentDays);
+  return due;
+}
+
 export function getRentBill(game: GameState): Bill | undefined {
+  const starter = getStarterHome(game.home?.homeId);
+  if (starter) {
+    const unpaid = game.unpaid.find(({ service }) => service === "living");
+    if (unpaid) return unpaid;
+    const due = nextStarterRentDue(game, gameDay(game))!;
+    return { id: `rent-${due}`, service: "living", label: `Living · ${starter.name} · weekly rent`, amount: starter.weeklyRent, due };
+  }
   const rental = rentals.find(({ id }) => id === sampleLeases[game.player.id]);
   if (!rental) return undefined;
   const today = gameDay(game);

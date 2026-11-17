@@ -9,6 +9,7 @@ import { getServiceHistory, serviceNames } from "@/server/serviceHistory";
 import FunHours from "./FunHours";
 import MemberCalendar from "./MemberCalendar";
 import MemberDay from "./MemberDay";
+import MemberHome from "./MemberHome";
 import { projectCalendar } from "@/server/gameCalendar";
 import PlayerObjectives from "./PlayerObjectives";
 import { objectiveComplete } from "@/server/gameState";
@@ -104,6 +105,8 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
         <h2>🦄 Recognition</h2>
         <Link href="/quests/horn-fitting">The Horn Fitting →</Link>
       </section>}
+      {tab === "overview" && <MemberHome game={session.game}
+        error={typeof query.actionError === "string" ? query.actionError : undefined} />}
       {tab === "overview" && equipped && <MemberDay game={session.game} available={balances.available}
         error={typeof query.actionError === "string" ? query.actionError : undefined} />}
       {tab === "overview" && <div className={styles.columns}>

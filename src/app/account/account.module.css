@@ -87,3 +87,8 @@
 .today ol { display: grid; gap: 4px; padding: 0; list-style: none; }
 .today li { display: flex; gap: 10px; padding: 6px 10px; border-radius: 10px; background: #f5eefb; font-size: 14px; }
 .today time { min-width: 150px; font-weight: 700; color: var(--ice); }
+.note { font-size: .85rem; color: var(--dim); margin-bottom: 10px; }
+.homeChoices { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px; margin: 12px 0; }
+.homeChoices form { display: grid; gap: 6px; padding: 12px; border-radius: 12px; background: #fff9ff; }
+.homeChoices span { font-size: .85rem; color: var(--dim); }
+.homeChoices button { justify-self: start; }

@@ -5,19 +5,28 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import styles from "./welcome.module.css";
 
-type Stage = "welcome" | "consent" | "handoff" | "career" | "position";
+type Stage = "welcome" | "consent" | "handoff" | "career" | "position" | "home";
 
 type TrackOption = {
   id: string;
   name: string;
   tagline: string;
   image: StaticImageData;
-  jobs: { id: string; title: string; business: string; department: string; summary: string; pay: number }[];
+  jobs: Job[];
 };
 
-export default function WelcomeFlow({ tracks }: { tracks: TrackOption[] }) {
+type Job = { id: string; title: string; businessId: string; business: string; department: string; summary: string; pay: number };
+
+type HomeOption = {
+  id: string; name: string; neighborhood: string; kind: string; area: number; weeklyRent: number;
+  tagline: string; description: string; amenities: string[]; finePrint: string; address: string;
+  walks: Record<string, number | null>;
+};
+
+export default function WelcomeFlow({ tracks, homes }: { tracks: TrackOption[]; homes: HomeOption[] }) {
   const [name, setName] = useState("");
   const [track, setTrack] = useState<TrackOption>();
+  const [job, setJob] = useState<Job>();
   const [stage, setStage] = useState<Stage>("welcome");
   const [seconds, setSeconds] = useState(8);
   const [declined, setDeclined] = useState(false);
@@ -112,21 +121,51 @@ export default function WelcomeFlow({ tracks }: { tracks: TrackOption[] }) {
           <h1 ref={heading} tabIndex={-1}>{track.name}</h1>
           <p>Choose an opening to start as a Unicorn Trainee. ✨</p>
           <div className={styles.jobGrid}>
-            {track.jobs.map((job) => (
-              <form key={job.id} action="/welcome/continue" method="post" className={styles.job}>
-                <input type="hidden" name="name" value={name} />
-                <input type="hidden" name="track" value={track.id} />
-                <input type="hidden" name="position" value={job.id} />
-                <span>{job.business} · {job.department}</span>
-                <h2>{job.title}</h2>
-                <p>{job.summary}</p>
-                <strong>{job.pay} Tokens per hour</strong>
-                <button className={styles.primary} type="submit" aria-label={`Accept ${job.title}`}>Accept position ✨</button>
-              </form>
+            {track.jobs.map((option) => (
+              <div key={option.id} className={styles.job}>
+                <span>{option.business} · {option.department}</span>
+                <h2>{option.title}</h2>
+                <p>{option.summary}</p>
+                <strong>{option.pay} Tokens per hour</strong>
+                <button className={styles.primary} type="button" aria-label={`Accept ${option.title}`}
+                  onClick={() => { setJob(option); setStage("home"); }}>Accept position ✨</button>
+              </div>
             ))}
           </div>
           <div className={styles.actions}>
             <button className={styles.secondary} type="button" onClick={() => setStage("career")}>Back to tracks</button>
+          </div>
+        </>}
+        {stage === "home" && track && job && <>
+          <h1 ref={heading} tabIndex={-1}>Welcome home, {name}!</h1>
+          <p>Every new {job.title} gets a place to land. Pick one of our starter homes. Rent is weekly, and your first week is on us. ✨</p>
+          <div className={styles.homeGrid}>
+            {homes.map((home) => {
+              const walk = home.walks[job.businessId];
+              return (
+                <form key={home.id} action="/welcome/continue" method="post" className={styles.home}>
+                  <input type="hidden" name="name" value={name} />
+                  <input type="hidden" name="track" value={track.id} />
+                  <input type="hidden" name="position" value={job.id} />
+                  <input type="hidden" name="home" value={home.id} />
+                  <span>{home.neighborhood} · {home.kind} · {home.area} sq ft</span>
+                  <h2>{home.name}</h2>
+                  <p className={styles.homeTagline}>{home.tagline}</p>
+                  <p>{home.description}</p>
+                  <ul>{home.amenities.map((amenity) => <li key={amenity}>{amenity}</li>)}</ul>
+                  <dl>
+                    <div><dt>Address</dt><dd>{home.address}</dd></div>
+                    <div><dt>Rent</dt><dd>{home.weeklyRent} Tokens a week</dd></div>
+                    <div><dt>Walk to {job.business}</dt><dd>{walk === null || walk === undefined ? "—" : walk === 0 ? "You live upstairs" : `${walk} minute${walk === 1 ? "" : "s"}`}</dd></div>
+                  </dl>
+                  <small>{home.finePrint}</small>
+                  <button className={styles.primary} type="submit" aria-label={`Move into ${home.name}`}>Move in ✨</button>
+                </form>
+              );
+            })}
+          </div>
+          <div className={styles.actions}>
+            <button className={styles.secondary} type="button" onClick={() => setStage("position")}>Back to jobs</button>
           </div>
         </>}
       </div>

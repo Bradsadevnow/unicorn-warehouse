@@ -1,6 +1,7 @@
 import "server-only";
 
 import { getPosition, getTrack, employers, type Position } from "@/content/careerTracks";
+import { getStarterHome } from "@/content/living";
 import type { MemberAccount } from "@/content/memberAccount";
 
 export type LedgerEntry = MemberAccount["ledger"][number];
@@ -49,6 +50,8 @@ export type GameState = {
   events: GameEvent[];
   /** Today's and upcoming time blocks. Earlier days are cleared when the day ends; the ledger keeps the record. */
   blocks: TimeBlock[];
+  /** Where the player lives: a starter home from living.ts. Saves made before homes existed have none. */
+  home?: { homeId: string; movedIn: string };
   employment: MemberAccount["employment"];
   ledger: LedgerEntry[];
   settlements: Record<string, string>;
@@ -66,9 +69,10 @@ export const morning = "08:00";
 const objectiveIds = ["meet-manager", "buy-kit", "first-shift", "finish-day"] as const;
 export type ObjectiveId = typeof objectiveIds[number];
 
-export function enrollPlayer(player: GameState["player"], position: Position): GameState {
+export function enrollPlayer(player: GameState["player"], position: Position, homeId?: string): GameState {
   return {
     version: 2, revision: 0, player, now: `${firstDay}T${morning}`, events: [], blocks: [],
+    ...(getStarterHome(homeId) ? { home: { homeId: homeId!, movedIn: firstDay } } : {}),
     employment: { positionId: position.id, hornRank: "unicorn-trainee", hired: firstDay },
     ledger: [{ id: "opening", date: firstDay, label: "New member welcome credit", amount: starterTokens, status: "posted" }],
     settlements: {}, shifts: [], unpaid: [], inventory: {}, questFlags: {},
@@ -119,7 +123,7 @@ export function createPlayerAccount(game: GameState): MemberAccount {
   const position = getPosition(game.employment.positionId)!;
   return {
     ...game.player, date: formatGameDate.format(new Date(gameDay(game))), asOf: gameDay(game),
-    household: "Individual household",
+    household: getStarterHome(game.home?.homeId) ? `Individual household · ${getStarterHome(game.home?.homeId)!.name}` : "Individual household",
     employer: `${employers[position.business]?.name ?? position.business} · ${getTrack(position.track)!.name}`,
     employment: game.employment, ledger: [], subscriptions: [], assignments: [], requests: [],
     notices: ["Your Trainee enrollment is on file. Your welcome credit is ready in your Token wallet. ✨"],

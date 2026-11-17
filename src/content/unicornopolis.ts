@@ -75,6 +75,8 @@ const storefronts: readonly LotSeed[] = [
   { id: "police", x: 17, y: 14, name: "Unicornopolis Police Station", href: "/public-works#police", zone: "civic", icon: "🚓", district: "Public Works Campus" },
   { id: "fire-rescue", x: 17, y: 15, name: "Fire & Rescue", href: "/public-works#fire", zone: "civic", icon: "🚒", district: "Public Works Campus" },
   { id: "marina", x: 17, y: 19, name: "Clover Lake Marina", href: "/public-works#clover-loop", zone: "civic", icon: "⛵", district: "Clover Lake" },
+  { id: "starter-bunkhouse", x: 19, y: 8, name: "Employee Bunkhouse", href: "/living#starter-homes", zone: "residential", icon: "🛏️", district: "Depot District" },
+  { id: "starter-shed", x: 13, y: 16, name: "The Potting Shed", href: "/living#starter-homes", zone: "residential", icon: "🪴", district: "Crown Gardens" },
   { id: "clover-commons", x: 11, y: 15, name: "Clover Commons Park", href: "/public-works#clover-commons", zone: "civic", icon: "🌳", district: "Market Square" },
 ];
 

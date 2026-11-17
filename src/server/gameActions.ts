@@ -6,6 +6,7 @@ import { dreamwellPricing } from "@/content/dreamwellPricing";
 import { requiredFunHours } from "@/content/funplex";
 import { getPosting } from "@/content/goodshiftPostings";
 import { getHelpingHandPosting } from "@/content/helpingHandPostings";
+import { getStarterHome } from "@/content/living";
 import { getBrightsideBrief } from "@/content/gigCatalogs";
 import type { MemberAccount } from "@/content/memberAccount";
 import { postingTrack } from "./employeeRecord";
@@ -21,6 +22,7 @@ export type GameAction =
   | { type: "buy"; product: string }
   | { type: "transfer"; positionId: string }
   | { type: "quest"; questId: string; interactionId: string; answer?: string }
+  | { type: "move-in"; homeId: string }
   | { type: "meet-manager" | "buy-kit" | "work-shift" | "sleep" | "attend-fun" | "pay-rent" | "end-day" };
 
 export const regularShiftHours = 8;
@@ -37,6 +39,7 @@ export const actionMinutes = {
   "attend-fun": 60,
   "pay-rent": 10,
   quest: 15,
+  "move-in": 60,
 } as const;
 
 /** Brightside briefs describe the clip, not the work. Producing one takes this long. */
@@ -77,6 +80,14 @@ export function applyGameAction(seed: MemberAccount, previous: GameState, action
   const today = gameDay(next);
 
   switch (action.type) {
+    case "move-in": {
+      const home = getStarterHome(action.homeId);
+      if (!home) reject("Choose one of the starter homes.");
+      if (next.home) reject("You already have a home on file. Moving is not available yet.");
+      next.home = { homeId: home.id, movedIn: today };
+      book(ctx, { id: "move-in", kind: "errand", label: `Moving into ${home.name}` }, actionMinutes["move-in"]);
+      break;
+    }
     case "quest": {
       const error = applyQuestInteraction(next, account(), action.questId, action.interactionId, action.answer);
       if (error) reject(error);

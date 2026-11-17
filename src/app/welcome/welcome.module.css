@@ -148,6 +148,34 @@
 .job p:not(.brand) { margin: 0; }
 .job button { justify-self: start; margin-top: 4px; }
 
+.splash[data-stage="home"] .card { width: min(100%, 1060px); }
+.homeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+  margin-top: 24px;
+  text-align: left;
+}
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 18px;
+  border: 1px solid #dfc8e8;
+  border-radius: 18px;
+  background: #f9effc;
+}
+.home h2 { font: 650 1.35rem/1.1 var(--font-display), sans-serif; }
+.home > span, .home small { color: #654c79; font-size: .85rem; }
+.home p { margin: 0; text-align: left; }
+.homeTagline { font-weight: 650; color: #582477; }
+.home ul { margin: 0; padding-left: 18px; font-size: .92rem; }
+.home dl { display: grid; gap: 4px; margin: 4px 0 0; font-size: .92rem; }
+.home dl div { display: flex; justify-content: space-between; gap: 12px; }
+.home dt { color: #654c79; }
+.home dd { margin: 0; text-align: right; font-weight: 600; }
+.home button { align-self: flex-start; margin-top: auto; }
+
 .recordsSection { margin-top: 22px; padding: 16px; border: 1px solid #dfc8e8; border-radius: 18px; }
 .recordsSection h2 { font: 650 1.45rem/1.1 var(--font-display), sans-serif; }
 .recordsSection .primary { display: inline-block; }

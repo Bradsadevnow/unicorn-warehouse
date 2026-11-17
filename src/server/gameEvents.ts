@@ -3,7 +3,7 @@ import "server-only";
 import { inactivityFee, maintenanceFee, maintenanceWaiverBalance, welcomePeriodEnds } from "@/content/bank";
 import { requiredFunHours } from "@/content/funplex";
 import { getTokenBalances } from "@/content/memberAccount";
-import { firstRentDate, getRentBill, renewalPrices, type GameContext } from "./gameContext";
+import { firstRentDate, getRentBill, nextStarterRentDue, renewalPrices, type GameContext } from "./gameContext";
 import { lastDayOfMonth } from "./funHours";
 import { addDays, atTime, gameDay, type GameEvent } from "./gameState";
 
@@ -45,7 +45,9 @@ function ensureRecurring(ctx: GameContext) {
   // Rent and bank events are safe to run twice, so a save made on the 1st reschedules that day
   // in case its charges have not run yet. The charges skip bills already on the statement.
   const firstOfMonth = today.endsWith("-01");
-  if (!pending(ctx, "rent") && getRentBill({ ...next, unpaid: [] })) {
+  if (!pending(ctx, "rent") && next.home) {
+    schedule(ctx, { at: atTime(nextStarterRentDue(next, today)!, times.bill), kind: "rent" });
+  } else if (!pending(ctx, "rent") && getRentBill({ ...next, unpaid: [] })) {
     const due = today < firstRentDate ? firstRentDate : firstOfMonth ? today : firstOfNextMonth(today);
     schedule(ctx, { at: atTime(due, times.bill), kind: "rent" });
   }
@@ -80,7 +82,9 @@ function runEvent(ctx: GameContext, event: GameEvent) {
     case "rent": {
       const rent = getRentBill({ ...next, unpaid: [] });
       if (rent?.due === today) ctx.billIfDue(rent);
-      schedule(ctx, { at: atTime(firstOfNextMonth(today), times.bill), kind: "rent" });
+      // Starter homes bill weekly; the next date is scheduled from what has been billed.
+      if (next.home) schedule(ctx, { at: atTime(nextStarterRentDue(next, addDays(today, 1))!, times.bill), kind: "rent" });
+      else schedule(ctx, { at: atTime(firstOfNextMonth(today), times.bill), kind: "rent" });
       break;
     }
     case "renewal": {

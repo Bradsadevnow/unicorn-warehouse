@@ -45,3 +45,71 @@ export function quoteRental(rental: Rental, term: LeaseTerm) {
   const securityDeposit = monthlyRent;
   return { monthlyRent, securityDeposit, dueAtMoveIn: monthlyRent + securityDeposit };
 }
+
+/** Starter homes offered at onboarding. Rent is billed weekly, starting one week after move-in. */
+export type StarterHome = {
+  id: string;
+  name: string;
+  /** Town map lot. The Fryer Loft shares the Horn & Fries lot. */
+  lotId: string;
+  unit: string;
+  neighborhood: string;
+  kind: string;
+  area: number;
+  weeklyRent: number;
+  tagline: string;
+  description: string;
+  amenities: readonly string[];
+  finePrint: string;
+};
+
+export const starterRentDays = 7;
+
+export const starterHomes: readonly StarterHome[] = [
+  {
+    id: "bunkhouse",
+    name: "Employee Bunkhouse",
+    lotId: "starter-bunkhouse",
+    unit: "Bunk C-14",
+    neighborhood: "Depot District",
+    kind: "Shared bunk",
+    area: 21,
+    weeklyRent: 140,
+    tagline: "Steps from the outbound bay.",
+    description: "A top bunk in a twelve-bunk room, a two-minute walk from Fulfillment and Dispatch. Wake up already at work.",
+    amenities: ["Shared washroom", "Locker hook", "Lights-out schedule"],
+    finePrint: "Lights-out follows the Goodshift shift calendar. Lockers are sold separately. Bunk assignments may be adjusted to support operational needs.",
+  },
+  {
+    id: "fryer-loft",
+    name: "The Fryer Loft",
+    lotId: "quickserve",
+    unit: "Unit B, upstairs",
+    neighborhood: "Market Square",
+    kind: "Loft room",
+    area: 96,
+    weeklyRent: 175,
+    tagline: "Warm all winter. Warm all summer.",
+    description: "A cozy room above Horn & Fries with radiant heat from the kitchen below and a view of the drive-thru line.",
+    amenities: ["Heated by the dinner rush", "Hot plate", "Window over the drive-thru"],
+    finePrint: "Heat is supplied during operating hours. The aroma is included with rent and is not a separate utility. Quiet hours begin when the last car clears the drive-thru.",
+  },
+  {
+    id: "potting-shed",
+    name: "The Potting Shed",
+    lotId: "starter-shed",
+    unit: "Behind The Garden Residence",
+    neighborhood: "Crown Gardens",
+    kind: "Garden studio",
+    area: 64,
+    weeklyRent: 160,
+    tagline: "A Crown Gardens address at a Depot District price.",
+    description: "A private studio with lawn views in one of Unicornopolis’s most exclusive neighborhoods. Formerly a potting shed. Still mostly a potting shed.",
+    amenities: ["Lawn view", "Garden hose access 7–9 a.m.", "Neighborly landlord"],
+    finePrint: "Plumbing is provided by the garden hose during posted hours. The landlord’s landscaping crew may require access at any time. Residents may not describe the shed as a shed in correspondence with the Residence.",
+  },
+];
+
+export function getStarterHome(id: string | undefined) {
+  return starterHomes.find((home) => home.id === id);
+}

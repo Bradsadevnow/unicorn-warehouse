@@ -1,9 +1,11 @@
 import "server-only";
 
 import PDFDocument from "pdfkit";
+import { getStarterHome } from "@/content/living";
 import { getTokenBalances, type MemberAccount } from "@/content/memberAccount";
 import { getEmployeeRecord } from "./employeeRecord";
 import type { GameState } from "./gameState";
+import { starterHomeAddress } from "./starterHomes";
 
 const ink = "#321c48";
 const dim = "#654c79";
@@ -77,6 +79,11 @@ export async function writeMemberRecordsPdf(account: MemberAccount, game: GameSt
   text(`${printable(employment.position.title)}  /  ${printable(employment.track.name)}  /  ${printable(employment.hornRank.title)}`,
     left, y, 11, dim, false, { width });
   y += 22;
+  const home = getStarterHome(game.home?.homeId);
+  if (home) {
+    text(`${printable(starterHomeAddress(home))}  /  ${printable(home.name)}  /  ${home.weeklyRent} Tokens weekly`, left, y, 11, dim, false, { width });
+    y += 22;
+  }
   const completed = game.objectives.filter((objective) => objective.completed).length;
   text(`${completed} of ${game.objectives.length} onboarding objectives complete`, left, y, 10, dim);
   y += 27;

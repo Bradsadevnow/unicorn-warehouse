@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { getPosition, isOpenEntryPosition } from "@/content/careerTracks";
+import { getStarterHome } from "@/content/living";
 import { enrollPlayer } from "@/server/gameState";
 import { startMemberSession } from "@/server/memberSession";
 
@@ -17,8 +18,12 @@ export async function POST(request: NextRequest) {
     return new Response("Choose an open entry position in your selected track.", { status: 400 });
   }
 
+  const homeId = form?.get("home");
+  const home = typeof homeId === "string" ? getStarterHome(homeId) : undefined;
+  if (!home) return new Response("Choose a starter home.", { status: 400 });
+
   const player = { id: `UW-${randomBytes(8).toString("hex").toUpperCase()}`, name };
-  const game = enrollPlayer(player, position);
+  const game = enrollPlayer(player, position, home.id);
   const response = NextResponse.redirect(new URL("/account#objectives", request.url), 303);
   return startMemberSession(response, game, request.nextUrl.protocol === "https:");
 }

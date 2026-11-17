@@ -61,3 +61,6 @@
 @media (max-width: 940px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 800px) { .hero { grid-template-columns: 1fr; } .hero img { min-height: 0; height: auto; } }
 @media (max-width: 575px) { .cards, .previewGrid { grid-template-columns: 1fr; } }
+.starter { display: grid; gap: 1.25rem; scroll-margin-top: 6rem; }
+.starterIntro p:not(:global(.label)) { margin-top: .8rem; max-width: 60ch; }
+.starter .card { scroll-margin-top: 6rem; }

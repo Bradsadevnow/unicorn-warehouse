@@ -10,6 +10,7 @@ import FunHours from "./FunHours";
 import MemberCalendar from "./MemberCalendar";
 import MemberDay from "./MemberDay";
 import MemberHome from "./MemberHome";
+import { membershipOffers } from "@/content/memberships";
 import StatBars from "@/components/StatBars";
 import { currentStats } from "@/server/survival";
 import { projectCalendar } from "@/server/gameCalendar";
@@ -192,6 +193,24 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
             {renewal !== "Paused" && <span>Next renewal {renewal}</span>}<p>{note}</p>
           </li>)}
         </ul>
+        {equipped && membershipOffers.some(({ id }) => !account.subscriptions.some((subscription) => subscription.id === id)) && <>
+          <h3>Add a membership</h3>
+          <ul className={styles.cards}>
+            {membershipOffers.filter(({ id }) => !account.subscriptions.some((subscription) => subscription.id === id)).map((offer) => <li key={offer.id}>
+              <strong>{offer.icon} {offer.name}</strong>
+              <span>{offer.price} Tokens every {offer.days} days · First period due today</span>
+              <p>{offer.summary} {offer.benefit}</p>
+              <p className={styles.note}>{offer.finePrint}</p>
+              <form action="/account/day" method="post">
+                <input type="hidden" name="revision" value={session.game.revision} />
+                <input type="hidden" name="action" value="subscribe" />
+                <input type="hidden" name="choice" value={offer.id} />
+                <button type="submit">Start {offer.name} · {offer.price} Tokens</button>
+              </form>
+            </li>)}
+          </ul>
+          {typeof query.actionError === "string" && <p role="alert">{query.actionError}</p>}
+        </>}
       </section>}
 
       {tab === "work" && <section className={styles.panel} id="work">

@@ -2,6 +2,7 @@ import "server-only";
 
 import { dreamwellPricing } from "@/content/dreamwellPricing";
 import { funHourRate } from "@/content/funplex";
+import { membershipOffers } from "@/content/memberships";
 import { getStarterHome, rentals, starterRentDays } from "@/content/living";
 import { getTokenBalances, type MemberAccount } from "@/content/memberAccount";
 import type { Activity } from "@/content/survival";
@@ -12,9 +13,8 @@ export const sampleLeases: Record<string, string> = { "UW-0482": "peach", "UW-07
 export const firstRentDate = "2026-12-01";
 // AirLink has no public catalog price yet. This is the rate on the seeded account's plan.
 export const renewalPrices: Partial<Record<string, { amount: number; days: number; service: Bill["service"] }>> = {
-  everair: { amount: 120, days: 30, service: "everair" },
+  ...Object.fromEntries(membershipOffers.map(({ id, price, days }) => [id, { amount: price, days, service: id }])),
   dreamwell: { amount: dreamwellPricing.subscriptions.plus.tokens, days: 1, service: "dreamwell" },
-  softspace: { amount: 180, days: 30, service: "softspace" },
 };
 
 export class GameActionError extends Error {}

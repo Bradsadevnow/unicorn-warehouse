@@ -3,9 +3,10 @@
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { introductoryDays, membershipOffers } from "@/content/memberships";
 import styles from "./welcome.module.css";
 
-type Stage = "welcome" | "consent" | "handoff" | "career" | "position" | "home";
+type Stage = "welcome" | "consent" | "handoff" | "career" | "position" | "home" | "memberships";
 
 type TrackOption = {
   id: string;
@@ -27,6 +28,7 @@ export default function WelcomeFlow({ tracks, homes }: { tracks: TrackOption[]; 
   const [name, setName] = useState("");
   const [track, setTrack] = useState<TrackOption>();
   const [job, setJob] = useState<Job>();
+  const [home, setHome] = useState<HomeOption>();
   const [stage, setStage] = useState<Stage>("welcome");
   const [seconds, setSeconds] = useState(8);
   const [declined, setDeclined] = useState(false);
@@ -140,27 +142,24 @@ export default function WelcomeFlow({ tracks, homes }: { tracks: TrackOption[]; 
           <h1 ref={heading} tabIndex={-1}>Welcome home, {name}!</h1>
           <p>Every new {job.title} gets a place to land. Pick one of our starter homes. Rent is weekly, and your first week is on us. ✨</p>
           <div className={styles.homeGrid}>
-            {homes.map((home) => {
-              const walk = home.walks[job.businessId];
+            {homes.map((option) => {
+              const walk = option.walks[job.businessId];
               return (
-                <form key={home.id} action="/welcome/continue" method="post" className={styles.home}>
-                  <input type="hidden" name="name" value={name} />
-                  <input type="hidden" name="track" value={track.id} />
-                  <input type="hidden" name="position" value={job.id} />
-                  <input type="hidden" name="home" value={home.id} />
-                  <span>{home.neighborhood} · {home.kind} · {home.area} sq ft</span>
-                  <h2>{home.name}</h2>
-                  <p className={styles.homeTagline}>{home.tagline}</p>
-                  <p>{home.description}</p>
-                  <ul>{home.amenities.map((amenity) => <li key={amenity}>{amenity}</li>)}</ul>
+                <div key={option.id} className={styles.home}>
+                  <span>{option.neighborhood} · {option.kind} · {option.area} sq ft</span>
+                  <h2>{option.name}</h2>
+                  <p className={styles.homeTagline}>{option.tagline}</p>
+                  <p>{option.description}</p>
+                  <ul>{option.amenities.map((amenity) => <li key={amenity}>{amenity}</li>)}</ul>
                   <dl>
-                    <div><dt>Address</dt><dd>{home.address}</dd></div>
-                    <div><dt>Rent</dt><dd>{home.weeklyRent} Tokens a week</dd></div>
+                    <div><dt>Address</dt><dd>{option.address}</dd></div>
+                    <div><dt>Rent</dt><dd>{option.weeklyRent} Tokens a week</dd></div>
                     <div><dt>Walk to {job.business}</dt><dd>{walk === null || walk === undefined ? "—" : walk === 0 ? "You live upstairs" : `${walk} minute${walk === 1 ? "" : "s"}`}</dd></div>
                   </dl>
-                  <small>{home.finePrint}</small>
-                  <button className={styles.primary} type="submit" aria-label={`Move into ${home.name}`}>Move in ✨</button>
-                </form>
+                  <small>{option.finePrint}</small>
+                  <button className={styles.primary} type="button" aria-label={`Move into ${option.name}`}
+                    onClick={() => { setHome(option); setStage("memberships"); }}>Move in ✨</button>
+                </div>
               );
             })}
           </div>
@@ -168,6 +167,34 @@ export default function WelcomeFlow({ tracks, homes }: { tracks: TrackOption[]; 
             <button className={styles.secondary} type="button" onClick={() => setStage("position")}>Back to jobs</button>
           </div>
         </>}
+        {stage === "memberships" && track && job && home && <form action="/welcome/continue" method="post">
+          <input type="hidden" name="name" value={name} />
+          <input type="hidden" name="track" value={track.id} />
+          <input type="hidden" name="position" value={job.id} />
+          <input type="hidden" name="home" value={home.id} />
+          <h1 ref={heading} tabIndex={-1}>Your wellbeing, included.</h1>
+          <p>New team members receive their first {introductoryDays} days of Everair and Softspace with enrollment, so you arrive at {home.name} breathing easy and feeling just right. Memberships renew automatically after the introductory period. ✨</p>
+          <div className={styles.homeGrid}>
+            {membershipOffers.map((offer) => (
+              <label key={offer.id} className={styles.home}>
+                <span>{offer.icon} Included with enrollment</span>
+                <h2>{offer.name}</h2>
+                <p className={styles.homeTagline}>{offer.summary}</p>
+                <p>{offer.benefit}</p>
+                <dl>
+                  <div><dt>First {introductoryDays} days</dt><dd>Included</dd></div>
+                  <div><dt>Then</dt><dd>{offer.price} Tokens every {offer.days} days</dd></div>
+                </dl>
+                <small>{offer.finePrint}</small>
+                <span className={styles.include}><input type="checkbox" name="membership" value={offer.id} defaultChecked /> Include {offer.name}</span>
+              </label>
+            ))}
+          </div>
+          <div className={styles.actions}>
+            <button className={styles.primary} type="submit">Finish enrollment ✨</button>
+            <button className={styles.secondary} type="button" onClick={() => setStage("home")}>Back to homes</button>
+          </div>
+        </form>}
       </div>
     </main>
   );

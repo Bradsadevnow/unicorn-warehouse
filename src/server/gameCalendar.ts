@@ -39,19 +39,25 @@ export function projectCalendar(seed: MemberAccount, game: GameState, months = 3
   const seen = new Set(game.ledger.map(({ id }) => id));
   const seenUnpaid = new Set(game.unpaid.map(({ id }) => id));
 
-  advanceClock(ctx, atTime(until, "23:59"), (event: GameEvent) => {
+  // Bills land at the time of the event that charged them. Stat interventions happen between events,
+  // so anything dated another day is placed at the start of its own day.
+  const placed = (date: string, at: string) => date === at.slice(0, 10) ? at : atTime(date, "00:00");
+  const collect = (at: string) => {
     for (const entry of simulation.ledger) {
       if (seen.has(entry.id)) continue;
       seen.add(entry.id);
-      entries.push({ id: `bill-${entry.id}`, at: event.at, kind: "bill", title: entry.label, amount: -entry.amount });
+      entries.push({ id: `bill-${entry.id}`, at: placed(entry.date, at), kind: "bill", title: entry.label, amount: -entry.amount });
     }
     for (const bill of simulation.unpaid) {
       if (seenUnpaid.has(bill.id)) continue;
       seenUnpaid.add(bill.id);
       const short = bill.amount - getTokenBalances(projectGameAccount(seed, simulation)).available;
-      entries.push({ id: `unpaid-${bill.id}`, at: event.at, kind: "unpaid", title: bill.label, amount: -bill.amount,
+      entries.push({ id: `unpaid-${bill.id}`, at: placed(bill.due, at), kind: "unpaid", title: bill.label, amount: -bill.amount,
         detail: `At your current balance you’d be ${short} Tokens short. It stays outstanding until it can be collected.` });
     }
+  };
+  advanceClock(ctx, atTime(until, "23:59"), (event: GameEvent) => {
+    collect(event.at);
     if (event.kind === "settle-shift" && event.ref) {
       const payout = simulation.ledger.find(({ id }) => id === event.ref);
       if (payout) {
@@ -60,6 +66,7 @@ export function projectCalendar(seed: MemberAccount, game: GameState, months = 3
       }
     }
   });
+  collect(atTime(until, "23:59"));
 
   for (const block of game.blocks) {
     entries.push({ id: `block-${block.id}`, at: block.start, end: block.end, kind: "block", title: block.label });

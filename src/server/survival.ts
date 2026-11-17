@@ -41,7 +41,12 @@ function nextBoundary(time: string) {
 export function airSupply(ctx: Pick<GameContext, "seed" | "next">) {
   const plan = ctx.seed.subscriptions.find(({ id }) => id === "everair");
   if (!plan || plan.status.startsWith("Paused")) return "ambient" as const;
-  return ctx.next.unpaid.some(({ service }) => service === "everair") ? "lapsed" as const : "everair" as const;
+  return lapsedRenewal(ctx.next) ? "lapsed" as const : "everair" as const;
+}
+
+/** The past-due AirLink renewal, if any. Other Everair charges do not interrupt the plan. */
+function lapsedRenewal(game: Pick<GameState, "unpaid">) {
+  return game.unpaid.find(({ id }) => id.startsWith("renewal-everair-"));
 }
 
 function softspaceActive(ctx: Pick<GameContext, "seed" | "next">) {
@@ -100,10 +105,12 @@ export function settleStats(ctx: GameContext, until: string) {
       stats.energy = clamp(stats.energy + care.energy);
       stats.morale = clamp(stats.morale + care.morale);
     }
-    if (stats.oxygen <= 0 && !billed(`everair-reconnect-${day}`)) {
+    // Everair reconnects once per lapse. After that, oxygen stays empty until the renewal is paid.
+    const lapse = lapsedRenewal(next);
+    if (stats.oxygen <= 0 && lapse && !billed(`everair-reconnect-${lapse.due}`)) {
       if (time > next.now) next.now = time;
       const care = interventions.reconnect;
-      ctx.billIfDue({ id: `everair-reconnect-${day}`, service: "everair", label: care.label, amount: care.amount, due: day });
+      ctx.billIfDue({ id: `everair-reconnect-${lapse.due}`, service: "everair", label: care.label, amount: care.amount, due: day });
       stats.oxygen = care.oxygen;
     }
   }

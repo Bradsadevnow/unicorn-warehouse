@@ -7,10 +7,11 @@ import { requiredFunHours } from "@/content/funplex";
 import { getPosting } from "@/content/goodshiftPostings";
 import { getHelpingHandPosting } from "@/content/helpingHandPostings";
 import { getStarterHome } from "@/content/living";
+import { getMembershipOffer } from "@/content/memberships";
 import { getBrightsideBrief } from "@/content/gigCatalogs";
 import { quickserveMenu } from "@/content/quickserve";
 import {
-  eatMinutes, eatOutMinutes, eligibilityThreshold, funHourMorale, groceries, mealMorale, menuSatiety, productivityScore,
+  eatMinutes, eatOutMinutes, eligibilityThreshold, reserveOrb, funHourMorale, groceries, mealMorale, menuSatiety, productivityScore,
 } from "@/content/survival";
 import type { MemberAccount } from "@/content/memberAccount";
 import { postingTrack } from "./employeeRecord";
@@ -29,6 +30,8 @@ export type GameAction =
   | { type: "quest"; questId: string; interactionId: string; answer?: string }
   | { type: "move-in"; homeId: string }
   | { type: "eat"; item: string }
+  | { type: "open-orb" }
+  | { type: "subscribe"; membership: string }
   | { type: "eat-out"; item: string }
   | { type: "meet-manager" | "buy-kit" | "work-shift" | "sleep" | "attend-fun" | "pay-rent" | "end-day" };
 
@@ -48,11 +51,13 @@ export const actionMinutes = {
   quest: 15,
   "move-in": 60,
   eat: eatMinutes,
+  subscribe: 15,
+  "open-orb": 5,
   "eat-out": eatOutMinutes,
 } as const;
 
 /** Actions an exhausted member can still take. */
-const restfulActions = new Set<GameAction["type"]>(["sleep", "eat", "eat-out", "end-day", "pay-rent"]);
+const restfulActions = new Set<GameAction["type"]>(["sleep", "eat", "eat-out", "end-day", "pay-rent", "open-orb"]);
 
 /** Brightside briefs describe the clip, not the work. Producing one takes this long. */
 const briefMinutes = 90;
@@ -84,12 +89,15 @@ function book(ctx: GameContext, block: Omit<TimeBlock, "start" | "end">, minutes
   next.blocks.push({ ...block, start, end });
 }
 
-/** Goodshift's productivity score now. Assignments are not offered below the eligibility threshold. */
-function assignmentScore(ctx: GameContext) {
+/**
+ * Goodshift's productivity score now. Extra assignments are not offered below the eligibility threshold.
+ * The regular shift is always available, so a member in trouble can still earn.
+ */
+function assignmentScore(ctx: GameContext, extra: boolean) {
   settleStats(ctx, ctx.next.now);
   const score = productivityScore(currentStats(ctx.next));
-  if (score < eligibilityThreshold) {
-    reject(`Goodshift has paused new assignments while your productivity score is ${score}. Recover your rest, meals, and morale, then check back.`);
+  if (extra && score < eligibilityThreshold) {
+    reject(`Goodshift has paused extra assignments while your productivity score is ${score}. Your regular shift is still available.`);
   }
   return score;
 }
@@ -149,7 +157,7 @@ export function applyGameAction(seed: MemberAccount, previous: GameState, action
       if (clash) reject(`You’re booked for ${clash.label} from ${formatClockTime(clash.start)} to ${formatClockTime(clash.end)}.`);
       // The score is taken at clock-in.
       if (start > next.now) advanceClock(ctx, start);
-      const score = assignmentScore(ctx);
+      const score = assignmentScore(ctx, false);
       book(ctx, { id, kind: "work", label: `${position.title} shift · Productivity ${score}` }, actionMinutes["work-shift"], start);
       // Reduced scores come with a follow-up conversation on the member's own time.
       const followUp = score < 40 ? { label: "Performance improvement plan check-in", minutes: 60 }
@@ -175,7 +183,7 @@ export function applyGameAction(seed: MemberAccount, previous: GameState, action
       const id = `${helping ? "HH" : creator ? "BS" : "GS"}-${today}-extra`;
       const company = helping ? "HelpingHand" : creator ? "Brightside" : "Goodshift";
       if (next.shifts.some((shift) => shift.id.endsWith(`${today}-extra`))) reject("Today’s extra shift is already recorded.");
-      const productivity = assignmentScore(ctx);
+      const productivity = assignmentScore(ctx, true);
       book(ctx, { id, kind: "extra-shift", label: `${company} · ${posting.title}` },
         creator ? briefMinutes : parseDuration("duration" in posting ? String(posting.duration) : undefined));
       const acceptance = addDays(today, 1);
@@ -209,6 +217,25 @@ export function applyGameAction(seed: MemberAccount, previous: GameState, action
       if (!pantry[action.item]) delete pantry[action.item];
       next.pantry = pantry;
       adjustStats(ctx, { satiety: food.satiety });
+      break;
+    }
+    case "open-orb": {
+      if (!next.inventory[reserveOrb.item]) reject("You don’t have a reserve orb.");
+      book(ctx, { id: `orb-${next.revision}`, kind: "errand", label: `Opening an ${reserveOrb.item}` }, actionMinutes["open-orb"]);
+      next.inventory[reserveOrb.item] -= 1;
+      if (!next.inventory[reserveOrb.item]) delete next.inventory[reserveOrb.item];
+      adjustStats(ctx, { oxygen: reserveOrb.oxygen });
+      break;
+    }
+    case "subscribe": {
+      // Members who join after enrollment pay the first period up front.
+      const offer = getMembershipOffer(action.membership);
+      if (!offer) reject("Choose an Everair or Softspace membership.");
+      if (next.memberships?.some(({ id }) => id === offer.id)) reject(`${offer.name} is already active on your account.`);
+      charge({ id: `${offer.id}-start-${today}`, service: offer.id, label: `${offer.name} · First ${offer.days} days`, amount: offer.price, due: today });
+      book(ctx, { id: `subscribe-${offer.id}`, kind: "errand", label: `Activating ${offer.name}` }, actionMinutes.subscribe);
+      next.memberships = [...(next.memberships ?? []), { id: offer.id, since: today, firstRenewal: addDays(today, offer.days) }];
+      // The renewal is scheduled the next time the clock moves, from the projected subscription.
       break;
     }
     case "eat-out": {

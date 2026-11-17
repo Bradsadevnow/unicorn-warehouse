@@ -7,7 +7,7 @@ import { funHourRate } from "@/content/funplex";
 import { postings } from "@/content/goodshiftPostings";
 import { getStarterHome } from "@/content/living";
 import { quickserveMenu } from "@/content/quickserve";
-import { groceries, menuSatiety } from "@/content/survival";
+import { groceries, menuSatiety, reserveOrb } from "@/content/survival";
 import { helpingHandPostings } from "@/content/helpingHandPostings";
 import { actionMinutes, getRentBill, regularShiftHours, regularShiftStart, type GameAction } from "@/server/gameActions";
 import { atTime, formatClockTime, formatGameDate, formatGameTime, gameDay, type GameState } from "@/server/gameState";
@@ -85,6 +85,7 @@ export default function MemberDay({ game, available, error }: { game: GameState;
             </option>)}
           </select></label>
         </DayForm>}
+        {game.inventory[reserveOrb.item] > 0 && <DayForm revision={revision} action="open-orb" label={`Open an ${reserveOrb.item} · Oxygen +${reserveOrb.oxygen}`} />}
         <DayForm revision={revision} action="transfer" label="Transfer tracks">
           <label>Open entry positions<select name="choice" required>
             {positions.filter((position) => position.track !== track && isOpenEntryPosition(position))

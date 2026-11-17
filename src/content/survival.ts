@@ -89,6 +89,9 @@ export const interventions = {
   reconnect: { label: "Everair · Emergency Continuity Reconnect", amount: 250, oxygen: 35 },
 } as const;
 
+/** Dispatched to the home address when an AirLink renewal fails. Delivery marks the reserve benefit as used. */
+export const reserveOrb = { item: "Everair reserve orb", oxygen: 70 } as const;
+
 export const funHourMorale = 20;
 export const mealMorale = 2;
 export const eatMinutes = 15;

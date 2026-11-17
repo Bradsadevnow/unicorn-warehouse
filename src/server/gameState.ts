@@ -3,6 +3,7 @@ import "server-only";
 import { getPosition, getTrack, employers, type Position } from "@/content/careerTracks";
 import { getStarterHome } from "@/content/living";
 import type { MemberAccount } from "@/content/memberAccount";
+import { getMembershipOffer, introductoryDays } from "@/content/memberships";
 import { startingStats, type Stats } from "@/content/survival";
 
 export type LedgerEntry = MemberAccount["ledger"][number];
@@ -55,6 +56,8 @@ export type GameState = {
   home?: { homeId: string; movedIn: string };
   /** Oxygen, satiety, energy, comfort and morale as of `at`. Saves made before stats existed start fresh. */
   survival?: Stats & { at: string };
+  /** Everair and Softspace memberships the player started. `firstRenewal` is when billing begins. */
+  memberships?: { id: string; since: string; firstRenewal: string }[];
   /** Grocery servings at home, by Market product name. */
   pantry?: Record<string, number>;
   employment: MemberAccount["employment"];
@@ -75,8 +78,10 @@ export const morning = "08:00";
 const objectiveIds = ["meet-manager", "buy-kit", "first-shift", "finish-day"] as const;
 export type ObjectiveId = typeof objectiveIds[number];
 
-export function enrollPlayer(player: GameState["player"], position: Position, homeId?: string): GameState {
+export function enrollPlayer(player: GameState["player"], position: Position, homeId?: string, memberships: readonly string[] = []): GameState {
+  const offers = memberships.filter((id, index) => getMembershipOffer(id) && memberships.indexOf(id) === index);
   return {
+    ...(offers.length ? { memberships: offers.map((id) => ({ id, since: firstDay, firstRenewal: addDays(firstDay, introductoryDays) })) } : {}),
     version: 2, revision: 0, player, now: `${firstDay}T${morning}`, events: [], blocks: [],
     survival: { ...startingStats, at: `${firstDay}T${morning}` },
     ...(getStarterHome(homeId) ? { home: { homeId: homeId!, movedIn: firstDay } } : {}),
@@ -132,7 +137,11 @@ export function createPlayerAccount(game: GameState): MemberAccount {
     ...game.player, date: formatGameDate.format(new Date(gameDay(game))), asOf: gameDay(game),
     household: getStarterHome(game.home?.homeId) ? `Individual household · ${getStarterHome(game.home?.homeId)!.name}` : "Individual household",
     employer: `${employers[position.business]?.name ?? position.business} · ${getTrack(position.track)!.name}`,
-    employment: game.employment, ledger: [], subscriptions: [], assignments: [], requests: [],
+    employment: game.employment, ledger: [], assignments: [], requests: [],
+    subscriptions: (game.memberships ?? []).flatMap(({ id, firstRenewal }) => {
+      const offer = getMembershipOffer(id);
+      return offer ? [{ id: offer.id, name: offer.name, renewal: formatGameDate.format(new Date(firstRenewal)), status: "Active", note: offer.activeNote }] : [];
+    }),
     notices: ["Your Trainee enrollment is on file. Your welcome credit is ready in your Token wallet. ✨"],
   };
 }

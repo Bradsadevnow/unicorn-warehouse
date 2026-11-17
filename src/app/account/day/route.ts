@@ -19,8 +19,10 @@ function parseAction(form: FormData): GameAction | undefined {
     case "buy": return typeof choice === "string" ? { type, product: choice } : undefined;
     case "transfer": return typeof choice === "string" ? { type, positionId: choice } : undefined;
     case "move-in": return typeof choice === "string" ? { type, homeId: choice } : undefined;
+    case "subscribe": return typeof choice === "string" ? { type, membership: choice } : undefined;
     case "eat":
     case "eat-out": return typeof choice === "string" ? { type, item: choice } : undefined;
+    case "open-orb":
     case "end-day":
     case "meet-manager":
     case "buy-kit":
@@ -44,7 +46,8 @@ export async function POST(request: NextRequest) {
   if (action.type === "quest" && !interaction) return new Response("This desk has no record of that interaction.", { status: 400 });
   const returnPath = action.type === "quest" && interaction
     ? questLocationPath(action.questId, interaction.location) : onboardingAction ? "/account#objectives"
-      : action.type === "move-in" ? "/account#home" : "/account#member-day";
+      : action.type === "move-in" ? "/account#home"
+        : action.type === "subscribe" ? "/account?tab=memberships#memberships" : "/account#member-day";
   const returnTo = new URL(returnPath, request.url);
   const response = (error?: string) => {
     if (error) returnTo.searchParams.set("actionError", error);

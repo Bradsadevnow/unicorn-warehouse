@@ -2,7 +2,7 @@ import "server-only";
 
 import { inactivityFee, maintenanceFee, maintenanceWaiverBalance, welcomePeriodEnds } from "@/content/bank";
 import { requiredFunHours } from "@/content/funplex";
-import { acceptanceThreshold } from "@/content/survival";
+import { acceptanceThreshold, reserveOrb } from "@/content/survival";
 import { getTokenBalances } from "@/content/memberAccount";
 import { firstRentDate, getRentBill, nextStarterRentDue, renewalPrices, type GameContext } from "./gameContext";
 import { lastDayOfMonth } from "./funHours";
@@ -102,7 +102,12 @@ function runEvent(ctx: GameContext, event: GameEvent) {
       const subscription = seed.subscriptions.find(({ id }) => id === event.ref);
       const price = subscription && renewalPrices[subscription.id];
       if (!subscription || !price) break;
-      ctx.billIfDue({ id: `renewal-${subscription.id}-${today}`, ...price, label: `${subscription.name} · Renewal`, due: today });
+      const renewalId = `renewal-${subscription.id}-${today}`;
+      ctx.billIfDue({ id: renewalId, ...price, label: `${subscription.name} · Renewal`, due: today });
+      // When an AirLink renewal fails, one reserve orb goes to the delivery address on file.
+      if (subscription.id === "everair" && next.home && next.unpaid.some(({ id }) => id === renewalId)) {
+        next.inventory[reserveOrb.item] = (next.inventory[reserveOrb.item] ?? 0) + 1;
+      }
       schedule(ctx, { at: atTime(addDays(today, price.days), times.bill), kind: "renewal", ref: subscription.id });
       break;
     }

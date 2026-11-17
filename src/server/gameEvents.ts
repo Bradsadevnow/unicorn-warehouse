@@ -2,9 +2,11 @@ import "server-only";
 
 import { inactivityFee, maintenanceFee, maintenanceWaiverBalance, welcomePeriodEnds } from "@/content/bank";
 import { requiredFunHours } from "@/content/funplex";
+import { acceptanceThreshold } from "@/content/survival";
 import { getTokenBalances } from "@/content/memberAccount";
 import { firstRentDate, getRentBill, nextStarterRentDue, renewalPrices, type GameContext } from "./gameContext";
 import { lastDayOfMonth } from "./funHours";
+import { settleStats } from "./survival";
 import { addDays, atTime, gameDay, type GameEvent } from "./gameState";
 
 /** Times of day for repeating events. Bills fall due at midnight; scheduled Fun Hours start at 6:00 a.m. */
@@ -76,9 +78,18 @@ function runEvent(ctx: GameContext, event: GameEvent) {
   const { next, seed } = ctx;
   const today = gameDay(next);
   switch (event.kind) {
-    case "settle-shift":
-      if (event.ref && !next.settlements[event.ref]) next.settlements[event.ref] = today;
+    case "settle-shift": {
+      if (!event.ref || next.settlements[event.ref]) break;
+      // Clients review the work against the productivity score at clock-in.
+      const shift = next.shifts.find(({ id }) => id === event.ref);
+      if (shift?.productivity !== undefined && shift.productivity < acceptanceThreshold) {
+        shift.declined = true;
+        const entry = next.ledger.find(({ id }) => id === event.ref);
+        if (entry) Object.assign(entry, { amount: 0, label: entry.label.replace(", awaiting client acceptance", ", not accepted by client") });
+      }
+      next.settlements[event.ref] = today;
       break;
+    }
     case "rent": {
       const rent = getRentBill({ ...next, unpaid: [] });
       if (rent?.due === today) ctx.billIfDue(rent);
@@ -145,11 +156,15 @@ export function advanceClock(ctx: GameContext, target: string, observe?: (event:
     const index = nextDue(next.events, target);
     if (index < 0) break;
     const [event] = next.events.splice(index, 1);
-    if (event.at > next.now) next.now = event.at;
+    if (event.at > next.now) {
+      settleStats(ctx, event.at);
+      next.now = event.at;
+    }
     runEvent(ctx, event);
     ctx.collectUnpaid();
     observe?.(event);
     ensureRecurring(ctx);
   }
+  settleStats(ctx, target);
   next.now = target;
 }

@@ -4,6 +4,7 @@ import { dreamwellPricing } from "@/content/dreamwellPricing";
 import { funHourRate } from "@/content/funplex";
 import { getStarterHome, rentals, starterRentDays } from "@/content/living";
 import { getTokenBalances, type MemberAccount } from "@/content/memberAccount";
+import type { Activity } from "@/content/survival";
 import { completedFunHours } from "./funHours";
 import { addDays, gameDay, projectGameAccount, type Bill, type GameState, type ObjectiveId } from "./gameState";
 
@@ -70,6 +71,8 @@ export function createGameContext(seed: MemberAccount, next: GameState) {
   return {
     seed,
     next,
+    /** What the player is doing while the clock moves. Unset means asleep at night and awake by day. */
+    activity: undefined as Activity | undefined,
     today,
     account,
     available,

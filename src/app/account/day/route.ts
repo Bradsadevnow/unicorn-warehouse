@@ -19,6 +19,8 @@ function parseAction(form: FormData): GameAction | undefined {
     case "buy": return typeof choice === "string" ? { type, product: choice } : undefined;
     case "transfer": return typeof choice === "string" ? { type, positionId: choice } : undefined;
     case "move-in": return typeof choice === "string" ? { type, homeId: choice } : undefined;
+    case "eat":
+    case "eat-out": return typeof choice === "string" ? { type, item: choice } : undefined;
     case "end-day":
     case "meet-manager":
     case "buy-kit":

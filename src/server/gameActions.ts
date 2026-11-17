@@ -8,11 +8,16 @@ import { getPosting } from "@/content/goodshiftPostings";
 import { getHelpingHandPosting } from "@/content/helpingHandPostings";
 import { getStarterHome } from "@/content/living";
 import { getBrightsideBrief } from "@/content/gigCatalogs";
+import { quickserveMenu } from "@/content/quickserve";
+import {
+  eatMinutes, eatOutMinutes, eligibilityThreshold, funHourMorale, groceries, mealMorale, menuSatiety, productivityScore,
+} from "@/content/survival";
 import type { MemberAccount } from "@/content/memberAccount";
 import { postingTrack } from "./employeeRecord";
 import { createGameContext, getRentBill, reject, type GameContext } from "./gameContext";
 import { advanceClock, schedule } from "./gameEvents";
 import { applyQuestInteraction } from "./recognitionQuestEngine";
+import { activityFor, adjustStats, currentStats, settleStats } from "./survival";
 import { addDays, addMinutes, atTime, formatClockTime, gameDay, morning, objectiveComplete, type GameState, type TimeBlock } from "./gameState";
 
 export { GameActionError, getRentBill } from "./gameContext";
@@ -23,6 +28,8 @@ export type GameAction =
   | { type: "transfer"; positionId: string }
   | { type: "quest"; questId: string; interactionId: string; answer?: string }
   | { type: "move-in"; homeId: string }
+  | { type: "eat"; item: string }
+  | { type: "eat-out"; item: string }
   | { type: "meet-manager" | "buy-kit" | "work-shift" | "sleep" | "attend-fun" | "pay-rent" | "end-day" };
 
 export const regularShiftHours = 8;
@@ -40,7 +47,12 @@ export const actionMinutes = {
   "pay-rent": 10,
   quest: 15,
   "move-in": 60,
+  eat: eatMinutes,
+  "eat-out": eatOutMinutes,
 } as const;
+
+/** Actions an exhausted member can still take. */
+const restfulActions = new Set<GameAction["type"]>(["sleep", "eat", "eat-out", "end-day", "pay-rent"]);
 
 /** Brightside briefs describe the clip, not the work. Producing one takes this long. */
 const briefMinutes = 90;
@@ -65,8 +77,21 @@ function book(ctx: GameContext, block: Omit<TimeBlock, "start" | "end">, minutes
   }
   const clash = next.blocks.find((other) => other.end > start && other.start < end);
   if (clash) reject(`You’re booked for ${clash.label} from ${formatClockTime(clash.start)} to ${formatClockTime(clash.end)}.`);
+  if (start > next.now) advanceClock(ctx, start);
+  ctx.activity = activityFor(block.kind);
   advanceClock(ctx, end);
+  ctx.activity = undefined;
   next.blocks.push({ ...block, start, end });
+}
+
+/** Goodshift's productivity score now. Assignments are not offered below the eligibility threshold. */
+function assignmentScore(ctx: GameContext) {
+  settleStats(ctx, ctx.next.now);
+  const score = productivityScore(currentStats(ctx.next));
+  if (score < eligibilityThreshold) {
+    reject(`Goodshift has paused new assignments while your productivity score is ${score}. Recover your rest, meals, and morale, then check back.`);
+  }
+  return score;
 }
 
 export function applyGameAction(seed: MemberAccount, previous: GameState, action: GameAction): GameState {
@@ -78,6 +103,10 @@ export function applyGameAction(seed: MemberAccount, previous: GameState, action
   const ctx = createGameContext(seed, next);
   const { account, charge, complete, funBill, funCount } = ctx;
   const today = gameDay(next);
+  settleStats(ctx, next.now);
+  if (currentStats(next).energy <= 0 && !restfulActions.has(action.type)) {
+    reject("You’re too exhausted to continue. Eat, rest, or finish the day.");
+  }
 
   switch (action.type) {
     case "move-in": {
@@ -115,7 +144,19 @@ export function applyGameAction(seed: MemberAccount, previous: GameState, action
       const position = getPosition(next.employment.positionId)!;
       // Clock in at the scheduled start, or now if the shift has already begun. Pay posts at the end of the shift.
       const shiftStart = atTime(today, regularShiftStart);
-      book(ctx, { id, kind: "work", label: `${position.title} shift` }, actionMinutes["work-shift"], next.now > shiftStart ? next.now : shiftStart);
+      const start = next.now > shiftStart ? next.now : shiftStart;
+      const clash = next.blocks.find((other) => other.end > start && other.start < addMinutes(start, actionMinutes["work-shift"]));
+      if (clash) reject(`You’re booked for ${clash.label} from ${formatClockTime(clash.start)} to ${formatClockTime(clash.end)}.`);
+      // The score is taken at clock-in.
+      if (start > next.now) advanceClock(ctx, start);
+      const score = assignmentScore(ctx);
+      book(ctx, { id, kind: "work", label: `${position.title} shift · Productivity ${score}` }, actionMinutes["work-shift"], start);
+      // Reduced scores come with a follow-up conversation on the member's own time.
+      const followUp = score < 40 ? { label: "Performance improvement plan check-in", minutes: 60 }
+        : score < 60 ? { label: "Productivity coaching", minutes: 30 } : undefined;
+      if (followUp && addMinutes(next.now, followUp.minutes) <= atTime(today, "23:59")) {
+        book(ctx, { id: `coaching-${today}`, kind: "onboarding", label: `Goodshift · ${followUp.label}` }, followUp.minutes);
+      }
       next.ledger.push({ id, eventId: `${seed.id}-${id}`, date: today, label: `Payroll · ${position.title} · ${regularShiftHours} hours`,
         amount: payByLevel[position.level] * regularShiftHours, status: "posted", service: "payroll" });
       complete("first-shift");
@@ -134,10 +175,11 @@ export function applyGameAction(seed: MemberAccount, previous: GameState, action
       const id = `${helping ? "HH" : creator ? "BS" : "GS"}-${today}-extra`;
       const company = helping ? "HelpingHand" : creator ? "Brightside" : "Goodshift";
       if (next.shifts.some((shift) => shift.id.endsWith(`${today}-extra`))) reject("Today’s extra shift is already recorded.");
+      const productivity = assignmentScore(ctx);
       book(ctx, { id, kind: "extra-shift", label: `${company} · ${posting.title}` },
         creator ? briefMinutes : parseDuration("duration" in posting ? String(posting.duration) : undefined));
       const acceptance = addDays(today, 1);
-      next.shifts.push({ id, postingId, acceptance });
+      next.shifts.push({ id, postingId, acceptance, productivity });
       schedule(ctx, { at: atTime(acceptance, "17:00"), kind: "settle-shift", ref: id });
       next.ledger.push({ id, eventId: `${seed.id}-${id}`, date: today, amount: posting.payout,
         label: `${company} · ${posting.title}, awaiting client acceptance`, status: "pending" });
@@ -149,7 +191,32 @@ export function applyGameAction(seed: MemberAccount, previous: GameState, action
       const [name, size, amount] = item;
       charge({ id: `purchase-${next.revision}`, service: "market", label: `Market · ${name} · ${size}`, amount, due: today });
       book(ctx, { id: `purchase-${next.revision}`, kind: "errand", label: `Shopping at Market` }, actionMinutes.buy);
-      next.inventory[name] = (next.inventory[name] ?? 0) + 1;
+      // Groceries go to the pantry by the serving. Everything else is inventory.
+      const food = groceries[name];
+      if (food) next.pantry = { ...next.pantry, [name]: (next.pantry?.[name] ?? 0) + food.servings };
+      else next.inventory[name] = (next.inventory[name] ?? 0) + 1;
+      break;
+    }
+    case "eat": {
+      const food = groceries[action.item];
+      const servings = next.pantry?.[action.item] ?? 0;
+      if (!food || servings < 1) reject("That isn’t in your pantry.");
+      if (food.kitchen && !getStarterHome(next.home?.homeId)?.kitchen) {
+        reject(`${action.item} needs a kitchen. Your home doesn’t have one.`);
+      }
+      book(ctx, { id: `meal-${next.revision}`, kind: "meal", label: `${action.item} at home` }, actionMinutes.eat);
+      const pantry = { ...next.pantry, [action.item]: servings - 1 };
+      if (!pantry[action.item]) delete pantry[action.item];
+      next.pantry = pantry;
+      adjustStats(ctx, { satiety: food.satiety });
+      break;
+    }
+    case "eat-out": {
+      const item = quickserveMenu.find(({ id }) => id === action.item);
+      if (!item) reject("That isn’t on the Horn & Fries menu.");
+      charge({ id: `quickserve-${next.revision}`, service: "quickserve", label: `Horn & Fries · ${item.name}`, amount: item.tokens, due: today });
+      book(ctx, { id: `meal-${next.revision}`, kind: "meal", label: `Horn & Fries · ${item.name}` }, actionMinutes["eat-out"]);
+      adjustStats(ctx, { satiety: menuSatiety[item.id] ?? 0, morale: mealMorale });
       break;
     }
     case "sleep":
@@ -161,6 +228,7 @@ export function applyGameAction(seed: MemberAccount, previous: GameState, action
       if (funCount() >= requiredFunHours) reject("You’re already caught up on your Fun Hours.");
       charge(funBill("Funplex · Fun Hour check-in"));
       book(ctx, { id: `fun-${today}`, kind: "fun", label: "Fun Hour at the Funplex" }, actionMinutes["attend-fun"]);
+      adjustStats(ctx, { morale: funHourMorale });
       break;
     case "pay-rent": {
       const rent = getRentBill(next);

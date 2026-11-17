@@ -14,6 +14,8 @@ export const serviceNames = {
   bank: "🪙 Bank",
   funplex: "🎟️ Funplex",
   payroll: "💼 Payroll",
+  wellness: "🩺 Wellness",
+  quickserve: "🍟 Horn & Fries",
 } as const;
 
 type Service = keyof typeof serviceNames;

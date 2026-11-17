@@ -3,9 +3,10 @@ import "server-only";
 import { getPosition, getTrack, employers, type Position } from "@/content/careerTracks";
 import { getStarterHome } from "@/content/living";
 import type { MemberAccount } from "@/content/memberAccount";
+import { startingStats, type Stats } from "@/content/survival";
 
 export type LedgerEntry = MemberAccount["ledger"][number];
-export type GameService = "market" | "dreamwell" | "everair" | "softspace" | "living" | "bank" | "funplex";
+export type GameService = "market" | "dreamwell" | "everair" | "softspace" | "living" | "bank" | "funplex" | "wellness" | "quickserve";
 export type Bill = {
   id: string;
   service: GameService;
@@ -33,7 +34,7 @@ export type GameEvent = {
  */
 export type TimeBlock = {
   id: string;
-  kind: "work" | "extra-shift" | "errand" | "rest" | "fun" | "quest" | "onboarding";
+  kind: "work" | "extra-shift" | "errand" | "rest" | "fun" | "quest" | "onboarding" | "meal";
   label: string;
   /** "YYYY-MM-DDTHH:MM" */
   start: string;
@@ -52,10 +53,15 @@ export type GameState = {
   blocks: TimeBlock[];
   /** Where the player lives: a starter home from living.ts. Saves made before homes existed have none. */
   home?: { homeId: string; movedIn: string };
+  /** Oxygen, satiety, energy, comfort and morale as of `at`. Saves made before stats existed start fresh. */
+  survival?: Stats & { at: string };
+  /** Grocery servings at home, by Market product name. */
+  pantry?: Record<string, number>;
   employment: MemberAccount["employment"];
   ledger: LedgerEntry[];
   settlements: Record<string, string>;
-  shifts: { id: string; postingId: string; acceptance: string }[];
+  /** Extra shifts. `productivity` is the score at clock-in; clients do not accept work below the threshold. */
+  shifts: { id: string; postingId: string; acceptance: string; productivity?: number; declined?: boolean }[];
   unpaid: Bill[];
   inventory: Record<string, number>;
   questFlags: Record<string, boolean>;
@@ -72,6 +78,7 @@ export type ObjectiveId = typeof objectiveIds[number];
 export function enrollPlayer(player: GameState["player"], position: Position, homeId?: string): GameState {
   return {
     version: 2, revision: 0, player, now: `${firstDay}T${morning}`, events: [], blocks: [],
+    survival: { ...startingStats, at: `${firstDay}T${morning}` },
     ...(getStarterHome(homeId) ? { home: { homeId: homeId!, movedIn: firstDay } } : {}),
     employment: { positionId: position.id, hornRank: "unicorn-trainee", hired: firstDay },
     ledger: [{ id: "opening", date: firstDay, label: "New member welcome credit", amount: starterTokens, status: "posted" }],
@@ -173,9 +180,11 @@ export function projectGameAccount(seed: MemberAccount, game: GameState): Member
     ...game.shifts.map(({ id, postingId }) => ({
       id, postingId, ledgerEntryId: id, status: "Awaiting client acceptance",
     })),
-  ].map((assignment) => game.settlements[assignment.ledgerEntryId]
-    ? { ...assignment, status: "Client accepted" }
-    : assignment);
+  ].map((assignment) => game.shifts.some(({ id, declined }) => declined && id === assignment.ledgerEntryId)
+    ? { ...assignment, status: "Not accepted by client" }
+    : game.settlements[assignment.ledgerEntryId]
+      ? { ...assignment, status: "Client accepted" }
+      : assignment);
   return {
     ...seed, asOf: gameDay(game), date: formatGameDate.format(new Date(gameDay(game))),
     employment: game.employment, ledger, assignments,

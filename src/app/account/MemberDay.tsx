@@ -5,6 +5,9 @@ import { brightsideBriefs } from "@/content/gigCatalogs";
 import { dreamwellPricing } from "@/content/dreamwellPricing";
 import { funHourRate } from "@/content/funplex";
 import { postings } from "@/content/goodshiftPostings";
+import { getStarterHome } from "@/content/living";
+import { quickserveMenu } from "@/content/quickserve";
+import { groceries, menuSatiety } from "@/content/survival";
 import { helpingHandPostings } from "@/content/helpingHandPostings";
 import { actionMinutes, getRentBill, regularShiftHours, regularShiftStart, type GameAction } from "@/server/gameActions";
 import { atTime, formatClockTime, formatGameDate, formatGameTime, gameDay, type GameState } from "@/server/gameState";
@@ -32,6 +35,8 @@ export default function MemberDay({ game, available, error }: { game: GameState;
   ];
   const rent = getRentBill(game);
   const revision = game.revision;
+  const pantry = Object.entries(game.pantry ?? {});
+  const kitchen = Boolean(getStarterHome(game.home?.homeId)?.kitchen);
   return (
     <section className={`${styles.panel} ${styles.memberDay}`} id="member-day" aria-labelledby="member-day-heading">
       <header>
@@ -64,10 +69,22 @@ export default function MemberDay({ game, available, error }: { game: GameState;
         <DayForm revision={revision} action="buy" label={`Buy from Market · ${actionMinutes.buy} min`}>
           <label>Market items<select name="choice" required>
             {departments.map(({ name, products }) => <optgroup key={name} label={name}>
-              {products.map(([name, size, amount]) => <option key={name} value={name}>{name} · {size} · {amount} Tokens</option>)}
+              {products.map(([name, size, amount]) => <option key={name} value={name}>{name} · {size} · {amount} Tokens{groceries[name] ? ` · ${groceries[name].servings} serving${groceries[name].servings === 1 ? "" : "s"}${groceries[name].kitchen ? ", needs a kitchen" : ""}` : ""}</option>)}
             </optgroup>)}
           </select></label>
         </DayForm>
+        <DayForm revision={revision} action="eat-out" label={`Eat at Horn & Fries · ${actionMinutes["eat-out"]} min`}>
+          <label>Horn &amp; Fries menu<select name="choice" required>
+            {quickserveMenu.map(({ id, name, tokens }) => <option key={id} value={id}>{name} · {tokens} Tokens · Satiety +{menuSatiety[id] ?? 0}</option>)}
+          </select></label>
+        </DayForm>
+        {pantry.length > 0 && <DayForm revision={revision} action="eat" label={`Eat at home · ${actionMinutes.eat} min`}>
+          <label>Your pantry<select name="choice" required>
+            {pantry.map(([name, servings]) => <option key={name} value={name} disabled={groceries[name]?.kitchen && !kitchen}>
+              {name} · {servings} left · Satiety +{groceries[name]?.satiety ?? 0}{groceries[name]?.kitchen && !kitchen ? " · needs a kitchen" : ""}
+            </option>)}
+          </select></label>
+        </DayForm>}
         <DayForm revision={revision} action="transfer" label="Transfer tracks">
           <label>Open entry positions<select name="choice" required>
             {positions.filter((position) => position.track !== track && isOpenEntryPosition(position))

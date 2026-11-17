@@ -23,7 +23,7 @@ export type MemberAccount = {
     readonly amount: number;
     readonly status: LedgerStatus;
     readonly eventId?: string;
-    readonly service?: "market" | "dreamwell" | "everair" | "softspace" | "living" | "bank" | "funplex" | "payroll";
+    readonly service?: "market" | "dreamwell" | "everair" | "softspace" | "living" | "bank" | "funplex" | "payroll" | "wellness" | "quickserve";
     readonly serviceDate?: string;
   }[];
   readonly subscriptions: readonly { id: string; name: string; renewal: string; status: string; note: string }[];

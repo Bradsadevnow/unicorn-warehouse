@@ -7,6 +7,7 @@ import Nav from "@/components/Nav";
 import Veil from "@/components/Veil";
 import Footer from "@/components/Footer";
 import SupportBar from "@/components/SupportBar";
+import { getMemberPanel } from "@/server/memberPanel";
 import { getMemberSession } from "@/server/memberSession";
 
 const display = Fredoka({
@@ -55,5 +56,5 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
 async function MemberSupportBar() {
   const session = await getMemberSession();
-  return session ? <SupportBar key={session.sessionId} sessionId={session.sessionId} /> : null;
+  return session ? <SupportBar key={session.sessionId} sessionId={session.sessionId} panel={getMemberPanel(session)} /> : null;
 }

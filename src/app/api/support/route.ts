@@ -7,6 +7,8 @@ import { getEmployeeRecord } from "@/server/employeeRecord";
 import { getStarterHome } from "@/content/living";
 import { getRentBill } from "@/server/gameActions";
 import { starterHomeAddress } from "@/server/starterHomes";
+import { activeConditions, productivityBand, productivityScore } from "@/content/survival";
+import { currentStats } from "@/server/survival";
 import type { GameState } from "@/server/gameState";
 import { getMemberSession } from "@/server/memberSession";
 import { getServiceHistory, serviceNames } from "@/server/serviceHistory";
@@ -48,6 +50,7 @@ function getAccountReferences(memberAccount: MemberAccount, game: GameState, tra
         rent: rent && { ...rent, paid: game.ledger.some(({ id }) => id === rent.id) },
         funHoursOutstanding: memberAccount.outstandingFunDates }) },
     ...homeRef(game),
+    { id: "A:wellbeing", label: "Wellbeing and productivity", href: "/account#wellbeing", text: JSON.stringify(wellbeing(game)) },
     ...serviceRefs,
     ...(report ? [{ id: "A:report", label: "Goodshift report status and payout entry", href: "/account?tab=wallet&transaction=report#transaction",
       text: JSON.stringify({ review: report, ledgerEntry: reportEntry }) }] : []),
@@ -209,4 +212,12 @@ function homeRef(game: GameState) {
     home: home.name, address: starterHomeAddress(home), neighborhood: home.neighborhood, movedIn: game.home!.movedIn,
     weeklyRent: home.weeklyRent, rentEveryDays: 7, amenities: home.amenities, leaseTerms: home.finePrint,
   }) }];
+}
+
+/** The member's stats, conditions, and productivity score as of the game clock. */
+function wellbeing(game: GameState) {
+  const { at, ...stats } = currentStats(game);
+  const score = productivityScore(stats);
+  return { asOf: at, stats, productivity: { score, band: productivityBand(score).name },
+    conditions: activeConditions(stats).map(({ name, effect }) => ({ name, effect })), pantryServings: game.pantry ?? {} };
 }

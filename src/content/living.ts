@@ -61,6 +61,12 @@ export type StarterHome = {
   description: string;
   amenities: readonly string[];
   finePrint: string;
+  /** Comfort the home settles toward, before any Softspace membership. */
+  comfort: number;
+  /** How much of a full night's energy recovery the bed delivers. */
+  sleepQuality: number;
+  /** Whether groceries that need cooking can be prepared here. */
+  kitchen: boolean;
 };
 
 export const starterRentDays = 7;
@@ -79,6 +85,9 @@ export const starterHomes: readonly StarterHome[] = [
     description: "A top bunk in a twelve-bunk room, a two-minute walk from Fulfillment and Dispatch. Wake up already at work.",
     amenities: ["Shared washroom", "Locker hook", "Lights-out schedule"],
     finePrint: "Lights-out follows the Goodshift shift calendar. Lockers are sold separately. Bunk assignments may be adjusted to support operational needs.",
+    comfort: 30,
+    sleepQuality: 0.8,
+    kitchen: false,
   },
   {
     id: "fryer-loft",
@@ -93,6 +102,9 @@ export const starterHomes: readonly StarterHome[] = [
     description: "A cozy room above Horn & Fries with radiant heat from the kitchen below and a view of the drive-thru line.",
     amenities: ["Heated by the dinner rush", "Hot plate", "Window over the drive-thru"],
     finePrint: "Heat is supplied during operating hours. The aroma is included with rent and is not a separate utility. Quiet hours begin when the last car clears the drive-thru.",
+    comfort: 42,
+    sleepQuality: 0.9,
+    kitchen: true,
   },
   {
     id: "potting-shed",
@@ -107,6 +119,9 @@ export const starterHomes: readonly StarterHome[] = [
     description: "A private studio with lawn views in one of Unicornopolis’s most exclusive neighborhoods. Formerly a potting shed. Still mostly a potting shed.",
     amenities: ["Lawn view", "Garden hose access 7–9 a.m.", "Neighborly landlord"],
     finePrint: "Plumbing is provided by the garden hose during posted hours. The landlord’s landscaping crew may require access at any time. Residents may not describe the shed as a shed in correspondence with the Residence.",
+    comfort: 36,
+    sleepQuality: 0.85,
+    kitchen: false,
   },
 ];
 

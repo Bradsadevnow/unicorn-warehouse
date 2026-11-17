@@ -10,6 +10,8 @@ import FunHours from "./FunHours";
 import MemberCalendar from "./MemberCalendar";
 import MemberDay from "./MemberDay";
 import MemberHome from "./MemberHome";
+import StatBars from "@/components/StatBars";
+import { currentStats } from "@/server/survival";
 import { projectCalendar } from "@/server/gameCalendar";
 import PlayerObjectives from "./PlayerObjectives";
 import { objectiveComplete } from "@/server/gameState";
@@ -104,6 +106,11 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
       {tab === "overview" && equipped && <section className={`${styles.panel} ${styles.recognition}`}>
         <h2>🦄 Recognition</h2>
         <Link href="/quests/horn-fitting">The Horn Fitting →</Link>
+      </section>}
+      {tab === "overview" && <section className={styles.panel} id="wellbeing" aria-labelledby="wellbeing-heading">
+        <h2 id="wellbeing-heading">💗 Wellbeing</h2>
+        <p>Measured continuously on the Unicornopolis clock. Your productivity score is taken when you clock in.</p>
+        <StatBars stats={currentStats(session.game)} />
       </section>}
       {tab === "overview" && <MemberHome game={session.game}
         error={typeof query.actionError === "string" ? query.actionError : undefined} />}

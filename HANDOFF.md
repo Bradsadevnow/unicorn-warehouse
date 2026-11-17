@@ -2,11 +2,13 @@
 
 The Next.js app lives in `web`. Unicorn Warehouse has grown from a membership company into a company town, Unicornopolis, where every business parodies an industry. Every business in the registry has its own page, the 3D town is the homepage navigation, and `npm run lint` and `tsc` pass with no warnings.
 
-## Where we left off (2026-11-16)
+## Where we left off (2026-11-17)
 
-- The career system, onboarding, day loop, PDF saves, and first Recognition Quest are live. M7's quest interiors and the M8 Support bar are in place. The last checks covered interior routes and hotspot reachability, Gemma's map and clue tools, and a 5-Token nap charged only on confirmation.
-- Next: redesign the persistent player panel around an actual home address and timed deliveries. The section below records the agreed direction. Implementation has yet to begin.
-- The Bank interior is still a greybox, and the player unicorn is built in code. When the Browser pane is hidden, streamed Suspense content may not reveal because animation frames pause. Check pages with the pane visible or read the server HTML.
+- Pushed to `main` through `de9f372`. The working tree is clean. Codex commits only when the user asks, so check `git status` at the start of a session.
+- This pass built the calendar foundation (clock, time blocks, calendar), starter homes, survival stats, the member panel, Everair and Softspace sign-up, and an economy rebalance. Each has a section below.
+- **Next build:** Market orders delivered to the home address on the game clock (see "Orders and the clock" below). Then the open decisions: whether running out of oxygen can end a run, and whether Continuity of Membership can revive it for a fee. After that, calendar warnings such as "Satiety reaches 15 Tuesday at 3 PM". The user hasn't play-tested the new stats and prices yet, so expect tuning in `src/content/survival.ts`, `living.ts`, and `memberships.ts`.
+- Test harness: engine checks run under plain Node with a type-stripping loader kept in the session scratchpad, not in the repo. If you need them again, rebuild a small loader that resolves `@/` to `src/`, stubs `server-only` and image imports, and then play `applyGameAction` over a few months. Useful checks: a 50-day playthrough compared with stats frozen, calendar projection vs. day-by-day play (must match item for item), and the per-home budget run recorded in ECONOMY.md.
+- Still true: the Bank interior is a greybox, and the player unicorn is built in code. When the Browser pane is hidden, streamed Suspense content may not reveal because animation frames pause. Check pages with the pane visible or read the server HTML. Use the user's dev server on port 3000; don't start a second one.
 
 ## Game clock (step A of the calendar, 2026-11-17)
 
@@ -24,13 +26,13 @@ The game now runs on a calendar clock. `GameState` is version 2: `now` ("YYYY-MM
 
 **Step C, the calendar (done).** My account has a 🗓️ Calendar tab: a month grid with a day agenda, covering this month and the next two. `src/server/gameCalendar.ts` builds it by playing the real event queue forward on a copy of the game with no player actions, using the `observe` hook on `advanceClock`. It shows exactly what the engine would charge if nothing else happens, including bills the balance cannot cover. It also shows today's booked blocks, overdue bills, and the end of probation. A check that projected three months and then played those days one at a time matched item for item.
 
-**Starter homes (done).** New players pick one of three starter homes after choosing a job (`starterHomes` in `src/content/living.ts`): the **Employee Bunkhouse** (Bunk C-14, 91 Depot Avenue, 140 Tokens a week), **The Fryer Loft** (upstairs at Horn & Fries, 121 Clover Avenue, 175 a week), and **The Potting Shed** (behind The Garden Residence, 171 Market Avenue, 160 a week). Onboarding shows rent, address, fine print, and the walk to the chosen job (`src/server/starterHomes.ts`, 80 m a minute along `streetRoute`).
+**Starter homes (done).** New players pick one of three starter homes after choosing a job (`starterHomes` in `src/content/living.ts`): the **Employee Bunkhouse** (Bunk C-14, 91 Depot Avenue, 280 Tokens a week), **The Fryer Loft** (upstairs at Horn & Fries, 121 Clover Avenue, 330 a week, the only kitchen), and **The Potting Shed** (behind The Garden Residence, 171 Market Avenue, 300 a week). Prices are from the economy rebalance below. Onboarding shows rent, address, fine print, and the walk to the chosen job (`src/server/starterHomes.ts`, 80 m a minute along `streetRoute`).
 
 - `GameState.home` holds `{ homeId, movedIn }`. Rent is weekly from move-in, first charge one week in, so the welcome credit still covers the Pathway Kit. `nextStarterRentDue` and `getRentBill` in `gameContext.ts` handle it; the rent event reschedules itself weekly. Saves without a home keep the old monthly sample leases unchanged (the 50-day playthrough matches).
 - Saves from before starter homes get a **Choose a starter home** panel on My account (`move-in` action, 1 hour). Moving between homes is not available yet.
 - The address shows on My account (🏠 panel, linked to the map), the account header household line, the calendar, the Member Records PDF, and Support as `[A:home]`. The Living page has a `#starter-homes` section.
 - Map: two new lots, `starter-bunkhouse` (19,8) and `starter-shed` (13,16), with hit regions in `unicornopolisScene.json`. The town GLB predates them, so `TownScene.tsx` draws the bunkhouse, the shed, and the loft on the Horn & Fries roof as simple shapes. Rebake them into the GLB when the model is next exported. The shapes were not visually checked in a browser.
-- About 1,360 of 3,800 cookie characters after 62 days in a starter home.
+- Cookie size after about two months is 1,300–2,100 of 3,800 characters. The ledger is still what grows.
 
 **Survival stats, step D (done, first pass).** Five stats on 0–100: Oxygen, Satiety, Energy, Comfort, Morale. Hygiene was dropped. Tuning lives in `src/content/survival.ts` (rates, conditions, productivity, food values, interventions); the engine is `src/server/survival.ts`.
 
@@ -45,7 +47,7 @@ The game now runs on a calendar clock. `GameState` is version 2: `now` ("YYYY-MM
 
 **Member panel (done, first pass).** The Support dock (`src/components/SupportBar.tsx`) is now a panel on every page, with tabs for Today (stats, conditions, productivity, schedule, bills), Home (address, rent, kitchen, pantry, Go home), Wallet (balances and recent activity), and Support (the existing chat). The launcher shows five mini stat bars. `src/server/memberPanel.ts` builds the data in the root layout from the signed save. Form actions reload the page, so the panel is always current; leaving the Support tab calls `router.refresh()` in case Support changed the account. On `/support` the panel hides its Support tab. My account has a 💗 Wellbeing section (`src/components/StatBars.tsx`), and Support can cite `[A:wellbeing]`.
 
-**Everair and Softspace memberships (done).** Onboarding ends with "Your wellbeing, included.": Everair AirLink Premium (120 Tokens every 30 days) and Softspace Daily Balance (180 every 30 days), both pre-checked. The first 30 days are included, then they renew automatically (`src/content/memberships.ts`). Players who skipped them can start one from My account → Memberships and pay the first period up front (`subscribe` action). `GameState.memberships` feeds the subscriptions on `createPlayerAccount`, so renewals, oxygen and comfort run through the existing machinery.
+**Everair and Softspace memberships (done).** Onboarding ends with "Your wellbeing, included.": Everair AirLink Premium (210 Tokens every 30 days) and Softspace Daily Balance (180 every 30 days), both pre-checked. The first 14 days are included, then they renew automatically (`src/content/memberships.ts`). Players who skipped them can start one from My account → Memberships and pay the first period up front (`subscribe` action). `GameState.memberships` feeds the subscriptions on `createPlayerAccount`, so renewals, oxygen and comfort run through the existing machinery.
 
 - A failed AirLink renewal lapses Sync at midnight and oxygen drains 6 an hour. Only an unpaid renewal lapses the plan, not other Everair charges. One reserve orb goes to the home address (Terms: "one reserve orb may be dispatched to the delivery address on file"), and **Open an Everair reserve orb** adds 70 oxygen. Everair bills the 250-Token reconnect once per lapse. After that, oxygen stays at zero until the renewal is paid.
 - The regular shift is always available, whatever the productivity score, so a member in trouble can still earn. Only extra shifts close below 20. A harness run confirmed the way back: lapse, orb, reconnect, regular shifts, renewal collected, oxygen restored to 96.
@@ -54,24 +56,19 @@ The game now runs on a calendar clock. `GameState` is version 2: `now` ("YYYY-MM
 
 Next: Market orders delivered to the home address on the clock, the decision on death, and a "Satiety reaches 15 Tuesday" style forecast on the calendar.
 
-## Next build · The member panel and life at an address
+## Next build · Orders delivered to the home address
 
-Expand the signed-in Support dock into a persistent member panel. Keep the conversation available while the player moves around. Use four tabs:
+The member panel and starter housing from the earlier plan are built (sections above). Still to do from that plan:
 
-- **Today** — In-game date and time, current location, next shift, bills due, and the next delivery window.
-- **Home** — Assigned address and unit, rent and due date, lease, and deliveries. **Go home** should open the player's actual address on the town map.
-- **Wallet** — Available, pending, and held Tokens, recent activity, and a link to the full statement.
-- **Support** — The existing conversation, tool trace, and confirmation cards. Give the unicorn access to the signed-in player's lease, shift, and order records as those features come online.
+- Keep My account for the detailed statement, employment record, and Member Records PDF saves. Move ordering out of its Market picker and into Market. Move **Work your shift** to **Clock in** at the player's workplace, where the Horn & Fries minigame can eventually run.
+- Remove track transfer from player controls. If transfers return, decide the rule and any affordability requirement before exposing them again. Pay still comes from the position. Accepted extras and manager approval feed horn recognition.
+- The panel's Today tab should gain the current location, next shift, and next delivery window as those exist.
 
-Keep My account for the detailed statement, employment record, and Member Records PDF saves. Move ordering out of its Market picker and into Market. Move **Work your shift** to **Clock in** at the player's workplace, where the Horn & Fries minigame can eventually run. Remove track transfer from player controls for this pass. If transfers return, decide the rule and any affordability requirement before exposing them again. Pay still comes from the position. Accepted extras and manager approval feed horn recognition.
+**Orders and the clock.** Place the order at Market and choose a delivery window on the in-game clock. Dispatch quotes the fee using the home address (`starterHomeAddress` in `src/server/starterHomes.ts`; walking routes come from `streetRoute`). Link the Market order, Fulfillment record, Dispatch attempt, and ledger entries with one correlation ID. A delivery is a scheduled `GameEvent` plus a `TimeBlock`. Groceries delivered go into `GameState.pantry` by the serving. The Today tab can show “Groceries arriving 5:20–5:40 p.m.” The player counts as home when they are not booked elsewhere at the arrival time. Closing the browser pauses the clock.
 
-**Housing.** After job selection, offer a few starter rentals, such as a furnished room, a studio near the outbound depot, and a small walk-up above the shops. Show rent and commute before selection. Assign the player to a specific map lot and unit, and save the lease and actual address to the account. Schedule the first rent payment after the player has had time to earn wages, so the existing 100-Token welcome credit can still cover the Pathway Kit. Exact rents and first-payment timing are open design decisions.
+If the player is away at arrival, record the missed attempt and route the order back to the depot for next-day pickup or rebooking. The Dispatch voice: “We stopped by! Your groceries are back at the depot, where they’ve been marked successfully transported.” Decide delivery fees, charges for rebooking, and timing rules when designing the actual flow. The Everair reserve orb already ships to the home address the same way, so it can move onto this delivery flow once that exists.
 
-**Orders and the clock.** Place the order at Market and choose a delivery window on the in-game clock. Dispatch quotes the fee using the home address. Link the Market order, Fulfillment record, Dispatch attempt, and ledger entries with one correlation ID. The Today tab can show “Groceries arriving 5:20–5:40 p.m.” The player counts as home when their character is at the assigned address when the courier arrives. Advance time through play and restore the clock and pending deliveries from the signed save. Closing the browser pauses the clock.
-
-If the player is away at arrival, record the missed attempt and route the order back to the depot for next-day pickup or rebooking. The Dispatch voice: “We stopped by! Your groceries are back at the depot, where they’ve been marked successfully transported.” Decide delivery fees, charges for rebooking, and timing rules when designing the actual flow.
-
-Build the first slice end to end: **choose a home → place a Market order → receive or miss delivery**. That slice should connect the member panel, town map, Market, Fulfillment, Dispatch, ledger, and PDF save. Keep the Horn & Fries dinner rush pilot in the roadmap for the workplace clock-in pass.
+Build the first slice end to end: **place a Market order → receive or miss delivery**. Keep the Horn & Fries dinner rush pilot in the roadmap for the workplace clock-in pass.
 
 Read these alongside this file:
 
@@ -113,6 +110,10 @@ Outline pages remain at `/businesses/[slug]`, and `/businesses` redirects to the
 **Support unicorn.** `/api/support` gives the model account evidence `[A:…]`, Terms `[T:…]`, Product Details `[P:…]`, postings `[J:…]`, and careers roles `[C:…]`. A chat can open from a transaction, a posting (`/support?posting=<slug>`, or `helpinghand:<slug>` for HelpingHand), or a role (`/support?role=<slug>`).
 
 ## Open threads
+
+- **Death is undecided.** Zero oxygen currently brings one 250-Token Everair reconnect per lapse, then oxygen stays empty (productivity capped at 19) until the renewal is paid. Ask the user whether a run can end and whether revival is a paid service.
+- **Stats are first-pass numbers.** They have only been tested by scripts. Live accounts made before survival stats start with fresh stats on their next action. The 3D starter-home shapes have not been seen in a visible browser pane.
+- **Starting balance.** New players start with the 100-Token welcome credit and a 72-Token Pathway Kit, so the first rent (day 7) and first renewals (day 14) depend on the first week's wages.
 
 - **Poppy's history predates the current prices.** Her weekly reports paid 140 Tokens each, while that posting now pays 84 under ECONOMY.md. Reconcile this when member histories are reseeded.
 - **The Horn Fitting interiors and Support bar are in place.** Lost Property, Dreamwell, and the shared Recognition Office join the walkable Bank. The quest route retains its desk cards and signed inventory. The signed-in Support bar can link to map lots, give quest hints, and prepare confirmed game actions.

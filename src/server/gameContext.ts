@@ -11,7 +11,7 @@ import { addDays, gameDay, projectGameAccount, type Bill, type GameState, type O
 
 export const sampleLeases: Record<string, string> = { "UW-0482": "peach", "UW-0716": "sunbeam" };
 export const firstRentDate = "2026-12-01";
-// AirLink has no public catalog price yet. This is the rate on the seeded account's plan.
+// Everair and Softspace renew at their catalog prices (memberships.ts). Dreamwell Plus renews daily.
 export const renewalPrices: Partial<Record<string, { amount: number; days: number; service: Bill["service"] }>> = {
   ...Object.fromEntries(membershipOffers.map(({ id, price, days }) => [id, { amount: price, days, service: id }])),
   dreamwell: { amount: dreamwellPricing.subscriptions.plus.tokens, days: 1, service: "dreamwell" },

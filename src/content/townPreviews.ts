@@ -13,7 +13,7 @@ import { alpineResortName } from "./alpineResort";
 import { businesses } from "./businesses";
 import { venues } from "./gatherings";
 import { businessGroups } from "./homeBusinesses";
-import { rentals } from "./living";
+import { getStarterHome, rentals } from "./living";
 import { townLots, type Zone } from "./unicornopolis";
 import { wellnessClinics } from "./wellness";
 
@@ -33,6 +33,7 @@ export type TownPreview = {
   entrance: (typeof townLots)[number]["entrance"];
 };
 
+const rentFrom = (id: string) => `${getStarterHome(id)!.weeklyRent} Tokens a week.`;
 const directoryByPath = new Map(businessGroups.flatMap(({ businesses: entries }) => [...entries]).map((entry) => [entry.href, entry]));
 const businessByPath = new Map(businesses.flatMap((business) => business.href ? [[business.href, business] as const] : []));
 const options: Record<string, { image?: StaticImageData; description: string; name?: string; openLabel?: string }> = {
@@ -49,8 +50,8 @@ const options: Record<string, { image?: StaticImageData; description: string; na
   "motors-showroom": { description: "Compare vehicles and take a look at what the Bank can do for your next monthly payment." },
   "town-hall": { description: "Find street closures, school concerts, marina notices, and lost cats on the town bulletin board.", openLabel: "See town information" },
   "clover-commons": { description: "A public lawn, a loop path, and shaded picnic tables between Market Square and Clover Lake.", openLabel: "See town information" },
-  "starter-bunkhouse": { description: "Twelve bunks to a room, one washroom, and a lights-out schedule that follows the Goodshift calendar. From 140 Tokens a week.", openLabel: "View starter homes" },
-  "starter-shed": { description: "A garden studio behind The Garden Residence, with a lawn view and morning hose access. From 160 Tokens a week.", openLabel: "View starter homes" },
+  "starter-bunkhouse": { description: `Twelve bunks to a room, one washroom, and a lights-out schedule that follows the Goodshift calendar. ${rentFrom("bunkhouse")}`, openLabel: "View starter homes" },
+  "starter-shed": { description: `A garden studio behind The Garden Residence, with a lawn view and morning hose access. ${rentFrom("potting-shed")}`, openLabel: "View starter homes" },
   "police": { description: "The little blue-roofed station with flowerpots and a counter for lost property." },
   "fire-rescue": { description: "Three apparatus bays and the fire and rescue crews, just past the water tower." },
 };

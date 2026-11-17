@@ -27,6 +27,25 @@ All figures are Tokens. The 3,500 scenario models one adult renting a room in sh
 
 The household column preserves the original essentials subtotal. Adding 60 Tokens for one member's Fun Hours brings it to 5,560. Bank charges depend on account activity and are excluded from both scenarios. Everair remains a budget allowance pending a baseline allowance and renewal price. The Market example below uses current shelf prices. The Softspace household estimate is a usage budget. The shared scenario uses Seasonal Select.
 
+## The game economy
+
+The playable game follows the scenarios above. An entry-level member earns 96 Tokens for a regular shift, six days a week, or about 85 Tokens a day. The game's prices are set so that a member who works every regular shift, eats when hungry, and keeps both memberships clears only a few Tokens a day. A renewal week leaves bills outstanding until the next paychecks catch up. An extra hour of HelpingHand work a day closes that gap.
+
+| Cost | Price | Per day |
+| --- | --- | ---: |
+| Employee Bunkhouse · The Potting Shed · The Fryer Loft | 280 · 300 · 330 Tokens a week | 40–47 |
+| Everair AirLink Premium | 210 Tokens every 30 days | 7 |
+| Softspace Daily Balance | 180 Tokens every 30 days | 6 |
+| Food at Horn & Fries | About 3 satiety per Token, plus morale | 25–28 |
+| Food cooked at home (The Fryer Loft only) | About 6 satiety per Token | 13–15 |
+| Ready-to-eat groceries | About 4 satiety per Token | 20 |
+| Fun Hours | 30 Tokens, one a day, 4 required a month | 4+ |
+
+- Starter rent bills weekly from move-in, starting one week in. A month of the bunkhouse is about 1,210 Tokens, under the 1,400 shared-housing allowance.
+- New members get Everair and Softspace for their first 14 days, and then the memberships renew. Members who join later pay the first period up front. The seeded sample account's AirLink plan now renews at the catalog price too.
+- Grocery servings and satiety are in [survival.ts](src/content/survival.ts). A member without a kitchen can still eat bread, apples, beans, milk, carrots, and bananas.
+- Tuning record: a 75-day scripted playthrough for each home ends with 66–356 Tokens and 4–14 days with an outstanding bill. With an extra hour of work a day, it ends with about 1,000 Tokens and at most one such day. The previous prices ended 60 days with 2,000–2,600 Tokens.
+
 ## Pricing and accounting
 
 Dreamwell is the first catalog update. Its current pricing lives in [dreamwellPricing.ts](src/content/dreamwellPricing.ts). The nap is 5 Tokens per session. The Essential, Plus, Premium, and Complete subscriptions are 8, 12, 16, and 20 Tokens per day for 2, 4, 6, and 8 hours respectively. Thirty days of Complete costs 600 Tokens. Existing ledger entries, including Poppy's 250-Token four-hour session, keep their recorded amounts.

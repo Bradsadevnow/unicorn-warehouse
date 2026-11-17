@@ -12,7 +12,7 @@ export type MembershipOffer = {
 };
 
 /** New team members receive this many days before the first renewal. */
-export const introductoryDays = 30;
+export const introductoryDays = 14;
 
 export const membershipOffers: readonly MembershipOffer[] = [
   {
@@ -21,7 +21,7 @@ export const membershipOffers: readonly MembershipOffer[] = [
     icon: "🌬️",
     summary: "Metered alpine air, delivered wirelessly to your mask wherever your schedule takes you.",
     benefit: "Keeps oxygen near 96 at work and at rest.",
-    price: 120,
+    price: 210,
     days: 30,
     finePrint: "Everair Sync pairs your breathing to your account on activation. While Sync is active, ambient air is unavailable as a substitute for an Everair allocation. A verified cancellation does not release Sync.",
     activeNote: "Everair Sync is active. No Sync release is scheduled.",

@@ -49,9 +49,10 @@ The game now runs on a calendar clock. `GameState` is version 2: `now` ("YYYY-MM
 
 - A failed AirLink renewal lapses Sync at midnight and oxygen drains 6 an hour. Only an unpaid renewal lapses the plan, not other Everair charges. One reserve orb goes to the home address (Terms: "one reserve orb may be dispatched to the delivery address on file"), and **Open an Everair reserve orb** adds 70 oxygen. Everair bills the 250-Token reconnect once per lapse. After that, oxygen stays at zero until the renewal is paid.
 - The regular shift is always available, whatever the productivity score, so a member in trouble can still earn. Only extra shifts close below 20. A harness run confirmed the way back: lapse, orb, reconnect, regular shifts, renewal collected, oxygen restored to 96.
-- Wages still outpace costs once a member is fed and housed (about 75 Tokens a day of surplus in the bunkhouse), so most players will never miss a renewal. That is the next balancing pass.
 
-Next: economy balancing so the renewals bite, Market orders delivered to the home address on the clock, and the decision on death.
+**Economy balance (done).** Renewals now hurt. Starter rent is 280, 300, and 330 Tokens a week. AirLink Premium is 210 Tokens every 30 days (the old 120 was only the sample account's plan). The membership introductory period is 14 days. Groceries are about 6 satiety per Token cooked and about 4 ready to eat, down from up to 24. Work burns 6 satiety an hour, and being awake 3.5. Fun Hours are no longer capped at the monthly requirement: one a day, so morale can be bought. The numbers and the 75-day tuning record are in [ECONOMY.md](ECONOMY.md#the-game-economy). The scratchpad harness strategy that measured them works every regular shift, eats when hungry, and takes a Fun Hour when morale is under 35.
+
+Next: Market orders delivered to the home address on the clock, the decision on death, and a "Satiety reaches 15 Tuesday" style forecast on the calendar.
 
 ## Next build · The member panel and life at an address
 

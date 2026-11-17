@@ -60,8 +60,8 @@ export const eligibilityThreshold = 20;
 
 /** Hourly change for each activity. Sleep recovery is scaled by the home. */
 export const rates = {
-  work: { satiety: -4.5, energy: -5.5, morale: -1, comfort: -1 },
-  awake: { satiety: -3, energy: -3, morale: -0.5, comfort: 0 },
+  work: { satiety: -6, energy: -5.5, morale: -1, comfort: -1 },
+  awake: { satiety: -3.5, energy: -3, morale: -0.5, comfort: 0 },
   nap: { satiety: -3, energy: 36, morale: 0.5, comfort: 0 },
   sleep: { satiety: -1, energy: 9, morale: 0.5, comfort: 0 },
 } as const;
@@ -99,20 +99,22 @@ export const eatOutMinutes = 30;
 
 /** Market groceries, by serving. Items that need cooking need a kitchen at home. */
 export const groceries: Record<string, { servings: number; satiety: number; kitchen: boolean }> = {
-  "Banana": { servings: 1, satiety: 10, kitchen: false },
-  "Large eggs": { servings: 6, satiety: 15, kitchen: true },
-  "Long-grain rice": { servings: 10, satiety: 12, kitchen: true },
-  "Pasta": { servings: 4, satiety: 15, kitchen: true },
-  "Tomato soup": { servings: 1, satiety: 18, kitchen: true },
-  "Frozen dinner": { servings: 1, satiety: 32, kitchen: true },
-  "Rolled oats": { servings: 10, satiety: 12, kitchen: true },
-  "Sandwich bread": { servings: 10, satiety: 8, kitchen: false },
-  "Black beans": { servings: 2, satiety: 12, kitchen: false },
-  "Milk": { servings: 4, satiety: 8, kitchen: false },
-  "Apples": { servings: 6, satiety: 10, kitchen: false },
-  "Carrots": { servings: 8, satiety: 5, kitchen: false },
-  "Frozen mixed vegetables": { servings: 4, satiety: 6, kitchen: true },
-  "Chicken thighs": { servings: 4, satiety: 25, kitchen: true },
+  // Cooked at home: about 6 satiety per Token.
+  "Large eggs": { servings: 4, satiety: 10, kitchen: true },
+  "Long-grain rice": { servings: 5, satiety: 6, kitchen: true },
+  "Pasta": { servings: 2, satiety: 9, kitchen: true },
+  "Tomato soup": { servings: 1, satiety: 15, kitchen: true },
+  "Frozen dinner": { servings: 1, satiety: 30, kitchen: true },
+  "Rolled oats": { servings: 4, satiety: 6, kitchen: true },
+  "Frozen mixed vegetables": { servings: 3, satiety: 6, kitchen: true },
+  "Chicken thighs": { servings: 4, satiety: 15, kitchen: true },
+  // Ready to eat anywhere: about 4 satiety per Token.
+  "Banana": { servings: 1, satiety: 4, kitchen: false },
+  "Sandwich bread": { servings: 8, satiety: 2, kitchen: false },
+  "Black beans": { servings: 1, satiety: 8, kitchen: false },
+  "Milk": { servings: 4, satiety: 4, kitchen: false },
+  "Apples": { servings: 6, satiety: 5, kitchen: false },
+  "Carrots": { servings: 4, satiety: 4, kitchen: false },
 };
 
 /** Horn & Fries menu items, by satiety. */

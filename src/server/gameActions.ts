@@ -3,7 +3,6 @@ import "server-only";
 import { departments } from "@/app/market/catalog";
 import { getPosition, getTrack, isOpenEntryPosition, payByLevel } from "@/content/careerTracks";
 import { dreamwellPricing } from "@/content/dreamwellPricing";
-import { requiredFunHours } from "@/content/funplex";
 import { getPosting } from "@/content/goodshiftPostings";
 import { getHelpingHandPosting } from "@/content/helpingHandPostings";
 import { getStarterHome } from "@/content/living";
@@ -109,7 +108,7 @@ export function applyGameAction(seed: MemberAccount, previous: GameState, action
   const next = structuredClone(previous);
   next.revision += 1;
   const ctx = createGameContext(seed, next);
-  const { account, charge, complete, funBill, funCount } = ctx;
+  const { account, charge, complete, funBill } = ctx;
   const today = gameDay(next);
   settleStats(ctx, next.now);
   if (currentStats(next).energy <= 0 && !restfulActions.has(action.type)) {
@@ -252,7 +251,8 @@ export function applyGameAction(seed: MemberAccount, previous: GameState, action
       book(ctx, { id: `nap-${today}`, kind: "rest", label: "Dreamwell nap" }, actionMinutes.sleep);
       break;
     case "attend-fun":
-      if (funCount() >= requiredFunHours) reject("You’re already caught up on your Fun Hours.");
+      // Fun Hours past the monthly requirement are welcome. The Funplex books one per member per day.
+      if (next.ledger.some(({ id }) => id === `fun-${today}`)) reject("You’ve already had today’s Fun Hour.");
       charge(funBill("Funplex · Fun Hour check-in"));
       book(ctx, { id: `fun-${today}`, kind: "fun", label: "Fun Hour at the Funplex" }, actionMinutes["attend-fun"]);
       adjustStats(ctx, { morale: funHourMorale });

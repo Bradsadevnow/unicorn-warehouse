@@ -1,0 +1,65 @@
+{
+  "id": "dreamwell",
+  "name": "Dreamwell Rest Desk",
+  "floor": {
+    "minX": -7.0,
+    "maxX": 7.0,
+    "minZ": -5.0,
+    "maxZ": 5.0
+  },
+  "blockers": [
+    {
+      "minX": -6.56,
+      "maxX": -5.88,
+      "minZ": 3.46,
+      "maxZ": 4.14
+    },
+    {
+      "minX": 5.88,
+      "maxX": 6.56,
+      "minZ": 3.46,
+      "maxZ": 4.14
+    },
+    {
+      "minX": -2.3,
+      "maxX": 2.3,
+      "minZ": -3.2,
+      "maxZ": -2.2
+    },
+    {
+      "minX": -5.75,
+      "maxX": -3.85,
+      "minZ": -2.15,
+      "maxZ": 0.85
+    },
+    {
+      "minX": 3.85,
+      "maxX": 5.75,
+      "minZ": -2.15,
+      "maxZ": 0.85
+    }
+  ],
+  "spawn": {
+    "x": 0.0,
+    "z": 3.55,
+    "facing": 0.0
+  },
+  "hotspots": [
+    {
+      "id": "verification",
+      "label": "Rest Desk",
+      "x": 0.0,
+      "z": -1.78,
+      "radius": 1.2
+    }
+  ],
+  "exits": [
+    {
+      "id": "front",
+      "label": "Back to town",
+      "href": "/home?lot=dreamwell#town",
+      "x": 0.0,
+      "z": 4.65
+    }
+  ]
+}

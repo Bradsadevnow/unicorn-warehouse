@@ -1,0 +1,8 @@
+.dock { position: fixed; z-index: 80; right: max(14px, env(safe-area-inset-right)); bottom: max(14px, env(safe-area-inset-bottom)); display: grid; gap: 8px; justify-items: end; }
+.dock[hidden], .panel[hidden] { display: none; }
+.launcher { display: flex; align-items: center; gap: 8px; border: 1px solid #b481cb; border-radius: 999px; padding: 6px 14px 6px 8px; background: #f7e3fb; color: #582477; box-shadow: 0 5px 20px #45225329; font: 750 1rem var(--display); cursor: pointer; }
+.launcher img, .header img { object-fit: contain; }
+.panel { width: min(430px, calc(100vw - 28px)); max-height: min(77dvh, 670px); overflow: auto; padding: 10px; border: 1px solid #d9b9e8; border-radius: 20px; background: #fbf0ff; box-shadow: 0 16px 48px #4522534d; }
+.header { display: flex; align-items: center; gap: 9px; padding: 2px 4px 8px; }
+.header h2 { font: 750 1.25rem/1 var(--display); }
+.header button { margin-left: auto; width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 50%; color: #582477; background: #fffaff; font: 700 1.25rem/1 var(--sans); cursor: pointer; }

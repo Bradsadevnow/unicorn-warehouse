@@ -64,15 +64,6 @@
 }
 
 .signIn label { font-weight: 650; }
-.signIn select {
-  margin-left: 10px;
-  padding: 6px 9px;
-  border: 1px solid #dfc8e8;
-  border-radius: 9px;
-  background: #fff9fe;
-  color: inherit;
-  font: inherit;
-}
 .signIn input {
   width: 100%;
   min-height: 44px;
@@ -82,8 +73,8 @@
   background: #f3e8fb;
   color: inherit;
   font: inherit;
-  letter-spacing: .12em;
 }
+.signIn input[readonly] { letter-spacing: .12em; }
 .signIn small { color: #654c79; }
 .signIn button { margin-top: 10px; }
 
@@ -131,3 +122,34 @@
 .primary { color: white; background: #74369a; }
 .secondary { color: #582477; background: #fff9fe; }
 .secondary:disabled { opacity: .7; cursor: default; }
+.primary:disabled { opacity: .65; cursor: default; }
+
+.splash:is([data-stage="career"], [data-stage="position"]) .card { width: min(100%, 1060px); }
+.trackGrid, .jobGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 235px), 1fr));
+  gap: 16px;
+  margin-top: 24px;
+  text-align: left;
+}
+.track, .job {
+  border: 1px solid #dfc8e8;
+  border-radius: 18px;
+  background: #f9effc;
+  color: inherit;
+}
+.track { padding: 0; overflow: hidden; font: inherit; text-align: left; cursor: pointer; }
+.track:hover, .track:focus-visible { border-color: #74369a; background: #f0e0fa; }
+.track img { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; }
+.track span { display: grid; gap: 4px; padding: 13px 16px 16px; }
+.track strong, .job h2 { font: 650 1.35rem/1.1 var(--font-display), sans-serif; }
+.track small, .job span { color: #654c79; font-size: .85rem; }
+.job { display: grid; grid-template-rows: auto auto 1fr auto auto; gap: 9px; padding: 18px; }
+.job p:not(.brand) { margin: 0; }
+.job button { justify-self: start; margin-top: 4px; }
+
+.recordsSection { margin-top: 22px; padding: 16px; border: 1px solid #dfc8e8; border-radius: 18px; }
+.recordsSection h2 { font: 650 1.45rem/1.1 var(--font-display), sans-serif; }
+.recordsSection .primary { display: inline-block; }
+.recordsSection .signIn { margin-top: 12px; }
+.recordsNotice { padding: 12px; border-radius: 12px; background: #fbe2ee; color: #792856; }

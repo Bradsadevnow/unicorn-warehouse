@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { interiorAssets, interiors } from "@/content/interiors";
 import type { InteriorData } from "./InteriorScene";
 import s from "./interior.module.css";
@@ -12,8 +12,9 @@ import s from "./interior.module.css";
 const InteriorScene = dynamic(() => import("./InteriorScene"), { ssr: false });
 
 /** "Step inside": a still render that opens the walkable interior on demand. */
-export default function InteriorPanel({ id }: { id: string }) {
+export default function InteriorPanel({ id, title, hotspotActions }: { id: string; title?: string; hotspotActions?: Record<string, ReactNode> }) {
   const interior = interiors[id];
+  const name = title ?? interior.name;
   const assets = interiorAssets(id);
   const router = useRouter();
   const [inside, setInside] = useState(false);
@@ -47,7 +48,7 @@ export default function InteriorPanel({ id }: { id: string }) {
       <div className={s.head}>
         <div>
           <p className="label">Step inside</p>
-          <h2 id={`interior-${id}-heading`}>{interior.name}</h2>
+          <h2 id={`interior-${id}-heading`}>{name}</h2>
         </div>
         {inside && <button type="button" className={s.leave} onClick={leave}>Leave</button>}
       </div>
@@ -55,7 +56,7 @@ export default function InteriorPanel({ id }: { id: string }) {
       <div className={s.frame}>
         {(!inside || !ready) && (
           <div className={s.still}>
-            <Image src={assets.still} alt={`Inside the ${interior.name}`} fill sizes="(max-width: 900px) 100vw, 1100px" />
+            <Image src={assets.still} alt={`Inside ${name}`} fill sizes="(max-width: 900px) 100vw, 1100px" />
             {!inside && <button type="button" className={s.enter} onClick={() => setInside(true)}>Step inside →</button>}
             {inside && !failed && <span className={s.loading}>Opening the doors…</span>}
             {failed && <span className={s.loading}>The doors are stuck. Try again later.</span>}
@@ -79,6 +80,7 @@ export default function InteriorPanel({ id }: { id: string }) {
           <aside className={s.dialog} aria-live="polite">
             <h3>{interaction.title}</h3>
             <p>{interaction.body}</p>
+            {open && hotspotActions?.[open]}
             <div className={s.dialogLinks}>
               {interaction.link && <Link href={interaction.link.href} onClick={leave}>{interaction.link.label} →</Link>}
               <button type="button" onClick={() => setOpen(undefined)}>Close</button>

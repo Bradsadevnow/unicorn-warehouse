@@ -6,6 +6,8 @@ export const advanceShare = 0.7;
 export const advanceFeeRate = 0.1;
 export const welcomePeriodEnds = "December 31, 2026";
 export const maintenanceWaiverBalance = 10_000;
+export const maintenanceFee = 4;
+export const inactivityFee = 5;
 
 export const savingsGoal = {
   name: "Saturday Suite",
@@ -69,13 +71,13 @@ export const products = [
 ] as const;
 
 export const fees = [
-  ["Monthly maintenance", "4 Tokens", `Waived with ${maintenanceWaiverBalance.toLocaleString("en-US")} Tokens on deposit`],
+  ["Monthly maintenance", `${maintenanceFee} Tokens`, `Waived with ${maintenanceWaiverBalance.toLocaleString("en-US")} Tokens on deposit`],
   ["Early Payday advance", `${advanceFeeRate * 100}% of the advance`, "Deducted before deposit"],
   ["Courtesy Coverage", "12 Tokens per item", "Includes covered coverage fees"],
   ["Balance inquiry", "1 Token", "Complimentary on this page"],
   ["Paper statement", "6 Tokens", "Mailed to the address on file at Unicorn Warehouse Living"],
   ["Savings withdrawal", "3 Tokens", "First withdrawal each month"],
-  ["Inactivity", "5 Tokens per month", "After 30 days without a deposit"],
+  ["Inactivity", `${inactivityFee} Tokens per month`, "After 30 days without a deposit"],
   ["Fee notification", "1 Token", "Per notification of a fee"],
   ["Account closing", "25 Tokens", "Tokens remain at the Bank"],
 ] as const;

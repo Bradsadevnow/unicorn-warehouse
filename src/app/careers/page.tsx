@@ -186,7 +186,8 @@ function ProfileCard({ heading, record, sample = false }: { heading: string; rec
           <p><b>{counted.length}</b> of {required} qualifying shifts toward {record.nextRank.title}</p>
           <progress value={counted.length} max={required} aria-label={`Qualifying shifts toward ${record.nextRank.title}`} />
           {awaitingAcceptance.length > 0 && <p className={s.fine}>{awaitingAcceptance.length} awaiting client acceptance, not counted.</p>}
-          {otherTrack.length > 0 && <p className={s.fine}>{otherTrack.length} from another track, part of your record and not counted.</p>}
+          {otherTrack.length > 0 && <p className={s.fine}>{otherTrack.length} outside your current track enrollment.</p>}
+          {!sample && record.nextRank.title === "Junior Unicorn Associate" && <Link href="/quests/horn-fitting">Open The Horn Fitting →</Link>}
         </div>
       )}
       <p className={s.fine}>Your position reflects your assigned responsibilities. Your horn rank reflects your recognized value to the herd. 💖</p>

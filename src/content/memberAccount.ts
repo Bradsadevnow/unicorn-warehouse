@@ -10,7 +10,12 @@ export type MemberAccount = {
   readonly household: string;
   readonly employer: string;
   /** Employment with Unicorn Warehouse: a position in a career track and a separate horn rank. */
-  readonly employment: { readonly positionId: string; readonly hornRank: string; readonly hired: string };
+  readonly employment: {
+    readonly positionId: string;
+    readonly hornRank: string;
+    readonly hired: string;
+    readonly beforeTransfer?: readonly string[];
+  };
   readonly ledger: readonly {
     readonly id: string;
     readonly date: string;
@@ -18,11 +23,14 @@ export type MemberAccount = {
     readonly amount: number;
     readonly status: LedgerStatus;
     readonly eventId?: string;
+    readonly service?: "market" | "dreamwell" | "everair" | "softspace" | "living" | "bank" | "funplex" | "payroll";
+    readonly serviceDate?: string;
   }[];
   readonly subscriptions: readonly { id: string; name: string; renewal: string; status: string; note: string }[];
   readonly assignments: readonly { id: string; ledgerEntryId: string; status: string; postingId?: string }[];
   readonly requests: readonly { id: string; title: string; status: string; date: string; ledgerEntryId?: string }[];
   readonly notices: readonly string[];
+  readonly outstandingFunDates?: readonly string[];
 };
 
 const poppyAccount = {
@@ -112,10 +120,6 @@ const juniperAccount = {
 const memberAccounts: ReadonlyMap<string, MemberAccount> = new Map(
   [poppyAccount, juniperAccount].map((account) => [account.id, account]),
 );
-export const signInProfiles = [
-  { name: poppyAccount.name, id: poppyAccount.id, maskedNumber: "•••-••-0140" },
-  { name: juniperAccount.name, id: juniperAccount.id, maskedNumber: "•••-••-0716" },
-] as const;
 export const memberAccount = poppyAccount;
 
 export function getMemberAccount(id: string) {

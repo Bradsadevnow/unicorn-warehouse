@@ -272,6 +272,13 @@ export const terms = [
       "Casino. The cashier exchanges available Tokens for Alpine Chips at face value. Unplayed chips can be exchanged back at the cashier. Sparkle has no chip value.",
     ],
   },
+  {
+    id: "lost-property-release",
+    title: "Neighborhood Police · Lost Property release",
+    paragraphs: [
+      "Physical release. At the Lost Property desk, the member must provide the tag number and request physical release. A status update reports where the object is. Record closure ends the inquiry. Neither procedure transfers possession of the object.",
+    ],
+  },
 ];
 
 export const productDetails = [
@@ -567,6 +574,13 @@ export const productDetails = [
       `${alpineLiftPass.label}. ${alpineLiftPass.tokens} Tokens per person per day.`,
       ...alpineMemberships.map(({ name, price, benefit }) => `${name}. ${price} Tokens every ${alpineMembershipCycle} days. ${benefit}`),
       "The stay preview shows sample pricing. It does not reserve a room, issue a lift pass, or charge an account.",
+    ],
+  },
+  {
+    id: "wake-verification",
+    title: "Dreamwell · Rest Desk verification",
+    paragraphs: [
+      "Wake Verification records that a member was awake while signing at the Rest Desk. Pod attendance confirms entry only. Dream Retention concerns recall after a session. Wake Verification requires a handwritten signature and can be issued without booking a pod.",
     ],
   },
 ];

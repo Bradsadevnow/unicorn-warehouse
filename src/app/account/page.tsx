@@ -7,6 +7,9 @@ import { getMemberReportStatus } from "@/server/companyWorkflows";
 import { getMemberSession } from "@/server/memberSession";
 import { getServiceHistory, serviceNames } from "@/server/serviceHistory";
 import FunHours from "./FunHours";
+import MemberDay from "./MemberDay";
+import PlayerObjectives from "./PlayerObjectives";
+import { objectiveComplete } from "@/server/gameState";
 import WalletChart from "./WalletChart";
 import styles from "./account.module.css";
 
@@ -32,6 +35,7 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
   const session = await getMemberSession();
   if (!session) redirect("/");
   const { account } = session;
+  const equipped = objectiveComplete(session.game, "buy-kit");
   const query = await searchParams;
   const tab = tabs.find(([id]) => id === query.tab)?.[0] ?? "overview";
   const balances = getTokenBalances(account);
@@ -44,7 +48,7 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
     ? account.ledger.find(({ id }) => id === query.transaction)
     : undefined;
   if (query.transaction !== undefined && !selected) notFound();
-  const report = selected && getMemberReportStatus(account.id, selected.id);
+  const report = selected?.status === "pending" && getMemberReportStatus(account.id, selected.id);
   const relatedEvents = selected ? history.filter(({ ledgerEntryIds }) => ledgerEntryIds?.includes(selected.id)) : [];
 
   return (
@@ -55,8 +59,13 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
           <h1>Hi, {account.name}! ✨</h1>
           <p>{account.household} · {account.employer}</p>
         </div>
-        <Link href="/">Switch member →</Link>
+        <div className={styles.stack}>
+          <Link href="/member-records">Member Records →</Link>
+          <Link href="/">Start a new account →</Link>
+        </div>
       </header>
+
+      {query.restored === "1" && <p role="status" className={styles.restoreNotice}>Your account is right where you left it. Welcome back, {account.name}! ✨</p>}
 
       <nav className={styles.shortcuts} aria-label="Account views">
         {tabs.map(([id, label]) => <Link key={id} href={id === "overview" ? "/account" : "/account?tab=" + id}
@@ -76,9 +85,18 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
         </section>
       )}
 
+      {tab === "overview" && <PlayerObjectives game={session.game}
+        error={!equipped && typeof query.actionError === "string" ? query.actionError : undefined} />}
+      {tab === "overview" && equipped && <section className={`${styles.panel} ${styles.recognition}`}>
+        <h2>🦄 Recognition</h2>
+        <Link href="/quests/horn-fitting">The Horn Fitting →</Link>
+      </section>}
+      {tab === "overview" && equipped && <MemberDay game={session.game} available={balances.available}
+        error={typeof query.actionError === "string" ? query.actionError : undefined} />}
       {tab === "overview" && <div className={styles.columns}>
         <section className={styles.panel}>
           <h2>📬 Recent service activity</h2>
+          {history.length === 0 && <p>Your first service transactions will appear here.</p>}
           <ol className={styles.timeline}>
             {history.slice(0, 5).map(({ eventId, service, date, title }) => (
               <li key={eventId}>
@@ -92,6 +110,7 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
         <div className={styles.stack}>
           <section className={styles.attention}>
             <h2>💖 Memberships</h2>
+            {account.subscriptions.length === 0 && <p>Your account has no active memberships.</p>}
             {account.subscriptions.filter(({ renewal }) => renewal !== "Paused").slice().sort((a, b) => Date.parse(a.renewal) - Date.parse(b.renewal)).slice(0, 2)
                   .map(({ id, name, renewal, status }) => <p key={id}><strong>{name}</strong><br />{renewal} · {status}</p>)}
             <Link href="/account?tab=memberships">View memberships →</Link>
@@ -143,6 +162,7 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
 
       {tab === "memberships" && <section className={styles.panel} id="memberships">
         <h2>💖 Memberships</h2>
+        {account.subscriptions.length === 0 && <p>Your account has no active memberships.</p>}
         <ul className={styles.cards}>
           {account.subscriptions.map(({ id, name, status, renewal, note }) => <li key={id} id={id}>
             <strong>{name}</strong><span className={styles.badge}>{status}</span>
@@ -153,6 +173,7 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
 
       {tab === "work" && <section className={styles.panel} id="work">
         <h2>💼 Assignment history</h2>
+        {account.assignments.length === 0 && <p>Your completed extra shifts will appear here.</p>}
         <ul className={styles.cards}>
           {[...account.assignments].reverse().map(({ id, ledgerEntryId, status, postingId }) => {
             const entry = account.ledger.find((item) => item.id === ledgerEntryId);

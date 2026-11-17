@@ -30,6 +30,7 @@
 .wallet a, .attention a, .ledger a, .support { color: var(--ice); text-decoration: underline; text-underline-offset: 3px; }
 .hero a, .panel a { color: var(--ice); text-decoration: underline; text-underline-offset: 3px; }
 .shortcuts a[aria-current] { background: #642f85; color: white; }
+.restoreNotice { margin-top: 14px; padding: 12px 16px; border-radius: 14px; background: #e1f6ea; }
 .entryLabel { display: block; }
 .wallet + .panel, .panel + .panel[id="statement"] { margin-top: 16px; }
 .chart { display: grid; gap: 13px; margin-top: 14px; }
@@ -56,6 +57,26 @@
 }
 
 .panel[id="fun-hours"] { grid-column: 1 / -1; }
+.memberDay { background: #f8edff; display: grid; gap: 16px; }
+.memberDay header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.memberDay h2 { margin-bottom: 4px; }
+.memberDay [role="alert"] { color: #872653; }
+.dayOptions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; align-items: end; }
+.dayOptions form, .dayOptions label { display: grid; gap: 7px; min-width: 0; }
+.memberDay button, .memberDay select { font: inherit; border-radius: 12px; padding: 8px 12px; }
+.memberDay button { cursor: pointer; border: 1px solid #642f85; background: #642f85; color: white; font-weight: 700; }
+.memberDay select { width: 100%; border: 1px solid var(--line); background: white; color: inherit; }
+.memberDay + .memberDay { margin-top: 16px; }
+.recognition { margin-block: 16px; }
+.recognition h2 { margin-bottom: 6px; }
+.objectives { display: flex; gap: 8px; flex-wrap: wrap; }
+.objectives li { display: flex; align-items: center; gap: 8px; padding: 8px 11px; border-radius: 12px; background: #fff9ff; }
+.objectives li[data-completed="true"] { background: #e1f6ea; }
+.objectives small { color: #28704e; }
+.objectiveBrief { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 16px; border-radius: 16px; background: #fff9ff; }
+.objectiveBrief blockquote { margin-top: 8px; }
+.objectiveBrief ul { padding-left: 20px; list-style: disc; }
+.objectiveLinks { display: flex; flex-wrap: wrap; gap: 16px; }
 .funHours { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
 .funHours progress { width: 100%; accent-color: var(--ice); }
 .funHours ol { padding: 0; }

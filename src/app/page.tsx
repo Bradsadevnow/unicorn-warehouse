@@ -1,6 +1,5 @@
-import WelcomeFlow from "./welcome/WelcomeFlow";
-import { signInProfiles } from "@/content/memberAccount";
+import WelcomeEntry from "./welcome/WelcomeEntry";
 
 export default function LandingPage() {
-  return <WelcomeFlow profiles={signInProfiles} />;
+  return <WelcomeEntry />;
 }

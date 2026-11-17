@@ -220,6 +220,10 @@ export function entryPositions(track: TrackId) {
   return trackPositions(track).filter(({ level }) => level === 1);
 }
 
+export function isOpenEntryPosition(position: Position) {
+  return position.level === 1 && position.vacancies > 0 && position.minRank === "unicorn-trainee";
+}
+
 export function trackPath(track: Pick<Track, "id">) {
   return `/careers/tracks/${track.id}`;
 }

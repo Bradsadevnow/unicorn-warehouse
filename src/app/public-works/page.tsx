@@ -68,6 +68,7 @@ export default function PublicWorksPage() {
               <h3>{title}</h3>
               <p>{copy}</p>
               <Link href={href}>{label} →</Link>
+              {title === "Neighborhood Police" && <p><Link href="/quests/horn-fitting?stop=lost-property#quest-counter">Visit Lost Property →</Link></p>}
             </article>
           ))}
         </div>

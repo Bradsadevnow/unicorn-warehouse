@@ -23,7 +23,8 @@ export default function FunHours({ account }: { account: MemberAccount }) {
               ))}
             </ul>
             <p>{tokens(fun.due)} will be billed at check-in time. You have {tokens(fun.available)} available.</p>
-          </> : <p>You’re all caught up on fun this month. See you soon! 🎉</p>}
+          </> : fun.unpaid === 0 && <p>You’re all caught up on fun this month. See you soon! 🎉</p>}
+          {fun.unpaid > 0 && <p>{fun.unpaid} scheduled check-in{fun.unpaid === 1 ? " is" : "s are"} awaiting payment.</p>}
           <Link href="/support">Ask a support unicorn about your Fun Hours →</Link>
         </div>
         <div className={styles.stack}>

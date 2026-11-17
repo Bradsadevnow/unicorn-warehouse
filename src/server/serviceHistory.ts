@@ -7,8 +7,13 @@ export const serviceNames = {
   market: "🛒 Market",
   goodshift: "💼 Goodshift",
   helpinghand: "🤝 HelpingHand",
+  brightside: "🎬 Brightside",
   everair: "🌬️ Everair",
   softspace: "🌡️ Softspace",
+  living: "🏡 Living",
+  bank: "🪙 Bank",
+  funplex: "🎟️ Funplex",
+  payroll: "💼 Payroll",
 } as const;
 
 type Service = keyof typeof serviceNames;
@@ -107,7 +112,7 @@ export function getServiceHistory(account: MemberAccount): HistoryRecord[] {
     const expected = assignment.status === "Awaiting client acceptance" ? "pending" : "posted";
     if (entry.status !== expected || entry.amount <= 0) throw new Error(`Invalid payout for ${assignment.id}`);
     return {
-      service: assignment.id.startsWith("GS-") ? "goodshift" : "helpinghand",
+      service: assignment.id.startsWith("GS-") ? "goodshift" : assignment.id.startsWith("BS-") ? "brightside" : "helpinghand",
       eventId: entry.eventId ?? assignment.id, date: entry.date, title: entry.label,
       detail: `${assignment.status}. ${entry.amount} Tokens ${entry.status} on the statement.`,
       ledgerEntryIds: [entry.id],
@@ -115,7 +120,12 @@ export function getServiceHistory(account: MemberAccount): HistoryRecord[] {
   });
 
   const membership = membershipEvents.flatMap(({ member, ...event }) => member === account.id ? [event] : []);
-  const records: HistoryRecord[] = [...market, ...dreamwell, ...work, ...membership];
+  const activity: HistoryRecord[] = account.ledger.flatMap(({ service, eventId, id, date, serviceDate, label, amount, status }) =>
+    service && eventId ? [{
+      service, eventId, date, title: label, ledgerEntryIds: [id],
+      detail: `${amount} Tokens ${status === "spent" ? "charged" : "credited"}.${serviceDate ? ` Service date: ${serviceDate}.` : ""}`,
+    }] : []);
+  const records: HistoryRecord[] = [...market, ...dreamwell, ...work, ...membership, ...activity];
   if (new Set(records.map(({ eventId }) => eventId)).size !== records.length) {
     throw new Error(`Duplicate service event for ${account.id}`);
   }

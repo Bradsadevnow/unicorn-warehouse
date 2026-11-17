@@ -1,7 +1,8 @@
 import "server-only";
 
 import { getRole, roles } from "@/content/careers";
-import { employers, getPosition, getTrack, goodshiftTrack, helpingHandTrack, payByLevel, type TrackId } from "@/content/careerTracks";
+import { brightsideTrack, employers, getPosition, getTrack, goodshiftTrack, helpingHandTrack, payByLevel, type TrackId } from "@/content/careerTracks";
+import { getBrightsideBrief } from "@/content/gigCatalogs";
 import { getPosting } from "@/content/goodshiftPostings";
 import { getHelpingHandPosting } from "@/content/helpingHandPostings";
 import type { MemberAccount } from "@/content/memberAccount";
@@ -11,8 +12,9 @@ const probationDays = 90;
 const day = 24 * 60 * 60 * 1000;
 
 /** The track an assignment's posting belongs to. HelpingHand postings are referenced as "helpinghand:<slug>". */
-function postingTrack(postingId: string | undefined): TrackId | undefined {
+export function postingTrack(postingId: string | undefined): TrackId | undefined {
   if (!postingId) return undefined;
+  if (postingId.startsWith("brightside:")) return getBrightsideBrief(postingId) ? brightsideTrack : undefined;
   if (postingId.startsWith("helpinghand:")) {
     const posting = getHelpingHandPosting(postingId.slice("helpinghand:".length));
     return posting && helpingHandTrack(posting.site);
@@ -35,7 +37,7 @@ export function getEmployeeRecord(account: MemberAccount) {
   const awaitingAcceptance: string[] = [];
   const otherTrack: string[] = [];
   for (const { id, status, postingId } of account.assignments) {
-    if (postingTrack(postingId) !== position.track) otherTrack.push(id);
+    if (account.employment.beforeTransfer?.includes(id) || postingTrack(postingId) !== position.track) otherTrack.push(id);
     else if (acceptedStatuses.has(status)) counted.push(id);
     else awaitingAcceptance.push(id);
   }

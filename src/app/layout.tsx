@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Fredoka, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import Nav from "@/components/Nav";
 import Veil from "@/components/Veil";
 import Footer from "@/components/Footer";
+import SupportBar from "@/components/SupportBar";
+import { getMemberSession } from "@/server/memberSession";
 
 const display = Fredoka({
   variable: "--font-display",
@@ -44,7 +47,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Nav />
         {children}
         <Footer />
+        <Suspense fallback={null}><MemberSupportBar /></Suspense>
       </body>
     </html>
   );
+}
+
+async function MemberSupportBar() {
+  const session = await getMemberSession();
+  return session ? <SupportBar key={session.sessionId} sessionId={session.sessionId} /> : null;
 }

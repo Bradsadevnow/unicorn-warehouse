@@ -4,9 +4,28 @@ The Next.js app lives in `web`. Unicorn Warehouse has grown from a membership co
 
 ## Where we left off (2026-11-16)
 
-- Done and verified in the dev preview: the careers redesign (M1). Horn ranks are recognition only, track pages exist, department careers pages use `src/components/TrackCallout.tsx`, both job boards label shifts by track, and members have employment records (`src/server/employeeRecord.ts`). `tsc` and `npm run lint` pass with no warnings.
-- Next in ROADMAP.md: M3, the action layer and game engine. Test model tool calling for the support agent during M3.
-- Open: the Bank interior is a greybox. The player unicorn is built in code. Support chats about the new employee profile have not been run. When the Browser pane is hidden, streamed Suspense content does not reveal, because animation frames pause. Check pages with the pane visible or read the server HTML.
+- The career system, onboarding, day loop, PDF saves, and first Recognition Quest are live. M7's quest interiors and the M8 Support bar are in place. The last checks covered interior routes and hotspot reachability, Gemma's map and clue tools, and a 5-Token nap charged only on confirmation.
+- Next: redesign the persistent player panel around an actual home address and timed deliveries. The section below records the agreed direction. Implementation has yet to begin.
+- The Bank interior is still a greybox, and the player unicorn is built in code. When the Browser pane is hidden, streamed Suspense content may not reveal because animation frames pause. Check pages with the pane visible or read the server HTML.
+
+## Next build · The member panel and life at an address
+
+Expand the signed-in Support dock into a persistent member panel. Keep the conversation available while the player moves around. Use four tabs:
+
+- **Today** — In-game date and time, current location, next shift, bills due, and the next delivery window.
+- **Home** — Assigned address and unit, rent and due date, lease, and deliveries. **Go home** should open the player's actual address on the town map.
+- **Wallet** — Available, pending, and held Tokens, recent activity, and a link to the full statement.
+- **Support** — The existing conversation, tool trace, and confirmation cards. Give the unicorn access to the signed-in player's lease, shift, and order records as those features come online.
+
+Keep My account for the detailed statement, employment record, and Member Records PDF saves. Move ordering out of its Market picker and into Market. Move **Work your shift** to **Clock in** at the player's workplace, where the Horn & Fries minigame can eventually run. Remove track transfer from player controls for this pass. If transfers return, decide the rule and any affordability requirement before exposing them again. Pay still comes from the position. Accepted extras and manager approval feed horn recognition.
+
+**Housing.** After job selection, offer a few starter rentals, such as a furnished room, a studio near the outbound depot, and a small walk-up above the shops. Show rent and commute before selection. Assign the player to a specific map lot and unit, and save the lease and actual address to the account. Schedule the first rent payment after the player has had time to earn wages, so the existing 100-Token welcome credit can still cover the Pathway Kit. Exact rents and first-payment timing are open design decisions.
+
+**Orders and the clock.** Place the order at Market and choose a delivery window on the in-game clock. Dispatch quotes the fee using the home address. Link the Market order, Fulfillment record, Dispatch attempt, and ledger entries with one correlation ID. The Today tab can show “Groceries arriving 5:20–5:40 p.m.” The player counts as home when their character is at the assigned address when the courier arrives. Advance time through play and restore the clock and pending deliveries from the signed save. Closing the browser pauses the clock.
+
+If the player is away at arrival, record the missed attempt and route the order back to the depot for next-day pickup or rebooking. The Dispatch voice: “We stopped by! Your groceries are back at the depot, where they’ve been marked successfully transported.” Decide delivery fees, charges for rebooking, and timing rules when designing the actual flow.
+
+Build the first slice end to end: **choose a home → place a Market order → receive or miss delivery**. That slice should connect the member panel, town map, Market, Fulfillment, Dispatch, ledger, and PDF save. Keep the Horn & Fries dinner rush pilot in the roadmap for the workplace clock-in pass.
 
 Read these alongside this file:
 
@@ -43,15 +62,15 @@ Outline pages remain at `/businesses/[slug]`, and `/businesses` redirects to the
 
 **Careers.** Every member is an employee with two separate records: a position in one of six career tracks (`src/content/careerTracks.ts`), which sets pay and has a manager, and a horn rank (`src/content/careers.ts`), which is recognition only. Higher positions need a minimum horn rank and a vacancy. Horn ranks advance through accepted extra shifts in the employee's own track, manager approval, and a Recognition Quest. `/careers` shows the Employee Profile, `/careers/tracks/[track]` shows each track, `/careers/[slug]` shows each rank, and `src/server/employeeRecord.ts` derives a member's profile and qualifying shifts. HelpingHand and Goodshift label each shift with the track it counts toward.
 
-**Member data.** Poppy (`UW-0482`) and Juniper (`UW-0716`) live in `src/content/memberAccount.ts`. The ledger is authoritative. Bank balances (`src/server/bankAccount.ts`), Fun Hours (`src/server/funHours.ts`, also shown in the account portal), and Trainee progress are derived from it and add no entries of their own.
+**Member data and game loop.** Players enter a display name, choose a career track and open entry position, and receive a new signed game snapshot. The legacy profiles are retired from public sign-in. My account posts actions to `/account/day`, and Bank, Fun Hours, Careers, Wallet, and Support read the same projected account. Members can download a statement at `/member-records` and restore it from sign-in. Keep `UW_RECORDS_SECRET` (or the fallback `UW_SESSION_SECRET`) stable across deployments to preserve existing saves.
 
 **Support unicorn.** `/api/support` gives the model account evidence `[A:…]`, Terms `[T:…]`, Product Details `[P:…]`, postings `[J:…]`, and careers roles `[C:…]`. A chat can open from a transaction, a posting (`/support?posting=<slug>`, or `helpinghand:<slug>` for HelpingHand), or a role (`/support?role=<slug>`).
 
 ## Open threads
 
 - **Poppy's history predates the current prices.** Her weekly reports paid 140 Tokens each, while that posting now pays 84 under ECONOMY.md. Reconcile this when member histories are reseeded.
-- **The next phase is the game.** ROADMAP.md replaces BUSINESS-ROADMAP.md's "After the pages" section. Poppy and Juniper are retired at onboarding (M4), and member history comes from play instead of seeded records.
-- **Charges shown but not posted.** Bank fees are waived through December 31, 2026, and scheduled Fun Hours show as a future 60-Token charge. Neither is on the ledger. Posting them means adding ledger entries.
+- **The Horn Fitting interiors and Support bar are in place.** Lost Property, Dreamwell, and the shared Recognition Office join the walkable Bank. The quest route retains its desk cards and signed inventory. The signed-in Support bar can link to map lots, give quest hints, and prepare confirmed game actions.
+- **Playable shift pilot.** Horn & Fries dinner rush is recorded under career progression and in the roadmap's backlog. It uses the existing wage, ledger, and PDF save flow. A future HelpingHand version can count toward horn recognition after acceptance.
 - **Unchecked.** Support chats about the Bank, Fun Hours, and HelpingHand postings have not been run. Replies with Gemma have taken 90–115 seconds as the reference material has grown.
 - **Town map on phones.** The map works on a phone-sized screen but the town sits small in the frame, and dragging on the map rotates it rather than scrolling the page. Checked in an emulated phone viewport, not on a real device.
 - **Art.** The Careers hero and posters still use type and the mascot rather than original art.

@@ -17,6 +17,14 @@ Export from the project root with Blender in the background:
 & "C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.exe" -b Unicornopolis-interior-bank.blend -P web\scripts\interiors\export_interior.py -- bank
 ```
 
+The Lost Property, Dreamwell, and Department Recognition Office files can be rebuilt and exported together:
+
+```powershell
+& "C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.exe" -b --factory-startup --python-exit-code 1 -P web\scripts\interiors\build_quest_interiors.py
+```
+
+This rebuild regenerates all three source files from the script. Use the individual exporter to publish edits made in Blender.
+
 ## Naming convention
 
 Blender is Z-up and uses metres. One Blender unit is one metre. The player walks on the ground plane at height 0.

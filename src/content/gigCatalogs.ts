@@ -151,3 +151,11 @@ export const brightsideCatalog = [
 export function brightsideBriefId(title: string) {
   return "brief-" + title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-$/, "");
 }
+
+export const brightsideBriefs = brightsideCatalog.flatMap(({ jobs }) =>
+  jobs.map(([title, , duration, payout]) => ({ id: `brightside:${brightsideBriefId(title)}`, title, duration, payout })),
+);
+
+export function getBrightsideBrief(id: string) {
+  return brightsideBriefs.find((brief) => brief.id === id);
+}

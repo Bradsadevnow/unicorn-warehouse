@@ -11,6 +11,9 @@
 .question { background: #e0f5ea; justify-self: end; }
 .reply strong, .question strong, .reply a { display: block; }
 .reply a { color: var(--ice); text-decoration: underline; margin-top: 6px; font-size: .85rem; }
+.gameLink, .confirmation { width: fit-content; max-width: 100%; border: 1px solid #ccabd9; border-radius: 12px; padding: 9px 12px; background: #fff3d4; }
+.gameLink { color: #643582; font-weight: 700; text-decoration: underline; }
+.confirmation p { margin-block: 5px; }
 .suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 16px; }
 .chat button { padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fce4f1; color: inherit; cursor: pointer; font: inherit; font-size: .9rem; }
 .chat button:disabled { opacity: .55; cursor: default; }
@@ -20,6 +23,10 @@
 .chat .start { padding: 12px 24px; font-weight: 800; background: linear-gradient(110deg, #ffe2f3, #fff6cd, #e9ddff); }
 .workspace { display: grid; gap: 16px; align-items: start; }
 .workspace[data-trace="true"] { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+.workspace[data-dock="true"] { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.workspace[data-dock="true"] .log { max-height: 36dvh; }
+.workspace[data-dock="true"] .suggestions:empty { display: none; }
+.workspace[data-dock="true"] .trace { max-height: 35dvh; }
 .traceToggle { margin-bottom: 12px; }
 .trace { padding: 16px; border: 1px solid var(--line); border-radius: 20px; background: #f4e3fb; max-height: 65dvh; overflow: auto; overflow-wrap: anywhere; }
 .trace h2 { font: 800 24px/1.1 var(--display); }

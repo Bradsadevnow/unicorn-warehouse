@@ -52,7 +52,7 @@ async function MemberSupport({ searchParams }: Pick<PageProps<"/support">, "sear
       { id: "posting-pay", question: "When would this posting pay out?" },
     ] : []),
     ...(transaction ? [{ id: "transaction", question: "Can you explain this transaction?" }] : []),
-    ...(session.account.ledger.some(({ status }) => status === "pending")
+    ...(session.account.ledger.some(({ id, status }) => id === "report" && status === "pending")
       ? [{ id: "report-renewal", question: "Can my pending report payout cover my air renewal?" }] : []),
     { id: "account-balance", question: "How many Tokens do I have?" },
     { id: "held", question: "What’s holding my Tokens?" },

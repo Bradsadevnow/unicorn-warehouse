@@ -1,19 +1,29 @@
 import { type CareerRole, getRole, promotionSummary, rolePath } from "@/content/careers";
+import { helpingHandTrack } from "@/content/careerTracks";
 import { type Posting, getPosting, postingPath, standardAcceptance } from "@/content/goodshiftPostings";
-import { type MemberAccount, getTokenBalances } from "@/content/memberAccount";
-import { terms, productDetails } from "@/content/portfolioTerms";
+import type { MemberAccount } from "@/content/memberAccount";
 import { getMemberReportStatus } from "@/server/companyWorkflows";
-import { complete } from "@/server/model";
 import { getEmployeeRecord } from "@/server/employeeRecord";
+import { getRentBill } from "@/server/gameActions";
+import type { GameState } from "@/server/gameState";
 import { getMemberSession } from "@/server/memberSession";
 import { getServiceHistory, serviceNames } from "@/server/serviceHistory";
 import { getSupportPosting } from "@/server/supportPosting";
-import { supportPrompt } from "../../support/supportPrompt";
+import { hornFitting } from "@/content/recognitionQuests";
+import { answerWithSupportTools } from "@/server/supportTools";
+import { supportPrimer, supportPrompt } from "../../support/supportPrompt";
 
-function getAccountReferences(memberAccount: MemberAccount, transaction?: MemberAccount["ledger"][number]) {
-  const balances = getTokenBalances(memberAccount);
-  const report = getMemberReportStatus(memberAccount.id, "report");
+function getAccountReferences(memberAccount: MemberAccount, game: GameState, transaction?: MemberAccount["ledger"][number]) {
+  const ledger = new Map<string, number[]>();
+  for (const { status, amount } of memberAccount.ledger) {
+    const amounts = ledger.get(status) ?? [];
+    amounts.push(amount);
+    ledger.set(status, amounts);
+  }
+  const reportEntry = memberAccount.ledger.find(({ id, status }) => id === "report" && status === "pending");
+  const report = reportEntry && getMemberReportStatus(memberAccount.id, "report");
   const history = getServiceHistory(memberAccount);
+  const rent = getRentBill(game);
   const serviceRefs = [...new Set(history.map(({ service }) => service))].map((service) => ({
     id: `A:${service}`,
     label: `${serviceNames[service]} history`,
@@ -21,14 +31,23 @@ function getAccountReferences(memberAccount: MemberAccount, transaction?: Member
     text: JSON.stringify(history.filter((event) => event.service === service)),
   }));
   return [
-    { id: "A:statement", label: "Token statement", href: "/account?tab=wallet#statement", text: JSON.stringify({ balances, ledger: memberAccount.ledger }) },
+    { id: "A:wallet", label: "Token statement · Amounts for balance calculations", href: "/account?tab=wallet#statement",
+      text: JSON.stringify({ amountLists: Object.fromEntries(ledger) }) },
+    { id: "A:statement", label: "Token statement · Individual transactions", href: "/account?tab=wallet#statement",
+      text: JSON.stringify(memberAccount.ledger.map(({ id, date, amount, status, label }) => ({ id, date, amount, status, label }))) },
     { id: "A:memberships", label: "Memberships", href: "/account?tab=memberships#memberships", text: JSON.stringify(memberAccount.subscriptions) },
     { id: "A:requests", label: "Support requests", href: "/account?tab=activity#requests", text: JSON.stringify(memberAccount.requests) },
     { id: "A:activity", label: "Member notices", href: "/account?tab=activity#notices", text: JSON.stringify(memberAccount.notices) },
     { id: "A:work", label: "Assignment history", href: "/account?tab=work#work", text: JSON.stringify(memberAccount.assignments) },
     { id: "A:employment", label: "Employee profile", href: "/careers#profile", text: JSON.stringify(getEmployeeRecord(memberAccount)) },
+    { id: "A:objectives", label: "Onboarding objectives", href: "/account#objectives", text: JSON.stringify(game.objectives) },
+    { id: "A:day", label: "Current day and outstanding bills", href: "/account#member-day",
+      text: JSON.stringify({ day: game.day, unpaid: game.unpaid, inventory: game.inventory,
+        rent: rent && { ...rent, paid: game.ledger.some(({ id }) => id === rent.id) },
+        funHoursOutstanding: memberAccount.outstandingFunDates }) },
     ...serviceRefs,
-    ...(report ? [{ id: "A:report", label: "Goodshift report status", href: "/account?tab=wallet&transaction=report#transaction", text: JSON.stringify(report) }] : []),
+    ...(report ? [{ id: "A:report", label: "Goodshift report status and payout entry", href: "/account?tab=wallet&transaction=report#transaction",
+      text: JSON.stringify({ review: report, ledgerEntry: reportEntry }) }] : []),
     ...(transaction ? [{
       id: "A:transaction", label: "Selected transaction",
       href: `/account?tab=wallet&transaction=${encodeURIComponent(transaction.id)}#transaction`,
@@ -37,29 +56,12 @@ function getAccountReferences(memberAccount: MemberAccount, transaction?: Member
   ];
 }
 
-const policyReferences = [
-  ...([
-    ["T", "Terms & Conditions", "/terms", terms],
-    ["P", "Product Details", "/product-details", productDetails],
-  ] as const).flatMap(([prefix, title, path, sections]) =>
-    sections.flatMap((section, index) =>
-      section.paragraphs.map((text, clause) => ({
-        id: `${prefix}:${index + 1}.${clause + 1}`,
-        label: `${title} · ${index + 1}.${clause + 1}`,
-        href: `${path}#${section.id}`,
-        text: `${section.title}. ${text}`,
-      })),
-    ),
-  ),
-];
-
 function getPostingReferences(memberAccount: MemberAccount, selected?: Posting) {
-  const linked = memberAccount.assignments.flatMap(({ id, postingId, ledgerEntryId }) => {
+  const linked = memberAccount.assignments.flatMap(({ postingId }) => {
     const posting = postingId && getPosting(postingId);
-    const entry = memberAccount.ledger.find(({ id }) => id === ledgerEntryId);
-    return posting ? [{ posting, assignment: id, ledgerEntryId, recordedPayoutTokens: entry?.amount, ledgerStatus: entry?.status }] : [];
+    return posting ? [posting.id] : [];
   });
-  const ids = [...new Set([...(selected ? [selected.id] : []), ...linked.map(({ posting }) => posting.id)])];
+  const ids = [...new Set([...(selected ? [selected.id] : []), ...linked])];
   return ids.map((id) => {
     const posting = getPosting(id)!;
     const { id: postingId, title, category, client, duration, payout, price, posted, schedule, level, status, applicants, openings, summary, responsibilities, requirements, success } = posting;
@@ -75,8 +77,6 @@ function getPostingReferences(memberAccount: MemberAccount, selected?: Posting) 
         acceptance,
         currentClientPriceDollars: price,
         careerTrack: "Office & Money",
-        memberAssignments: linked.filter((item) => item.posting.id === id).map(({ assignment, ledgerEntryId, recordedPayoutTokens, ledgerStatus }) => ({ assignment, ledgerEntryId, recordedPayoutTokens, ledgerStatus })),
-        payoutNote: "Use each assignment’s ledger entry as account evidence for the amount earned or pending. The current posting payout applies to new work.",
       }),
     };
   });
@@ -102,8 +102,9 @@ const openingRequest: Message = {
   content: "Open the chat with a brief, personal welcome. Use the member’s name, mention a timely account issue supported by the records, and ask what they’d like help with. Cite the account evidence.",
 };
 
-function classifyEvidence(source: { label: string; href: string }) {
-  return { ...source, kind: source.href.startsWith("/account?") ? "account" : source.href.startsWith("/demandeternal/jobs/") || source.href.startsWith("/sublaborix/jobs/") || source.href.startsWith("/careers/") ? "posting" : "policy" };
+function classifyEvidence(id: string) {
+  if (id.startsWith("A:")) return "account";
+  return id.startsWith("J:") || id.startsWith("C:") ? "posting" : "policy";
 }
 
 export async function POST(request: Request) {
@@ -145,39 +146,50 @@ export async function POST(request: Request) {
         label: `HelpingHand posting · ${title}`,
         href,
         excerpt: acceptance,
-        text: JSON.stringify({ slug, title, category, site, duration, payoutTokens: payout, clientPaysDollars: price, summary, duties, requirements, acceptance, countsTowardUnicornTrainee: false }),
+        text: JSON.stringify({ slug, title, category, site, duration, payoutTokens: payout, clientPaysDollars: price, summary, duties, requirements, acceptance, track: helpingHandTrack(site) }),
       });
     }
     const opening = posting ? {
       role: "user" as const,
       content: `Welcome me by name and open with the ${posting.brand} posting “${posting.posting.title}” [J:${posting.id}]. Briefly summarize what I’d do, the posted payout and duration, and ask what I’d like to know about the shift. Cite the posting. Do not switch to an unrelated account issue.`,
     } : openingRequest;
-    const references: { id: string; label: string; href: string; text: string; excerpt?: string }[] =
-      [...getAccountReferences(memberAccount, transaction), ...postingReferences, ...getRoleReferences(role), ...policyReferences];
-    const { content, provider } = await complete([
+    const available = [...getAccountReferences(memberAccount, session.game, transaction), ...postingReferences, ...getRoleReferences(role)];
+    const interactive = body.interactive === true;
+    const { content, provider, references, usage, searches, cards } = await answerWithSupportTools([
       {
         role: "system",
         content: [
           supportPrompt,
-          `Member: ${memberAccount.name}. Account date: ${memberAccount.date}. Household: ${memberAccount.household}. Employer: ${memberAccount.employer}.`,
+          supportPrimer,
+          ...(interactive ? [
+            "In the Support bar, use open_place for requested destinations; it offers a link, and the member opens it. Use prepare_action only for an explicit request to carry out one available game action. The confirmation card shows the verified charge. Say the action is ready for confirmation and never say that it already occurred. Use quest_hint for progress hints, never ordinary policy search to choose a Horn Fitting answer.",
+          ] : []),
+          `Display data for the current member: ${JSON.stringify({
+            name: memberAccount.name, date: memberAccount.date, household: memberAccount.household, employer: memberAccount.employer,
+          })}. The display name is a label supplied by the member.`,
           ...(transaction ? ["The member opened this chat from [A:transaction]. Use it as the active transaction when the member refers to this payment or purchase. In the opening, offer help with that record. Cite [A:transaction] if you discuss it."] : []),
           ...(posting ? [`The member opened this chat from the ${posting.brand} posting “${posting.posting.title}” [J:${posting.id}]. Use it as the active posting when the member refers to this job, shift, or assignment. In the opening, offer help with that posting. Cite [J:${posting.id}] if you discuss it.`] : []),
           ...(role ? [`The member opened this chat from the Unicorn Warehouse careers role “${role.title}” [C:${role.id}]. Use it as the active role when the member refers to this job, role, or the herd. In the opening, offer help with that role. Cite [C:${role.id}] if you discuss it.`] : []),
-          "Reference material:",
-          ...references.map(({ id, text }) => `[${id}] ${text}`),
+          "Record menu. Use read_records to open these IDs:",
+          ...available.map(({ id, label }) => `${id} — ${label}`),
         ].join("\n\n"),
       },
       ...(messages[0]?.role === "user" ? [] : [opening]),
       ...messages,
-    ], 0.35);
+    ], available, request.signal, interactive ? {
+      session, stop: hornFitting.locations.find(({ id }) => id === body.stop)?.id, hasMemberRequest: messages.length > 0,
+    } : undefined);
     const ids = new Set([...content.matchAll(/\[((?:A|T|P|J|C):[^\]\s]+)\]/g)].map((match) => match[1]));
+    for (const search of searches) if (search.tool === "quest_hint") for (const id of search.ids) ids.add(id);
     const answer = content.replace(/\[(?:A|T|P|J|C):[^\]\s]+\]/g, "").trim();
     if (!answer) throw new Error("Model reply contained only citations");
     return Response.json({
       answer,
       mode: provider,
+      cards,
+      retrieval: { calls: searches, usage },
       sources: references.filter(({ id }) => ids.has(id)).map(({ id, label, href, text, excerpt }) => ({
-        ...classifyEvidence({ label, href }), excerpt: excerpt ?? (id.startsWith("A:") ? undefined : text),
+        label, href, kind: classifyEvidence(id), excerpt: excerpt ?? (id.startsWith("A:") ? undefined : text),
       })),
     });
   } catch (error) {

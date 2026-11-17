@@ -12,6 +12,25 @@ export type Interior = {
 const feeLines = fees.slice(0, 4).map(([service, fee]) => `${service}: ${fee}.`).join(" ");
 
 export const interiors: Record<string, Interior> = {
+  "lost-property": {
+    id: "lost-property", name: "Lost Property",
+    interactions: {
+      release: { title: "Tagged Property counter", body: "The clerk sets three forms on the counter. Collecting an object starts with the number on its tag." },
+    },
+  },
+  dreamwell: {
+    id: "dreamwell", name: "Dreamwell Rest Desk",
+    interactions: {
+      verification: { title: "Rest Desk", body: "The attendant keeps the handwriting forms beside the pillow request slips." },
+    },
+  },
+  department: {
+    id: "department", name: "Department Recognition Office",
+    interactions: {
+      fitting: { title: "Manager’s fitting desk", body: "A soft measuring tape and a stack of very firm eligibility forms." },
+      recognition: { title: "Recognition review", body: "Horns are displayed in order of importance. The matching pay grades are displayed in a different department." },
+    },
+  },
   bank: {
     id: "bank",
     name: "Unicorn Warehouse Bank",
@@ -24,6 +43,7 @@ export const interiors: Record<string, Interior> = {
       pen: {
         title: "The chained pen",
         body: "The only pen in Unicornopolis, chained to the counter for your convenience. The padlock key was turned in to Lost Property at the police station.",
+        link: { href: "/quests/horn-fitting?stop=bank#quest-counter", label: "Ask about the Horn Fitting" },
       },
       vault: {
         title: "Sparkle Savings",

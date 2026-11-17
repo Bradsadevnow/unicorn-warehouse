@@ -1,21 +1,27 @@
 "use client";
 
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import styles from "./welcome.module.css";
 
-type Stage = "welcome" | "consent" | "handoff";
+type Stage = "welcome" | "consent" | "handoff" | "career" | "position";
 
-type SignInProfile = { id: string; name: string; maskedNumber: string };
+type TrackOption = {
+  id: string;
+  name: string;
+  tagline: string;
+  image: StaticImageData;
+  jobs: { id: string; title: string; business: string; department: string; summary: string; pay: number }[];
+};
 
-export default function WelcomeFlow({ profiles }: { profiles: readonly SignInProfile[] }) {
-  const [profileIndex, setProfileIndex] = useState(0);
-  const profile = profiles[profileIndex];
+export default function WelcomeFlow({ tracks }: { tracks: TrackOption[] }) {
+  const [name, setName] = useState("");
+  const [track, setTrack] = useState<TrackOption>();
   const [stage, setStage] = useState<Stage>("welcome");
   const [seconds, setSeconds] = useState(8);
   const [declined, setDeclined] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);
-  const form = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (stage === "welcome") return;
@@ -31,9 +37,11 @@ export default function WelcomeFlow({ profiles }: { profiles: readonly SignInPro
       return () => window.clearInterval(timer);
     }
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(() => form.current?.requestSubmit(), reducedMotion ? 0 : 1300);
-    return () => window.clearTimeout(timer);
+    if (stage === "handoff") {
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const timer = window.setTimeout(() => setStage("career"), reducedMotion ? 0 : 1300);
+      return () => window.clearTimeout(timer);
+    }
   }, [stage]);
 
   return (
@@ -42,26 +50,26 @@ export default function WelcomeFlow({ profiles }: { profiles: readonly SignInPro
         <p className={styles.brand}>✦ Unicorn Warehouse</p>
         {stage === "welcome" && <>
           <Image className={styles.mascot} src="/sign-in-unicorn.png" alt="" width={240} height={240} priority />
-          <h1>Welcome back, {profile.name}!</h1>
-          <p>Your memberships are right where you left them. So is your identity. ✨</p>
+          <h1>Welcome to Unicorn Warehouse!</h1>
+          <p>Every bright future starts with a name. ✨</p>
           <form className={styles.signIn} onSubmit={(event) => {
             event.preventDefault();
+            const clean = name.trim().replace(/\s+/g, " ");
+            if (!clean) return;
+            setName(clean);
             setStage("consent");
           }}>
+            <label htmlFor="member-name">What should we call you?</label>
+            <input id="member-name" value={name} onChange={(event) => setName(event.target.value)} required maxLength={48} autoComplete="off" />
             <label htmlFor="member-ssn">Social Security number</label>
-            <input id="member-ssn" type="text" value={profile.maskedNumber} readOnly aria-describedby="member-ssn-note" />
+            <input id="member-ssn" type="text" value="•••-••-••••" readOnly aria-describedby="member-ssn-note" />
             <small id="member-ssn-note">We remembered it for you. One less thing to forget! 💖</small>
-            <button className={styles.primary} type="submit">Sign in as {profile.name} ✨</button>
-            {profiles.length > 1 && <label>
-              Switch member
-              <select value={profileIndex} onChange={(event) => setProfileIndex(Number(event.target.value))}>
-                {profiles.map(({ id, name }, index) => <option key={id} value={index}>{name}</option>)}
-              </select>
-            </label>}
+            <button className={styles.primary} type="submit" disabled={!name.trim()}>Continue ✨</button>
           </form>
+          <p><Link href="/member-records">Resume from a statement →</Link></p>
         </>}
         {stage === "consent" && <>
-          <h1 ref={heading} tabIndex={-1}>Unicorn Warehouse wants access to {profile.name}’s account</h1>
+          <h1 ref={heading} tabIndex={-1}>Unicorn Warehouse wants access to {name}’s account</h1>
           <p>Let’s get all your preferences in one place, including the ones you haven’t formed yet. 💖</p>
           <ul className={styles.scopes}>
             <li>See purchases you almost made and what might change your mind.</li>
@@ -84,12 +92,42 @@ export default function WelcomeFlow({ profiles }: { profiles: readonly SignInPro
         </>}
         {stage === "handoff" && <>
           <Image className={styles.mascot} src="/unicorn-mascot.webp" alt="" width={240} height={240} />
-          <h1 ref={heading} tabIndex={-1}>You’re in, {profile.name}! ✨</h1>
-          <p role="status">Getting your Unicorn Warehouse ready…</p>
-          <form ref={form} method="post" action="/welcome/continue">
-            <input type="hidden" name="profile" value={profile.id} />
-            <button className={styles.secondary} type="submit">Continue to homepage</button>
-          </form>
+          <h1 ref={heading} tabIndex={-1}>You’re in, {name}! ✨</h1>
+          <p role="status">Finding a place for you in the herd…</p>
+          <button className={styles.secondary} type="button" onClick={() => setStage("career")}>See career tracks</button>
+        </>}
+        {stage === "career" && <>
+          <h1 ref={heading} tabIndex={-1}>Find your place in the herd</h1>
+          <p>Pick a track to see where you can start, {name}. 💖</p>
+          <div className={styles.trackGrid}>
+            {tracks.map((option) => (
+              <button key={option.id} type="button" className={styles.track} onClick={() => { setTrack(option); setStage("position"); }}>
+                <Image src={option.image} alt="" sizes="(max-width: 560px) 85vw, (max-width: 850px) 42vw, 310px" />
+                <span><strong>{option.name}</strong><small>{option.tagline}</small></span>
+              </button>
+            ))}
+          </div>
+        </>}
+        {stage === "position" && track && <>
+          <h1 ref={heading} tabIndex={-1}>{track.name}</h1>
+          <p>Choose an opening to start as a Unicorn Trainee. ✨</p>
+          <div className={styles.jobGrid}>
+            {track.jobs.map((job) => (
+              <form key={job.id} action="/welcome/continue" method="post" className={styles.job}>
+                <input type="hidden" name="name" value={name} />
+                <input type="hidden" name="track" value={track.id} />
+                <input type="hidden" name="position" value={job.id} />
+                <span>{job.business} · {job.department}</span>
+                <h2>{job.title}</h2>
+                <p>{job.summary}</p>
+                <strong>{job.pay} Tokens per hour</strong>
+                <button className={styles.primary} type="submit" aria-label={`Accept ${job.title}`}>Accept position ✨</button>
+              </form>
+            ))}
+          </div>
+          <div className={styles.actions}>
+            <button className={styles.secondary} type="button" onClick={() => setStage("career")}>Back to tracks</button>
+          </div>
         </>}
       </div>
     </main>

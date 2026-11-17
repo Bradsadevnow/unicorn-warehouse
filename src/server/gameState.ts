@@ -25,6 +25,21 @@ export type GameEvent = {
   ref?: string;
 };
 
+/**
+ * A span of calendar time the player is busy: a shift, an errand, a Fun Hour, a delivery window.
+ * Every system that books time uses this one shape, so the calendar can show them together and
+ * the game can refuse to put the player in two places at once.
+ */
+export type TimeBlock = {
+  id: string;
+  kind: "work" | "extra-shift" | "errand" | "rest" | "fun" | "quest" | "onboarding";
+  label: string;
+  /** "YYYY-MM-DDTHH:MM" */
+  start: string;
+  /** "YYYY-MM-DDTHH:MM" */
+  end: string;
+};
+
 export type GameState = {
   version: 2;
   revision: number;
@@ -32,6 +47,8 @@ export type GameState = {
   /** The authoritative game clock, "YYYY-MM-DDTHH:MM". Every date in the game derives from it. */
   now: string;
   events: GameEvent[];
+  /** Today's and upcoming time blocks. Earlier days are cleared when the day ends; the ledger keeps the record. */
+  blocks: TimeBlock[];
   employment: MemberAccount["employment"];
   ledger: LedgerEntry[];
   settlements: Record<string, string>;
@@ -51,7 +68,7 @@ export type ObjectiveId = typeof objectiveIds[number];
 
 export function enrollPlayer(player: GameState["player"], position: Position): GameState {
   return {
-    version: 2, revision: 0, player, now: `${firstDay}T${morning}`, events: [],
+    version: 2, revision: 0, player, now: `${firstDay}T${morning}`, events: [], blocks: [],
     employment: { positionId: position.id, hornRank: "unicorn-trainee", hired: firstDay },
     ledger: [{ id: "opening", date: firstDay, label: "New member welcome credit", amount: starterTokens, status: "posted" }],
     settlements: {}, shifts: [], unpaid: [], inventory: {}, questFlags: {},
@@ -64,19 +81,30 @@ export function gameDay(game: Pick<GameState, "now">) {
   return game.now.slice(0, 10);
 }
 
+/** Adds minutes to a calendar time. */
+export function addMinutes(time: string, minutes: number) {
+  return new Date(Date.parse(`${time}:00Z`) + minutes * 60_000).toISOString().slice(0, 16);
+}
+
+/** Minutes between two calendar times. */
+export function minutesBetween(start: string, end: string) {
+  return Math.round((Date.parse(`${end}:00Z`) - Date.parse(`${start}:00Z`)) / 60_000);
+}
+
 /** A calendar time on a date, "YYYY-MM-DDTHH:MM". */
 export function atTime(date: string, time: string) {
   return `${date}T${time}`;
 }
 
-type GameStateV1 = Omit<GameState, "version" | "now" | "events"> & { version: 1; day: string; renewalDates: Record<string, string> };
+type GameStateV1 = Omit<GameState, "version" | "now" | "events" | "blocks"> & { version: 1; day: string; renewalDates: Record<string, string> };
 
 /**
  * Upgrades a saved game to the current version. Version 1 saves tracked a date only. They resume at
  * the start of that day, with their renewals and pending shift acceptances moved onto the calendar.
  */
 export function migrateGameState(saved: GameState | GameStateV1): GameState | undefined {
-  if (saved.version === 2) return saved;
+  // Version 2 saves made before time blocks existed have no blocks yet.
+  if (saved.version === 2) return { ...saved, blocks: saved.blocks ?? [] };
   if (saved.version !== 1) return undefined;
   const { day, renewalDates, ...rest } = saved;
   const events: GameEvent[] = [
@@ -84,7 +112,7 @@ export function migrateGameState(saved: GameState | GameStateV1): GameState | un
     ...rest.shifts.filter(({ id }) => !rest.settlements[id])
       .map(({ id, acceptance }): GameEvent => ({ at: atTime(acceptance, "17:00"), kind: "settle-shift", ref: id })),
   ];
-  return { ...rest, version: 2, now: atTime(day, morning), events };
+  return { ...rest, version: 2, now: atTime(day, morning), events, blocks: [] };
 }
 
 export function createPlayerAccount(game: GameState): MemberAccount {
@@ -107,6 +135,13 @@ export const formatGameDate = new Intl.DateTimeFormat("en-US", {
 });
 
 const formatClock = new Intl.DateTimeFormat("en-US", { weekday: "long", hour: "numeric", minute: "2-digit", timeZone: "UTC" });
+
+const formatHour = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", timeZone: "UTC" });
+
+/** "9:00 AM" for a calendar time. */
+export function formatClockTime(time: string) {
+  return formatHour.format(new Date(`${time}:00Z`));
+}
 
 /** "Saturday, 8:00 AM" for the game clock. */
 export function formatGameTime(now: string) {

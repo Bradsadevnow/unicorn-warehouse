@@ -18,7 +18,11 @@ The game now runs on a calendar clock. `GameState` is version 2: `now` ("YYYY-MM
 - **End day** collects past-due charges, then advances to 08:00 tomorrow. Actions do not cost time yet.
 - Verified with a scripted 50-day playthrough against the previous engine: identical entries, amounts, dates, balances, and rejections. Bills that fall due at midnight now appear before that day's activity. A version 1 save taken on December 1 upgrades and finishes identically.
 
-Next, in order: (B) give every action a duration and introduce a shared time-block type for shifts, deliveries, Fun Hours, and appointments; (C) a calendar view and Today list; (D) consequences, starting with survival stats (the user is drafting a design), then the home address and timed deliveries below.
+**Step B, time costs and blocks (done).** Every action books a `TimeBlock` (`gameState.ts`) and advances the clock through it, so events fire during the activity. Durations are in `actionMinutes` in `gameActions.ts`: the regular shift runs 9:00 to 5:00 (clocking in early waits for 9:00), extra shifts use their posting's duration, Brightside briefs take 90 minutes, Market trips 30, naps 20, Fun Hours 60, rent 10, quest errands 15. Charges happen at the start of an activity and payroll at the end. Activities cannot run past midnight or overlap a booked block. Yesterday's blocks are cleared at the end of the day. My account shows a Today schedule. The 50-day playthrough still matches the previous engine's entries and balances.
+
+- The snapshot cookie grows with the ledger, not the clock: about 2,400 of 3,800 characters after 62 days. Survival stats and deliveries add state, so plan for ledger compaction or server storage before long games hit the cap.
+
+Next: (C) a calendar view and Today list, then (D) consequences, starting with survival stats (the user is drafting a design), then the home address and timed deliveries below.
 
 ## Next build · The member panel and life at an address
 

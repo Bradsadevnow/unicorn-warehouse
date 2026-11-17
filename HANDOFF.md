@@ -22,7 +22,9 @@ The game now runs on a calendar clock. `GameState` is version 2: `now` ("YYYY-MM
 
 - The snapshot cookie grows with the ledger, not the clock: about 2,400 of 3,800 characters after 62 days. Survival stats and deliveries add state, so plan for ledger compaction or server storage before long games hit the cap.
 
-Next: (C) a calendar view and Today list, then (D) consequences, starting with survival stats (the user is drafting a design), then the home address and timed deliveries below.
+**Step C, the calendar (done).** My account has a 🗓️ Calendar tab: a month grid with a day agenda, covering this month and the next two. `src/server/gameCalendar.ts` builds it by playing the real event queue forward on a copy of the game with no player actions, using the `observe` hook on `advanceClock`. It shows exactly what the engine would charge if nothing else happens, including bills the balance cannot cover. It also shows today's booked blocks, overdue bills, and the end of probation. A check that projected three months and then played those days one at a time matched item for item.
+
+Next: (D) consequences, starting with survival stats (the user is drafting a design), then the home address and timed deliveries below.
 
 ## Next build · The member panel and life at an address
 

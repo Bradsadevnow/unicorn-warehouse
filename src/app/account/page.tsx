@@ -7,7 +7,9 @@ import { getMemberReportStatus } from "@/server/companyWorkflows";
 import { getMemberSession } from "@/server/memberSession";
 import { getServiceHistory, serviceNames } from "@/server/serviceHistory";
 import FunHours from "./FunHours";
+import MemberCalendar from "./MemberCalendar";
 import MemberDay from "./MemberDay";
+import { projectCalendar } from "@/server/gameCalendar";
 import PlayerObjectives from "./PlayerObjectives";
 import { objectiveComplete } from "@/server/gameState";
 import WalletChart from "./WalletChart";
@@ -17,6 +19,7 @@ export const metadata = { title: "My account" };
 
 const tabs = [
   ["overview", "✨ Overview"],
+  ["calendar", "🗓️ Calendar"],
   ["wallet", "🪙 Wallet"],
   ["memberships", "💖 Memberships"],
   ["work", "💼 Work"],
@@ -85,6 +88,16 @@ async function MemberPortal({ searchParams }: Pick<PageProps<"/account">, "searc
         </section>
       )}
 
+      {tab === "calendar" && (() => {
+        const calendar = projectCalendar(session.seed, session.game);
+        return (
+          <section className={styles.panel} id="calendar" aria-labelledby="calendar-heading">
+            <h2 id="calendar-heading">🗓️ Your calendar</h2>
+            <p>Everything already on your schedule, from rent to Fun Hours. Charges show what happens if nothing else changes before they fall due.</p>
+            <MemberCalendar today={calendar.today} from={calendar.from} until={calendar.until} entries={calendar.entries} />
+          </section>
+        );
+      })()}
       {tab === "overview" && <PlayerObjectives game={session.game}
         error={!equipped && typeof query.actionError === "string" ? query.actionError : undefined} />}
       {tab === "overview" && equipped && <section className={`${styles.panel} ${styles.recognition}`}>

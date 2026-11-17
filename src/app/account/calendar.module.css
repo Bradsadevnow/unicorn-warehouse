@@ -1,0 +1,40 @@
+.calendar { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr); gap: 18px; align-items: start; }
+.monthBar { grid-column: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.monthBar h3 { font: 800 clamp(22px, 2.6vw, 28px)/1.1 var(--display); color: #3b2153; }
+.monthBar button { width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 50%; background: #fffaff; font-weight: 800; }
+.monthBar button:disabled { opacity: .35; cursor: default; }
+.grid { grid-column: 1; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.weekday { padding: 4px 0; text-align: center; font: 11px var(--mono); letter-spacing: .12em; color: var(--dim); }
+.day { display: grid; align-content: start; gap: 2px; min-height: 82px; padding: 6px; border: 1px solid transparent; border-radius: 12px; background: #fffaff; text-align: left; overflow: hidden; }
+.day:hover { border-color: var(--line); }
+.day[data-past] { background: #f7f2fa; }
+.day[data-past] .number { color: var(--dim); }
+.day[data-today] { border-color: #bc89d4; box-shadow: inset 0 0 0 1px #bc89d4; }
+.day[aria-pressed="true"] { background: #f2e9ff; border-color: var(--ice); }
+.day[data-alert] .number::after { content: " !"; color: #c2366f; }
+.number { font-weight: 800; font-size: 14px; }
+.chip { display: block; padding: 1px 6px; border-radius: 6px; font-size: 11px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #ece4f6; }
+.chip[data-kind="bill"] { background: #fff1c9; }
+.chip[data-kind="unpaid"], .chip[data-kind="overdue"] { background: #ffd6e4; color: #8c1d4c; }
+.chip[data-kind="payout"] { background: #dcf5e7; }
+.chip[data-kind="block"] { background: #e3edff; }
+.chip[data-kind="milestone"] { background: #e9ddff; }
+.more { font-size: 11px; color: var(--dim); }
+.agenda { grid-column: 2; grid-row: 1 / span 2; display: grid; gap: 10px; padding: 18px; border: 1px solid var(--line); border-radius: 20px; background: #fffaff; position: sticky; top: 96px; }
+.agenda h3 { font: 800 20px/1.2 var(--display); color: #3b2153; }
+.agenda ol { display: grid; gap: 8px; padding: 0; list-style: none; }
+.agenda li { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 10px; padding: 10px 12px; border-radius: 12px; background: #f5eefb; }
+.agenda li[data-kind="unpaid"], .agenda li[data-kind="overdue"] { background: #ffe3ec; }
+.agenda li[data-kind="payout"] { background: #e6f7ee; }
+.agenda time { font-weight: 700; color: var(--ice); font-size: 14px; }
+.agenda li div { display: grid; gap: 2px; }
+.agenda span { font-size: 13px; color: var(--dim); }
+.agenda small { font-size: 12px; color: var(--dim); }
+.empty { color: var(--dim); }
+@media (max-width: 860px) {
+  .calendar { grid-template-columns: minmax(0, 1fr); }
+  .agenda { grid-column: 1; grid-row: auto; position: static; }
+  .day { min-height: 56px; }
+  .chip { display: none; }
+  .day[data-today] .number, .day[aria-pressed="true"] .number { color: var(--ice); }
+}

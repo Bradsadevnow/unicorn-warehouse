@@ -133,7 +133,7 @@ function nextDue(events: GameEvent[], until: string) {
  * Moves the game clock forward to `target`, firing every scheduled event in between in chronological
  * order. Each event runs with the clock set to its own time, so its ledger entries carry its date.
  */
-export function advanceClock(ctx: GameContext, target: string) {
+export function advanceClock(ctx: GameContext, target: string, observe?: (event: GameEvent) => void) {
   const { next } = ctx;
   if (target < next.now) throw new Error(`The game clock cannot move backward from ${next.now} to ${target}`);
   ensureRecurring(ctx);
@@ -144,6 +144,7 @@ export function advanceClock(ctx: GameContext, target: string) {
     if (event.at > next.now) next.now = event.at;
     runEvent(ctx, event);
     ctx.collectUnpaid();
+    observe?.(event);
     ensureRecurring(ctx);
   }
   next.now = target;

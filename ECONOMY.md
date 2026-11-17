@@ -1,19 +1,17 @@
 # Unicorn Warehouse Economic Standard v1.0
 
-Use 1 Token ≈ $1 as an internal purchasing-power benchmark. Cash redemption is $0. Career comparisons assume 40 hours per week, 52 weeks per year, and 12 months per year. They represent gross earnings at the reference hours. Gig payouts are per accepted assignment.
+Use 1 Token ≈ $1 as an internal purchasing-power benchmark. Cash redemption is $0. Pay follows the position, never the horn rank. Positions sit at four levels within a career track, defined in [careerTracks.ts](src/content/careerTracks.ts). Career comparisons assume 40 hours per week, 52 weeks per year, and 12 months per year. They represent gross earnings at the reference hours. Gig payouts are per accepted assignment.
 
 ## Affordability scenarios
 
 All figures are Tokens. The 3,500 scenario models one adult renting a room in shared housing. The 5,500 scenario models a larger household supported by one full-time income. These internal planning scenarios use reference budgets. Current rents live in the [Living catalog](src/content/living.ts).
 
-| Career level | Hourly | Monthly | After 3,500 | After 5,500 |
-| --- | ---: | ---: | ---: | ---: |
-| Unicorn Trainee | 12 | 2,080 | -1,420 | -3,420 |
-| Junior Unicorn Associate | 18 | 3,120 | -380 | -2,380 |
-| Unicorn Associate II (proposed) | 20 | 3,467 | -33 | -2,033 |
-| Senior Unicorn | 35 | 6,067 | +2,567 | +567 |
-| Unicorn Team Lead | 42 | 7,280 | +3,780 | +1,780 |
-| Executive Unicorn | Confidential | Confidential | — | — |
+| Position level | Examples | Hourly | Monthly | After 3,500 | After 5,500 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 1 · Entry | Line Unicorn, Warehouse Picker, Teller Unicorn | 12 | 2,080 | -1,420 | -3,420 |
+| 2 · Experienced | Fun Compliance Host, Balance Preservation Associate | 18 | 3,120 | -380 | -2,380 |
+| 3 · Supervisory | Assistant Shift Happiness Manager, Inventory Truth Specialist | 28 | 4,853 | +1,353 | -647 |
+| 4 · Leadership | Pick Rate Encouragement Lead, Structural Optimism Foreman | 42 | 7,280 | +3,780 | +1,780 |
 
 | Monthly expense | Shared housing scenario | Household scenario |
 | --- | ---: | ---: |

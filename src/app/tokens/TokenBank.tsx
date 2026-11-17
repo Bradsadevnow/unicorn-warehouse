@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import InteriorPanel from "@/components/interior/InteriorPanel";
 import { annualPercentageSparkle, bankWork, fees, products, welcomePeriodEnds } from "@/content/bank";
 import { bankAutoFinancing, quoteAutoFinancing } from "@/content/autoFinancing";
 import { rolePath, roles } from "@/content/careers";
@@ -31,6 +32,7 @@ export function TokenBankDetails() {
   const repairQuote = quoteAutoFinancing("repair", sampleRepairTotal, 0, 12);
   return (
     <div className={s.bank}>
+      <InteriorPanel id="bank" />
       <section className={s.section} aria-labelledby="products-heading">
         <h2 id="products-heading">Banking that’s already yours</h2>
         <ul className={s.products}>

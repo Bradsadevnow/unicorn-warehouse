@@ -17,6 +17,14 @@ export type CareerRole = {
   readonly requirements: readonly string[];
   readonly benefits: readonly string[];
   readonly advancement: readonly string[];
+  /**
+   * How a horn rank is earned. Horn ranks are recognition, separate from position and pay.
+   * Qualifying shifts are accepted extra shifts within the employee's own career track.
+   */
+  readonly promotion:
+    | { readonly by: "hire" }
+    | { readonly by: "qualification"; readonly qualifyingShifts: number; readonly managerApproval: true; readonly quest: { readonly id: string; readonly title: string } }
+    | { readonly by: "invitation"; readonly quest: { readonly id: string; readonly title: string } };
 };
 
 export const careersBasePath = "/careers";
@@ -59,6 +67,7 @@ export const roles: readonly CareerRole[] = [
       "Complete 90 days of probation. Probation restarts when you change supervisor, team, or shift pattern.",
       "Trainees who complete probation are considered for Junior Unicorn Associate at the next review. Reviews are held when a position opens.",
     ],
+    promotion: { by: "hire" },
   },
   {
     id: "UW-C-02",
@@ -94,6 +103,7 @@ export const roles: readonly CareerRole[] = [
       "Associates are considered for Senior Unicorn after three consecutive reviews at Exceeds Sparkle.",
       "A review missed by your supervisor is recorded as Meets Sparkle.",
     ],
+    promotion: { by: "qualification", qualifyingShifts: 40, managerApproval: true, quest: { id: "horn-fitting", title: "The Horn Fitting" } },
   },
   {
     id: "UW-C-03",
@@ -129,6 +139,7 @@ export const roles: readonly CareerRole[] = [
       "Senior Unicorns are considered for Unicorn Team Lead when a team lead position opens.",
       "A team lead position opens when a team lead leaves the herd.",
     ],
+    promotion: { by: "qualification", qualifyingShifts: 120, managerApproval: true, quest: { id: "rainbow-authority", title: "Rainbow Authority" } },
   },
   {
     id: "UW-C-04",
@@ -164,6 +175,7 @@ export const roles: readonly CareerRole[] = [
       "Team Leads who meet quota for eight consecutive quarters may be nominated for the Executive Unicorn program.",
       "Nominations are made by Executive Unicorns.",
     ],
+    promotion: { by: "qualification", qualifyingShifts: 300, managerApproval: true, quest: { id: "quiet-key", title: "The Quiet Key" } },
   },
   {
     id: "UW-C-05",
@@ -197,6 +209,7 @@ export const roles: readonly CareerRole[] = [
     advancement: [
       "Executive Unicorns have reached the top of the herd.",
     ],
+    promotion: { by: "invitation", quest: { id: "executive-floor", title: "The Executive Floor" } },
   },
 ];
 

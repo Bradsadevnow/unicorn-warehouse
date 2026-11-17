@@ -12,7 +12,7 @@ Unicorn Warehouse is a fictional membership company and a work of satire. Its ca
 
 See [Economy Standard](ECONOMY.md) for the wage anchors, household scenarios, and pricing rules.
 
-See [Business roadmap](BUSINESS-ROADMAP.md) for the industry-by-industry checklist.
+See [Roadmap](ROADMAP.md) for the plan to turn the site into a playable game, and [Business roadmap](BUSINESS-ROADMAP.md) for the industry-by-industry checklist.
 
 ## Run locally
 

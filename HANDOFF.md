@@ -4,6 +4,8 @@ The Next.js app lives in `web`. Unicorn Warehouse has grown from a membership co
 
 Read these alongside this file:
 
+- [ROADMAP.md](ROADMAP.md) sequences the next phase: career tracks and horn ranks, the game engine and action layer, onboarding, PDF saves, walkable Blender interiors, the quest engine, and the support agent bar. Start there.
+
 - [BUSINESS-ROADMAP.md](BUSINESS-ROADMAP.md) is the per-business checklist and the record of what is built. Its "After the pages" section is the next phase.
 - [ECONOMY.md](ECONOMY.md) is the pricing standard: 1 Token is roughly $1 of purchasing power, wages by career rung, household budgets, and how offers are priced and settled.
 - [AGENTS.md](AGENTS.md) has the model-call rules for support and department deliverables.
@@ -43,7 +45,7 @@ Outline pages remain at `/businesses/[slug]`, and `/businesses` redirects to the
 
 - **HelpingHand does not count toward Trainee.** No HelpingHand posting is marked herd-eligible, and eligibility only checks Goodshift postings. Juniper is at 0 of 40 and Poppy is at 1 of 40.
 - **Poppy's history predates the current prices.** Her weekly reports paid 140 Tokens each, while that posting now pays 84 under ECONOMY.md. Reconcile this when member histories are reseeded.
-- **The next phase is records, not pages.** The roadmap's "After the pages" section covers it: give orders, leases, assignments, and service records IDs, link them to the ledger, show them in Account and Support, then seed histories with fees, renewals, refunds, and holds.
+- **The next phase is the game.** ROADMAP.md replaces BUSINESS-ROADMAP.md's "After the pages" section. Poppy and Juniper are retired at onboarding (M4), and member history comes from play instead of seeded records.
 - **Charges shown but not posted.** Bank fees are waived through December 31, 2026, and scheduled Fun Hours show as a future 60-Token charge. Neither is on the ledger. Posting them means adding ledger entries.
 - **Unchecked.** Support chats about the Bank, Fun Hours, and HelpingHand postings have not been run. Replies with Gemma have taken 90–115 seconds as the reference material has grown.
 - **Town map on phones.** The map works on a phone-sized screen but the town sits small in the frame, and dragging on the map rotates it rather than scrolling the page. Checked in an emulated phone viewport, not on a real device.

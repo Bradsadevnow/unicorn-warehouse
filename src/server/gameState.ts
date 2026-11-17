@@ -13,16 +13,29 @@ export type Bill = {
   due: string;
 };
 
+/**
+ * Something scheduled on the game calendar. Advancing the clock fires every event up to the new time,
+ * in chronological order. Repeating events keep only their next occurrence, so the queue stays small.
+ */
+export type GameEvent = {
+  /** Calendar time, "YYYY-MM-DDTHH:MM". */
+  at: string;
+  kind: "settle-shift" | "rent" | "renewal" | "bank-month" | "fun-hour";
+  /** What the event is about, such as a shift id or a subscription id. */
+  ref?: string;
+};
+
 export type GameState = {
-  version: 1;
+  version: 2;
   revision: number;
   player: { id: string; name: string };
-  day: string;
+  /** The authoritative game clock, "YYYY-MM-DDTHH:MM". Every date in the game derives from it. */
+  now: string;
+  events: GameEvent[];
   employment: MemberAccount["employment"];
   ledger: LedgerEntry[];
   settlements: Record<string, string>;
   shifts: { id: string; postingId: string; acceptance: string }[];
-  renewalDates: Record<string, string>;
   unpaid: Bill[];
   inventory: Record<string, number>;
   questFlags: Record<string, boolean>;
@@ -31,23 +44,53 @@ export type GameState = {
 
 export const starterTokens = 100;
 export const firstDay = "2026-11-14";
+/** Each game day starts at this time, including the first. */
+export const morning = "08:00";
 const objectiveIds = ["meet-manager", "buy-kit", "first-shift", "finish-day"] as const;
 export type ObjectiveId = typeof objectiveIds[number];
 
 export function enrollPlayer(player: GameState["player"], position: Position): GameState {
   return {
-    version: 1, revision: 0, player, day: firstDay,
+    version: 2, revision: 0, player, now: `${firstDay}T${morning}`, events: [],
     employment: { positionId: position.id, hornRank: "unicorn-trainee", hired: firstDay },
     ledger: [{ id: "opening", date: firstDay, label: "New member welcome credit", amount: starterTokens, status: "posted" }],
-    settlements: {}, shifts: [], renewalDates: {}, unpaid: [], inventory: {}, questFlags: {},
+    settlements: {}, shifts: [], unpaid: [], inventory: {}, questFlags: {},
     objectives: objectiveIds.map((id) => ({ id, completed: false })),
   };
+}
+
+/** The calendar date of the game clock, "YYYY-MM-DD". */
+export function gameDay(game: Pick<GameState, "now">) {
+  return game.now.slice(0, 10);
+}
+
+/** A calendar time on a date, "YYYY-MM-DDTHH:MM". */
+export function atTime(date: string, time: string) {
+  return `${date}T${time}`;
+}
+
+type GameStateV1 = Omit<GameState, "version" | "now" | "events"> & { version: 1; day: string; renewalDates: Record<string, string> };
+
+/**
+ * Upgrades a saved game to the current version. Version 1 saves tracked a date only. They resume at
+ * the start of that day, with their renewals and pending shift acceptances moved onto the calendar.
+ */
+export function migrateGameState(saved: GameState | GameStateV1): GameState | undefined {
+  if (saved.version === 2) return saved;
+  if (saved.version !== 1) return undefined;
+  const { day, renewalDates, ...rest } = saved;
+  const events: GameEvent[] = [
+    ...Object.entries(renewalDates).map(([ref, date]): GameEvent => ({ at: atTime(date, "00:00"), kind: "renewal", ref })),
+    ...rest.shifts.filter(({ id }) => !rest.settlements[id])
+      .map(({ id, acceptance }): GameEvent => ({ at: atTime(acceptance, "17:00"), kind: "settle-shift", ref: id })),
+  ];
+  return { ...rest, version: 2, now: atTime(day, morning), events };
 }
 
 export function createPlayerAccount(game: GameState): MemberAccount {
   const position = getPosition(game.employment.positionId)!;
   return {
-    ...game.player, date: formatGameDate.format(new Date(game.day)), asOf: game.day,
+    ...game.player, date: formatGameDate.format(new Date(gameDay(game))), asOf: gameDay(game),
     household: "Individual household",
     employer: `${employers[position.business]?.name ?? position.business} · ${getTrack(position.track)!.name}`,
     employment: game.employment, ledger: [], subscriptions: [], assignments: [], requests: [],
@@ -62,6 +105,13 @@ export function objectiveComplete(game: GameState, id: ObjectiveId) {
 export const formatGameDate = new Intl.DateTimeFormat("en-US", {
   month: "long", day: "numeric", year: "numeric", timeZone: "UTC",
 });
+
+const formatClock = new Intl.DateTimeFormat("en-US", { weekday: "long", hour: "numeric", minute: "2-digit", timeZone: "UTC" });
+
+/** "Saturday, 8:00 AM" for the game clock. */
+export function formatGameTime(now: string) {
+  return formatClock.format(new Date(`${now}:00Z`));
+}
 
 export function addDays(date: string, days: number) {
   const value = new Date(date);
@@ -88,12 +138,12 @@ export function projectGameAccount(seed: MemberAccount, game: GameState): Member
     ? { ...assignment, status: "Client accepted" }
     : assignment);
   return {
-    ...seed, asOf: game.day, date: formatGameDate.format(new Date(game.day)),
+    ...seed, asOf: gameDay(game), date: formatGameDate.format(new Date(gameDay(game))),
     employment: game.employment, ledger, assignments,
     outstandingFunDates: game.unpaid.filter(({ service }) => service === "funplex").map(({ due }) => due),
     employer: changedJob ? `${employers[position.business]?.name ?? position.business} · ${getTrack(position.track)!.name}` : seed.employer,
     subscriptions: seed.subscriptions.map((subscription) => {
-      const renewal = game.renewalDates[subscription.id];
+      const renewal = game.events.find(({ kind, ref }) => kind === "renewal" && ref === subscription.id)?.at.slice(0, 10);
       const arrears = game.unpaid.find((bill) => bill.service === subscription.id);
       return {
         ...subscription,

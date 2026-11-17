@@ -8,6 +8,18 @@ The Next.js app lives in `web`. Unicorn Warehouse has grown from a membership co
 - Next: redesign the persistent player panel around an actual home address and timed deliveries. The section below records the agreed direction. Implementation has yet to begin.
 - The Bank interior is still a greybox, and the player unicorn is built in code. When the Browser pane is hidden, streamed Suspense content may not reveal because animation frames pause. Check pages with the pane visible or read the server HTML.
 
+## Game clock (step A of the calendar, 2026-11-17)
+
+The game now runs on a calendar clock. `GameState` is version 2: `now` ("YYYY-MM-DDTHH:MM") replaces `day`, and a small `events` queue holds everything scheduled. Version 1 saves upgrade on load in `migrateGameState`.
+
+- `src/server/gameEvents.ts` owns the queue. `advanceClock(ctx, target)` fires every event up to the target in chronological order, with the clock set to each event's time. Repeating events (rent, renewals, bank month, scheduled Fun Hours) keep only their next occurrence, because the snapshot cookie is capped at 3,800 characters.
+- `src/server/gameContext.ts` holds the ledger helpers that actions and events share.
+- Times of day: bills at 00:00, bank fees at 00:30, scheduled Fun Hours at 06:00, extra-shift acceptance at 17:00. Each day starts at 08:00.
+- **End day** collects past-due charges, then advances to 08:00 tomorrow. Actions do not cost time yet.
+- Verified with a scripted 50-day playthrough against the previous engine: identical entries, amounts, dates, balances, and rejections. Bills that fall due at midnight now appear before that day's activity. A version 1 save taken on December 1 upgrades and finishes identically.
+
+Next, in order: (B) give every action a duration and introduce a shared time-block type for shifts, deliveries, Fun Hours, and appointments; (C) a calendar view and Today list; (D) consequences, starting with survival stats (the user is drafting a design), then the home address and timed deliveries below.
+
 ## Next build · The member panel and life at an address
 
 Expand the signed-in Support dock into a persistent member panel. Keep the conversation available while the player moves around. Use four tabs:

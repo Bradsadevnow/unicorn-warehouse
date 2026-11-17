@@ -1,7 +1,7 @@
 import "server-only";
 
 import { brotliCompressSync, brotliDecompressSync } from "node:zlib";
-import type { GameState } from "./gameState";
+import { migrateGameState, type GameState } from "./gameState";
 
 export const gameCookie = "uw-game";
 export const maxSnapshotSize = 3800;
@@ -18,10 +18,11 @@ export function decodeGameSnapshot(
   const [payload, signature, ...extra] = token.split(".");
   if (!payload || !signature || extra.length || !verify(payload, signature)) return undefined;
   try {
-    const state: GameState = JSON.parse(brotliDecompressSync(Buffer.from(payload, "base64url"), {
+    const saved = JSON.parse(brotliDecompressSync(Buffer.from(payload, "base64url"), {
       maxOutputLength: 256 * 1024,
     }).toString("utf8"));
-    if (state.version === 1 && state.player.id === memberId && typeof state.player.name === "string" && state.player.name.trim()) return state;
+    const state: GameState | undefined = migrateGameState(saved);
+    if (state && state.player.id === memberId && typeof state.player.name === "string" && state.player.name.trim()) return state;
   } catch {
     return undefined;
   }

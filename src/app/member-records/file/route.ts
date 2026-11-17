@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
   return new Response(new Uint8Array(sealed), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="UW-Member-Records-${session.game.day}.pdf"`,
+      "Content-Disposition": `attachment; filename="UW-Member-Records-${session.game.now.slice(0, 10)}.pdf"`,
       "Cache-Control": cacheControl,
       "X-Content-Type-Options": "nosniff",
     },

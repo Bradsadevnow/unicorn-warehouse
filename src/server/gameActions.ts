@@ -1,19 +1,20 @@
 import "server-only";
 
 import { departments } from "@/app/market/catalog";
-import { inactivityFee, maintenanceFee, maintenanceWaiverBalance, welcomePeriodEnds } from "@/content/bank";
 import { getPosition, getTrack, isOpenEntryPosition, payByLevel } from "@/content/careerTracks";
 import { dreamwellPricing } from "@/content/dreamwellPricing";
-import { funHourRate, requiredFunHours } from "@/content/funplex";
+import { requiredFunHours } from "@/content/funplex";
 import { getPosting } from "@/content/goodshiftPostings";
 import { getHelpingHandPosting } from "@/content/helpingHandPostings";
 import { getBrightsideBrief } from "@/content/gigCatalogs";
-import { rentals } from "@/content/living";
-import { getTokenBalances, type MemberAccount } from "@/content/memberAccount";
+import type { MemberAccount } from "@/content/memberAccount";
 import { postingTrack } from "./employeeRecord";
-import { completedFunHours, lastDayOfMonth } from "./funHours";
+import { createGameContext, getRentBill, reject } from "./gameContext";
+import { advanceClock, schedule } from "./gameEvents";
 import { applyQuestInteraction } from "./recognitionQuestEngine";
-import { addDays, objectiveComplete, projectGameAccount, type Bill, type GameState, type ObjectiveId } from "./gameState";
+import { addDays, atTime, gameDay, morning, objectiveComplete, type GameState } from "./gameState";
+
+export { GameActionError, getRentBill } from "./gameContext";
 
 export type GameAction =
   | { type: "take-shift"; postingId: string }
@@ -24,66 +25,15 @@ export type GameAction =
 
 export const regularShiftHours = 8;
 
-const sampleLeases: Record<string, string> = { "UW-0482": "peach", "UW-0716": "sunbeam" };
-const firstRentDate = "2026-12-01";
-// AirLink has no public catalog price yet. This is the rate on the seeded account's plan.
-const renewalPrices: Partial<Record<string, { amount: number; days: number; service: Bill["service"] }>> = {
-  everair: { amount: 120, days: 30, service: "everair" },
-  dreamwell: { amount: dreamwellPricing.subscriptions.plus.tokens, days: 1, service: "dreamwell" },
-  softspace: { amount: 180, days: 30, service: "softspace" },
-};
-
-export class GameActionError extends Error {}
-
-function reject(message: string): never {
-  throw new GameActionError(message);
-}
-
-export function getRentBill(game: GameState): Bill | undefined {
-  const rental = rentals.find(({ id }) => id === sampleLeases[game.player.id]);
-  if (!rental) return undefined;
-  const due = game.day < firstRentDate ? firstRentDate : `${game.day.slice(0, 7)}-01`;
-  return game.unpaid.find(({ service }) => service === "living") ?? {
-    id: `rent-${due.slice(0, 7)}`, service: "living", label: `Living · ${rental.name} rent`,
-    amount: rental.rent, due,
-  };
-}
-
 export function applyGameAction(seed: MemberAccount, previous: GameState, action: GameAction): GameState {
   if (!objectiveComplete(previous, "buy-kit") && action.type !== "meet-manager" && action.type !== "buy-kit") {
     reject("Meet your manager and collect your Pathway Kit to start your first day.");
   }
   const next = structuredClone(previous);
   next.revision += 1;
-  const complete = (id: ObjectiveId) => {
-    const objective = next.objectives.find((item) => item.id === id);
-    if (objective) objective.completed = true;
-  };
-  const today = next.day;
-  const account = () => projectGameAccount(seed, next);
-  const available = () => getTokenBalances(account()).available;
-  const append = (bill: Bill) => {
-    next.ledger.push({ id: bill.id, eventId: `${seed.id}-${bill.id}`, date: today,
-      label: bill.label, amount: bill.amount, status: "spent", service: bill.service,
-      ...(bill.due === today ? {} : { serviceDate: bill.due }),
-    });
-  };
-  const charge = (bill: Bill) => {
-    if (next.ledger.some(({ id }) => id === bill.id)) reject("This item has already been paid.");
-    if (available() < bill.amount) reject(`You need ${bill.amount} available Tokens for this payment.`);
-    append(bill);
-    next.unpaid = next.unpaid.filter(({ id }) => id !== bill.id);
-  };
-  const billIfDue = (bill: Bill) => {
-    if (next.ledger.some(({ id }) => id === bill.id)) return;
-    if (available() >= bill.amount) append(bill);
-    else next.unpaid.push(bill);
-  };
-  const funBill = (label: string): Bill => ({
-    id: `fun-${today}`, service: "funplex", label, amount: funHourRate, due: today,
-  });
-  const funCount = () => completedFunHours(account()) + next.unpaid.filter(({ service, due }) =>
-    service === "funplex" && due.startsWith(today.slice(0, 7))).length;
+  const ctx = createGameContext(seed, next);
+  const { account, charge, complete, funBill, funCount } = ctx;
+  const today = gameDay(next);
 
   switch (action.type) {
     case "quest": {
@@ -126,7 +76,9 @@ export function applyGameAction(seed: MemberAccount, previous: GameState, action
       const id = `${helping ? "HH" : creator ? "BS" : "GS"}-${today}-extra`;
       const company = helping ? "HelpingHand" : creator ? "Brightside" : "Goodshift";
       if (next.shifts.some((shift) => shift.id.endsWith(`${today}-extra`))) reject("Today’s extra shift is already recorded.");
-      next.shifts.push({ id, postingId, acceptance: addDays(today, 1) });
+      const acceptance = addDays(today, 1);
+      next.shifts.push({ id, postingId, acceptance });
+      schedule(ctx, { at: atTime(acceptance, "17:00"), kind: "settle-shift", ref: id });
       next.ledger.push({ id, eventId: `${seed.id}-${id}`, date: today, amount: posting.payout,
         label: `${company} · ${posting.title}, awaiting client acceptance`, status: "pending" });
       break;
@@ -163,47 +115,13 @@ export function applyGameAction(seed: MemberAccount, previous: GameState, action
       next.employment = { ...next.employment, positionId: position.id, beforeTransfer: account().assignments.map(({ id }) => id) };
       break;
     }
-    case "end-day": {
-      const acceptances = [...next.shifts];
-      if (seed.id === "UW-0482") acceptances.push({ id: "report", postingId: "GS-P-2001", acceptance: "2026-11-15" });
-      for (const { id, acceptance } of acceptances) {
-        if (acceptance <= today && !next.settlements[id]) next.settlements[id] = today;
-      }
-      // Past due charges get first claim on newly available Tokens.
-      next.unpaid = next.unpaid.filter((bill) => {
-        if (available() < bill.amount) return true;
-        append(bill);
-        return false;
-      });
-      const rent = getRentBill({ ...next, unpaid: [] });
-      if (rent?.due === today) billIfDue(rent);
-      for (const subscription of seed.subscriptions) {
-        const price = renewalPrices[subscription.id];
-        if (!price || subscription.status.startsWith("Paused")) continue;
-        const due = next.renewalDates[subscription.id] ?? new Date(subscription.renewal).toISOString().slice(0, 10);
-        if (due !== today) continue;
-        billIfDue({ id: `renewal-${subscription.id}-${today}`, ...price, label: `${subscription.name} · Renewal`, due });
-        next.renewalDates[subscription.id] = addDays(today, price.days);
-      }
-      if (today > new Date(welcomePeriodEnds).toISOString().slice(0, 10) && today.endsWith("-01")) {
-        const balances = getTokenBalances(account());
-        const lastDeposit = account().ledger.filter(({ status }) => status === "posted").map(({ date }) => date).sort().at(-1);
-        if (balances.available + balances.held < maintenanceWaiverBalance) {
-          billIfDue({ id: `maintenance-${today}`, service: "bank", label: "Bank · Monthly maintenance", amount: maintenanceFee, due: today });
-        }
-        if (lastDeposit && lastDeposit <= addDays(today, -30)) {
-          billIfDue({ id: `inactivity-${today}`, service: "bank", label: "Bank · Inactivity", amount: inactivityFee, due: today });
-        }
-      }
-      const remaining = requiredFunHours - funCount();
-      const tomorrow = addDays(today, 1);
-      if (remaining > 0 && today >= addDays(lastDayOfMonth(today), 1 - remaining)) {
-        billIfDue(funBill("Funplex · Scheduled Fun Hour check-in"));
-      }
-      next.day = tomorrow;
+    case "end-day":
+      // Past-due charges are collected at the close of the day, then the player sleeps until tomorrow
+      // morning. Everything scheduled overnight happens in order on the way.
+      ctx.collectUnpaid();
+      advanceClock(ctx, atTime(addDays(today, 1), morning));
       complete("finish-day");
       break;
-    }
   }
   return next;
 }

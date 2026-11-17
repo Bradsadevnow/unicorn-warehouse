@@ -2,7 +2,7 @@ import "server-only";
 
 import { getTokenBalances } from "@/content/memberAccount";
 import { applyGameAction, GameActionError, type GameAction } from "./gameActions";
-import { formatGameDate, projectGameAccount } from "./gameState";
+import { formatGameDate, gameDay, projectGameAccount } from "./gameState";
 import { signSupportProposal, verifySupportProposal, type getMemberSession } from "./memberSession";
 
 export type SupportSession = NonNullable<Awaited<ReturnType<typeof getMemberSession>>>;
@@ -42,7 +42,7 @@ export function prepareSupportAction(session: SupportSession, type: unknown, pro
     const label = action.type === "buy" ? `Buy ${action.product}` : actions[action.type as keyof typeof actions];
     const parts = preview.ledger.slice(session.game.ledger.length).filter(({ status }) => status === "spent")
       .map(({ label, amount }) => `${label} · ${amount} Tokens`);
-    if (preview.day !== session.game.day) parts.push(`Next account day: ${formatGameDate.format(new Date(preview.day))}`);
+    if (gameDay(preview) !== gameDay(session.game)) parts.push(`Next account day: ${formatGameDate.format(new Date(gameDay(preview)))}`);
     const credited = after.available - before.available + (after.spent - before.spent);
     if (credited > 0) parts.push(`${credited} Tokens credited`);
     if (preview.unpaid.length) parts.push(`${preview.unpaid.length} outstanding bill(s) after confirmation`);

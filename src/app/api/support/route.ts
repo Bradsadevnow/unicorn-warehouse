@@ -42,7 +42,7 @@ function getAccountReferences(memberAccount: MemberAccount, game: GameState, tra
     { id: "A:employment", label: "Employee profile", href: "/careers#profile", text: JSON.stringify(getEmployeeRecord(memberAccount)) },
     { id: "A:objectives", label: "Onboarding objectives", href: "/account#objectives", text: JSON.stringify(game.objectives) },
     { id: "A:day", label: "Current day and outstanding bills", href: "/account#member-day",
-      text: JSON.stringify({ day: game.day, unpaid: game.unpaid, inventory: game.inventory,
+      text: JSON.stringify({ now: game.now, unpaid: game.unpaid, inventory: game.inventory,
         rent: rent && { ...rent, paid: game.ledger.some(({ id }) => id === rent.id) },
         funHoursOutstanding: memberAccount.outstandingFunDates }) },
     ...serviceRefs,
